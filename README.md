@@ -35,5 +35,6 @@ TODO: Link to wiki pages
 - To stop the Flask server, stop the gunicorn process by finding its pid or running the command `pkill gunicorn`.
 
 ## TODO:
+- Installation and setup process will be taken care of in a docker file.
 - The installation and stepup process will be taken care of in a docker file
 - <check if this causes an error 2>
