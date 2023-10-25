@@ -36,4 +36,3 @@ TODO: Link to wiki pages
 
 ## TODO:
 - Installation & setup process will be taken care of in a docker file.
-- test branch merge through pull request
