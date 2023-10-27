@@ -6,8 +6,9 @@ TODO: Link to wiki pages
 ## Requirements
 - must have python3 installed. This project was built in python version `3.11.x`
 - must have node.js installed on the system. This project was built in node version `10.1.x`
-- run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package on Ubunut
-    - On Mac, install through homebrew: `brew install mysql` (This might not be correct not 100% sure)
+- If on Ubuntu:
+    - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
+- If on Mac, install through homebrew: `brew install mysql`
 
 ## Setup
 - Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/workout-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
