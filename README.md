@@ -28,10 +28,10 @@ TODO: Link to wiki pages
 - In the `frontend/app` directory, run `npm start`
 
 ## Start the Servers (Production)
-- Run the start script with `./run_app.sh` to start the gunicorn flask server and to serve the static react build
+- Run the start script with `./run_app.sh` to start the gunicorn flask server and to serve the static react build.
 
 ### Stop the Production Server
-- To stop the React process, hit `^C` on the shell running `./run_app.py`
+- To stop the React process, hit `^C` on the shell running `./run_app.py`.
 - To stop the Flask server, stop the gunicorn process by finding its pid or running the command `pkill gunicorn`.
 
 ## TODO:
