@@ -13,7 +13,8 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - must have node.js installed on the system. This project was built in node version `10.1.x`
 - If on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
-- If on Mac, install through homebrew: `brew install mysql`
+- If on Mac
+    - install through homebrew: `brew install mysql`
 
 ## Setup
 - Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/workout-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
