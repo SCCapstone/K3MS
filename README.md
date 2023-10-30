@@ -11,9 +11,9 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 ## Requirements
 - must have python3 installed. This project was built in python version `3.11.x`
 - must have node.js installed on the system. This project was built in node version `10.1.x`
-- If on Ubuntu:
+- if on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
-- If on Mac
+- if on Mac
     - install through homebrew: `brew install mysql`
 
 ## Setup
