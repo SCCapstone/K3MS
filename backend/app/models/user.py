@@ -5,11 +5,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 @dataclass
-class UserData(db.Model, UserMixin):
-    username: str = db.Column(db.String(50), primary_key=True)
-    email: str = db.Column(db.String(50), nullable=False, unique=True) # todo verify email
-    first_name: str = db.Column(db.String(50), nullable=False)
-    last_name: str = db.Column(db.String(50), nullable=False)
+class User(db.Model, UserMixin):
+    username: str = db.Column(db.String(64), primary_key=True)
+    email: str = db.Column(db.String(64), nullable=False, unique=True) # todo verify email
+    first_name: str = db.Column(db.String(64), nullable=False)
+    last_name: str = db.Column(db.String(64), nullable=False)
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
     password_hash = db.Column(db.String(2000))
   

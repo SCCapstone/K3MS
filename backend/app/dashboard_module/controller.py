@@ -1,5 +1,5 @@
 from app.extensions import db
-from app.models import UserData # import models
+from app.models import User # import models
 
 # Define all functions to be called by routes for dashboard
 
