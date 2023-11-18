@@ -28,6 +28,8 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     pip3 install -r requirements.txt
     env/bin/flask shell
     >>> db.create_all()
+    >>> exit()
+    env/bin/flask db stamp head
     ```
 
 ## Start the Servers (Individually, for development)
