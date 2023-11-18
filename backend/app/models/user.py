@@ -11,18 +11,6 @@ class User(db.Model, UserMixin):
     last_name: str = db.Column(db.String(64), nullable=False)
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
     password_hash = db.Column(db.String(2000))
-  
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
-  
-    @password.setter
-    def password(self, password):
-        # Set password_hash with hashed value of password
-        self.password_hash = generate_password_hash(password)
-    
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
     
     # Login functions
     def is_authenticated(self):

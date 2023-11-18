@@ -1,7 +1,9 @@
 from http import HTTPStatus
 from app.models import User
+from werkzeug.security import generate_password_hash, check_password_hash
+from app.extensions import db
 
-def signup(req):
+def signup_controller(req):
 
     # Make sure request is JSON
     content_type = req.headers.get('Content-Type')
@@ -16,7 +18,6 @@ def signup(req):
     # Make sure all fields are filled in
     empty_fields = [] # track any missing fields
     for field in [
-        'username', 
         'email', 
         'first_name', 
         'last_name',
@@ -41,3 +42,20 @@ def signup(req):
 
     # Make sure user with email doesn't already exist
     user = User.query.filter_by(email=email).first()
+    if user:
+        return 'User already exists', HTTPStatus.BAD_REQUEST
+    
+    # Create new user - hash password
+    print("LENGTH:", len(generate_password_hash(password, method='scrypt')))
+    new_user = User(
+        email=email, 
+        first_name=first_name, 
+        last_name=last_name,
+        password_hash=generate_password_hash(password, method='scrypt')
+    )
+
+    # Add user to database
+    db.session.add(new_user)
+    db.session.commit()
+
+    return [new_user], HTTPStatus.CREATED

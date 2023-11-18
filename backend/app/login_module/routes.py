@@ -1,12 +1,12 @@
 from flask import session, request
 from app.login_module import blueprint
 from app.login_module.controller import (
-    signup
+    signup_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
 def signup():
-    signup(request)
+    return signup_controller(request)
 
 @blueprint.route('/login')
 def login():
