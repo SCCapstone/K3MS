@@ -6,8 +6,7 @@ from datetime import datetime
 
 @dataclass
 class User(db.Model, UserMixin):
-    username: str = db.Column(db.String(64), primary_key=True)
-    email: str = db.Column(db.String(64), nullable=False, unique=True) # todo verify email
+    email: str = db.Column(db.String(64), nullable=False, primary_key=True) # todo verify email
     first_name: str = db.Column(db.String(64), nullable=False)
     last_name: str = db.Column(db.String(64), nullable=False)
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
@@ -24,6 +23,13 @@ class User(db.Model, UserMixin):
     
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    # Login functions
+    def is_authenticated(self):
+        return True
+
+    def get_id(self):
+        return self.username
 
     def __repr__(self):
         return f'<User: Name: {self.last_name}, {self.first_name} - Email: {self.email}>'

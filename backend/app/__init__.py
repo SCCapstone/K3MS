@@ -13,6 +13,7 @@ def create_app(config_class=Config):
     app.config['CORS_HEADERS'] = 'Content-Type'
 
     # Initialize Flask extensions
+    app.secret_key = app.config['SESSION_SECRET_KEY']
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
