@@ -1,5 +1,5 @@
-from app.dashboard import blueprint
-from app.dashboard.controller import (
+from app.dashboard_module import blueprint
+from app.dashboard_module.controller import (
     home_controller
 )
 from flask import request
