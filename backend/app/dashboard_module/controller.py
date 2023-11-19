@@ -1,7 +1,9 @@
 from app.extensions import db
 from app.models import User # import models
+from http import HTTPStatus
+from flask_login import current_user
 
-# Define all functions to be called by routes for dashboard
+# Define all functions to be called by routes for dashboard page
 
-def home_controller():
-    return {'text': 'hello'}, 200
+def dashboard_controller():
+    return dict(mssg='dashboard', user=str(current_user)), HTTPStatus.OK

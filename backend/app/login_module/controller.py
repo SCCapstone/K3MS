@@ -97,7 +97,7 @@ def validate_request(req, fields):
     # Make sure all fields are filled in
     empty_fields = [] # track any missing fields
     for field in fields:
-        if not field in json_data:
+        if not json_data.get(field):
             empty_fields.append(field)
     
     # If any fields are missing, return error

@@ -5,10 +5,15 @@ from app.dashboard_module import blueprint as dashboard_bp
 from app.login_module import blueprint as login_bp
 from app.login_module.manager import load_user, unauthorized
 from flask_cors import CORS
+from http import HTTPStatus
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    @app.route('/')
+    def home():
+        return dict(mssg='Welcome to the backrooms'), HTTPStatus.OK
 
     # Enable Cross Origin
     CORS(app, supports_credentials=True)
