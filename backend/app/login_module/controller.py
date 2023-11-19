@@ -2,7 +2,7 @@ from http import HTTPStatus
 from app.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 signup_fields = [
     'email', 
@@ -77,6 +77,10 @@ def login_controller(req):
     login_user(user) # remember=True to remember user 
 
     return [user], HTTPStatus.OK
+
+def logout_controller():
+    logout_user()
+    return HTTPStatus.OK
 
 
 def validate_request(req, fields):
