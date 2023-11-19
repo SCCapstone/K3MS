@@ -4,7 +4,7 @@ from app.login_module import blueprint
 from app.login_module.controller import (
     signup_controller,
     login_controller,
-    logout_user_controller
+    logout_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
@@ -18,9 +18,4 @@ def login():
 @blueprint.route('/logout', methods=['GET'])
 @login_required
 def logout():
-    return logout_user_controller()
-
-@blueprint.route('/test')
-@login_required
-def test():
-    return 'TEST: ' + str(current_user)
+    return logout_controller()

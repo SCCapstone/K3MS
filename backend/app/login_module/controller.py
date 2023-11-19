@@ -80,7 +80,7 @@ def login_controller(req):
 
 def logout_controller():
     logout_user()
-    return HTTPStatus.OK
+    return dict(mssg='Logged out'), HTTPStatus.OK
 
 
 def validate_request(req, fields):
