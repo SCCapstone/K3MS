@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LOGIN_URL } from '../config';
 import { useAuthContext } from '../hooks/useAuthContext'
+import { Navigate } from "react-router-dom";
 
 function Dashboard() {
   const { user, userDispatch } = useAuthContext()
@@ -9,6 +10,8 @@ function Dashboard() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
+
+  const [clicked, setClicked] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -48,6 +51,7 @@ function Dashboard() {
   };
 
   return (
+    (user && clicked) ? <Navigate to="/dashboard" /> :
     <section className="loginCard">
       <h1>Log In</h1>
       <form className="login" onSubmit={ handleSubmit }>
@@ -66,7 +70,7 @@ function Dashboard() {
             />
           </div>
 
-          <button>Log in</button>
+          <button onClick={ () => setClicked(true) }>Log in</button>
           {error && <div className="error">{ error }</div>}
       </form>
     </section>
