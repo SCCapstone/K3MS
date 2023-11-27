@@ -1,3 +1,11 @@
+:root {
+  --cardtext: #73000a;
+  --bg: #D3D3D3;
+  --hover: #570008;
+  --cardbg: #C7C7C7;
+  --error: #e7195a;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

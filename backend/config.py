@@ -12,5 +12,6 @@ if uri is None:
 
 class Config:
     SQLALCHEMY_DATABASE_URI = uri
+    SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY")
 
     
