@@ -1,11 +1,3 @@
-:root {
-  --cardtext: #73000a;
-  --bg: #D3D3D3;
-  --hover: #570008;
-  --cardbg: #C7C7C7;
-  --error: #e7195a;
-}
-
 .loginPageHeader {
   font-size: 3em;
   width: 100%;

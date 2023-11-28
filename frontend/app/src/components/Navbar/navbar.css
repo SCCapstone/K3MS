@@ -1,0 +1,8 @@
+.navbar {
+    display: inline-block;
+    width: var(--nav-width);
+    background-color: var(--navbg);
+    height: 100%;
+    position: fixed; 
+    margin: 0;
+}
