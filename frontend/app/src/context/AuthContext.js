@@ -1,4 +1,4 @@
-import { useEffect, createContext, useReducer } from 'react'
+import { useEffect, useState, createContext, useReducer } from 'react'
 
 // Context to save and modify user logged in state
 
@@ -27,6 +27,7 @@ export const AuthContextProvider = ({ children }) => {
   const [state, userDispatch] = useReducer(authReducer, { 
     user: null  // initial state is null - not logged in 
   })
+  const [checkedStorage, setCheckedStorage] = useState(false)
 
   // on refresh, check if user is already saved in local storage
   useEffect(() => {
@@ -36,13 +37,15 @@ export const AuthContextProvider = ({ children }) => {
     if (user) {
       userDispatch({ type: 'LOGIN', payload: user }) 
     }
+
+    setCheckedStorage(true)
   }, [])
 
   console.log('AuthContext state:', state)
   
   // provide authContext context to all parts of app
   return (
-    <AuthContext.Provider value={{ ...state, userDispatch }}>
+    <AuthContext.Provider value={{ ...state, userDispatch, checkedStorage }}>
       { children }
     </AuthContext.Provider>
   )
