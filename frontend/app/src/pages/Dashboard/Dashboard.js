@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { DASHBOARD_URL, LOGOUT_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
-import Alert from '../../components/Alert/Alert'
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -53,7 +52,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Alert />
       <h1>Dashboard</h1>
       <p>{text}</p>
       <button onClick={ (e) => logout(e) }>Log out</button>

@@ -22,7 +22,7 @@ const Alert = () => {
 
   return (
     <>
-    { mssg && 
+    { mssg &&
       <div className={ `alert ${status}` }>
         <span className="closebtn" onClick={ onClick }>&times;</span>
         { mssg }
