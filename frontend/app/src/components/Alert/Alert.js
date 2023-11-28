@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import './alert.css';
 
@@ -8,6 +8,13 @@ const Alert = () => {
   const [mssg, setMssg] = useState(location.state?.mssg || '')
   const [status, setStatus] = useState(location.state?.status || '')
 
+  useEffect(() => {
+    window.history.replaceState({}, document.title)
+    setTimeout(() => {
+      setMssg('');
+    }, 3000); // 3000 ms = 3s
+  }, []);
+
   const onClick = () => {
     setMssg('');
     window.history.replaceState({}, document.title)
@@ -16,7 +23,7 @@ const Alert = () => {
   return (
     <>
     { mssg && 
-      <div className={ `alert ${status}`  }>
+      <div className={ `alert ${status}` }>
         <span className="closebtn" onClick={ onClick }>&times;</span>
         { mssg }
       </div>

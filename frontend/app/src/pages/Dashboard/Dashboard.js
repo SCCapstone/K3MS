@@ -26,7 +26,7 @@ const Dashboard = () => {
       })
       const json = await response.json()
       if (response.ok) {
-        setText(json.text)
+        setText(json.user)
       }
       else if (response.status === 401) {
         setText(json.error)
@@ -41,8 +41,6 @@ const Dashboard = () => {
     const response = await fetch(LOGOUT_URL, {
       credentials: 'include'
     })
-
-    console.log(response)
 
     if (response.ok) {
       // update the auth context and remove from local storage
