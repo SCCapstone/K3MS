@@ -6,7 +6,7 @@ module.exports = global.config = {
     DASHBOARD_URL: BASE_URL + "dashboard",
     LOGIN_URL: BASE_URL + "login",
     LOGOUT_URL: BASE_URL + "logout",
-    GRANTS_URL: BASE_URL + "tmp_get_grants",
-    PUBS_URL: BASE_URL + "tmp_get_pubs",
+    GRANTS_URL: BASE_URL + "grants",
+    PUBS_URL: BASE_URL + "publications",
     EXPEN_URL: BASE_URL + "tmp_get_expen"
 }

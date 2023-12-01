@@ -100,7 +100,7 @@ const ResearchInfo = () => {
                     <tr key={ grant.title }>
                       <td>{ grant.title }</td>
                       <td>{ grant.amount }</td>
-                      <td>{ grant.grant_year }</td>
+                      <td>{ grant.year }</td>
                     </tr>
                   )
                 })}

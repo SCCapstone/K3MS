@@ -1,6 +1,6 @@
 from flask_login import login_required, current_user
-from models.grants import Grants
-from models.publications import Publications
+from app.models.grants import Grants
+from app.models.publications import Publications
 from flask import jsonify
 
 # Grants Controller
