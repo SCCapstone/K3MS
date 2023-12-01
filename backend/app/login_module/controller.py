@@ -8,6 +8,7 @@ signup_fields = [
     'email', 
     'first_name', 
     'last_name',
+    'position',
     'password'
 ]
 
@@ -29,7 +30,8 @@ def signup_controller(req):
     email = json_data.get(signup_fields[0])
     first_name = json_data.get(signup_fields[1])
     last_name = json_data.get(signup_fields[2])
-    password = json_data.get(signup_fields[3])
+    position = json_data.get(signup_fields[3])
+    password = json_data.get(signup_fields[4])
 
     # Make sure user with email doesn't already exist
     user = User.query.filter_by(email=email).first()
@@ -42,6 +44,7 @@ def signup_controller(req):
         email=email, 
         first_name=first_name, 
         last_name=last_name,
+        position=position,
         password_hash=generate_password_hash(password, method='scrypt')
     )
 
