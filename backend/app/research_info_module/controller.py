@@ -54,9 +54,9 @@ def publications_controller():
         for publication in publications:
             publication_dict = {
                 'title': publication.title,
-                'first name': publication.first_name,
-                'last name': publication.last_name,
-                'publication year': publication.publication_year,
+                'first_name': publication.first_name,
+                'last_name': publication.last_name,
+                'publication_year': publication.publication_year,
                 'isbn': publication.isbn
             }
             publications_data.append(publication_dict)

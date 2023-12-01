@@ -75,7 +75,7 @@ const ResearchInfo = () => {
     if (!expen) {
       fetchExpen()
     }
-  }, [grants, researchInfoDispatch])
+  }, [grants, expen, pubs, researchInfoDispatch])
 
 
   return (
