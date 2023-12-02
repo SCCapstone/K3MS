@@ -8,6 +8,7 @@ class EvaluationDetails(db.Model):
     email: str = db.Column(db.String(100), nullable=False, primary_key=True)
     year: str = db.Column(db.String(100), nullable=False, primary_key=True)
     semester: str = db.Column(db.String(100), nullable=False, primary_key=True)
+    course: str = db.Column(db.String(100), nullable=False, primary_key=True)
     question_id: int = db.Column(db.Integer, nullable=False, primary_key=True)
 
     # Stats for each question
