@@ -14,7 +14,7 @@ const Dashboard = () => {
     if (!user) {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
     }
-  }, [user]);
+  }, [user, navigate]);
 
   useEffect(() => {
     // Test login DASHBOARD_URL

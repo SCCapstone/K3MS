@@ -2,9 +2,10 @@ import MainLayout from './components/MainLayout/MainLayout';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import StudentEvaluations from './pages/StudentEvaluations/StudentEvaluations';
+import ResearchInfo from './pages/ResearchInfo/ResearchInfo';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
-
+import './pages/main_pages.css'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/login" element={ <Login /> } />
         <Route path="/dashboard" element={ getMainLayoutPage(<Dashboard />) } />
         <Route path="/student-evaluations" element={ getMainLayoutPage(<StudentEvaluations />) } />
+        <Route path="/research-info" element={ getMainLayoutPage(<ResearchInfo />) } />
         <Route path="*" element={ defaultPage } />
       </Routes>
     </BrowserRouter>

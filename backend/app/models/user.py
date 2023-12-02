@@ -9,6 +9,7 @@ class User(db.Model, UserMixin):
     email: str = db.Column(db.String(64), nullable=False, primary_key=True) # todo verify email
     first_name: str = db.Column(db.String(64), nullable=False)
     last_name: str = db.Column(db.String(64), nullable=False)
+    position: str = db.Column(db.String(64), nullable=False)    # ie. chair, professor, instructor
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
     password_hash = db.Column(db.String(2000))
     
