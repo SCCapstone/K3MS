@@ -1,8 +1,8 @@
-"""new primary key for evaluations_details
+"""new primary key for evaluations and evaluation_details
 
-Revision ID: 07b07733c241
+Revision ID: 533145b1977c
 Revises: 9240bd814696
-Create Date: 2023-12-02 15:18:38.335283
+Create Date: 2023-12-02 15:25:19.245309
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '07b07733c241'
+revision = '533145b1977c'
 down_revision = '9240bd814696'
 branch_labels = None
 depends_on = None
