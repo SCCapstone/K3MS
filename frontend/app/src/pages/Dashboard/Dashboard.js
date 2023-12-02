@@ -52,7 +52,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1 className='pageHeader'>Dashboard</h1>
       <p>{text}</p>
       <button onClick={ (e) => logout(e) }>Log out</button>
     </div>
