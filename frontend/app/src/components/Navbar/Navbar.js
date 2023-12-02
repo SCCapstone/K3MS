@@ -30,6 +30,7 @@ const Navbar = () => {
       <p>{ user ? user.email : '' }</p>
       <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
       <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
+      <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
       <button onClick={ (e) => logout(e) }>Log out</button>
     </div>
   )

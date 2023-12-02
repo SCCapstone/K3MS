@@ -81,9 +81,9 @@ const ResearchInfo = () => {
   return (
     <div className="researchInfo">
       <h1 className='pageHeader'>Research Info</h1>
-      <div className="card">
+      <div className="researchInfoCard">
         <h1>Grants</h1>
-        <div className="cardContent">
+        <div className="researchInfoCardContent">
           <div className="researchInfoTable">
             { grants ?
               <table>
@@ -112,9 +112,9 @@ const ResearchInfo = () => {
         </div>
       </div>
 
-      <div className="card">
+      <div className="researchInfoCard">
         <h1>Publications</h1>
-        <div className="cardContent">
+        <div className="researchInfoCardContent">
           <div className="researchInfoTable">
             { pubs ?
               <table>
@@ -143,9 +143,9 @@ const ResearchInfo = () => {
         </div>
       </div>
 
-      <div className="card">
+      <div className="researchInfoCard">
         <h1>Expenditures</h1>
-        <div className="cardContent">
+        <div className="researchInfoCardContent">
           <div className="researchInfoTable">
             { expen ?
               <table>
