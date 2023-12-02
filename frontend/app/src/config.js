@@ -8,5 +8,6 @@ module.exports = global.config = {
     LOGOUT_URL: BASE_URL + "logout",
     GRANTS_URL: BASE_URL + "grants",
     PUBS_URL: BASE_URL + "publications",
-    EXPEN_URL: BASE_URL + "tmp_get_expen"
+    EXPEN_URL: BASE_URL + "tmp_get_expen",
+    STUDENT_EVALS_URL: BASE_URL + "student_evals",
 }

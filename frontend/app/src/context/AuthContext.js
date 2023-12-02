@@ -41,8 +41,6 @@ export const AuthContextProvider = ({ children }) => {
     setCheckedStorage(true)
   }, [])
 
-  console.log('AuthContext state:', state)
-  
   // provide authContext context to all parts of app
   return (
     <AuthContext.Provider value={{ ...state, userDispatch, checkedStorage }}>

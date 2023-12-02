@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={ defaultPage } />
         <Route path="/login" element={ <Login /> } />
         <Route path="/dashboard" element={ getMainLayoutPage(<Dashboard />) } />
-        <Route path="/student-evaluations" element={ getMainLayoutPage(<StudentEvaluations />) } />
+        <Route path="/student-evals" element={ getMainLayoutPage(<StudentEvaluations />) } />
         <Route path="/research-info" element={ getMainLayoutPage(<ResearchInfo />) } />
         <Route path="*" element={ defaultPage } />
       </Routes>
