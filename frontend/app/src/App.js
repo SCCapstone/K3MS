@@ -3,6 +3,7 @@ import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import StudentEvaluations from './pages/StudentEvaluations/StudentEvaluations';
 import ResearchInfo from './pages/ResearchInfo/ResearchInfo';
+import GrantUpload from './pages/GrantUpload/GrantUpload';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import './pages/main_pages.css'
@@ -36,6 +37,7 @@ function App() {
         <Route path="/dashboard" element={ getMainLayoutPage(<Dashboard />) } />
         <Route path="/student-evals" element={ getMainLayoutPage(<StudentEvaluations />) } />
         <Route path="/research-info" element={ getMainLayoutPage(<ResearchInfo />) } />
+        <Route path="/grantupload" element={ getMainLayoutPage(<GrantUpload />) } />
         <Route path="*" element={ defaultPage } />
       </Routes>
     </BrowserRouter>
