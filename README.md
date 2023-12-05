@@ -13,6 +13,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - must have node.js installed on the system. This project was built in node version `10.1.x`
 - if on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
+    - run `sudo apt-get install -y pkg-config ` to install pkg-config package
 - if on Mac
     - install through homebrew: `brew install mysql`
 
