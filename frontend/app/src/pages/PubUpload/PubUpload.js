@@ -32,22 +32,22 @@ function PubUpload() {
     try {
       const response = await fetch(PUB_UPLOAD_URL, {
         method: 'POST',
-        body: formData,
+        credentials: 'include',
+        body: formData
       });
 
       if(!response.ok) {
-        throw new Error('HTTP error! Status: ${response.status}');
+        const json_data = await response.json()
+        console.log(json_data.error)
+        throw new Error(`HTTP error! Status: ${response.status}`)
       }
 
-      const responseData = await response.json();
-      console.log(responseData);
+      const responseData = await response.json()
+      navigate('/research-info', { state: { mssg: 'Publication Uploaded', status: 'ok' }})
 
     } catch (error) {
       console.error('Fetch error: ', error.message);
     }
-
-    navigate('/research-info', { state: { mssg: 'Publication Uploaded', status: 'ok' }})
-
   }
 
   return (

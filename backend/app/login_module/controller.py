@@ -39,7 +39,6 @@ def signup_controller(req):
         return dict(error='User already exists'), HTTPStatus.BAD_REQUEST
     
     # Create new user - hash password
-    print("LENGTH:", len(generate_password_hash(password, method='scrypt')))
     new_user = User(
         email=email, 
         first_name=first_name, 

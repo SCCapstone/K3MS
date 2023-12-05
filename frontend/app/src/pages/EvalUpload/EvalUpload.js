@@ -8,6 +8,8 @@ import './evalupload.css';
 function EvalUpload() {
 
   const { user, userDispatch } = useAuthContext()
+  
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!user) {
@@ -15,8 +17,6 @@ function EvalUpload() {
     }
   }, [user, navigate]);
 
-  const navigate = useNavigate()
-  
   const [file, setFile] = useState()
 
   function handleChange(event) {
@@ -33,6 +33,7 @@ function EvalUpload() {
     try {
       const response = await fetch(EVAL_UPLOAD_URL, {
         method: 'POST',
+        credentials: 'include',
         body: formData,
       });
 
@@ -41,14 +42,11 @@ function EvalUpload() {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
+      navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
 
     } catch (error) {
       console.error('Fetch error: ', error.message);
     }
-
-    navigate('/research-info', { state: { mssg: 'Evallication Uploaded', status: 'ok' }})
-
   }
 
   return (
