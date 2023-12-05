@@ -1,0 +1,67 @@
+/* evalupload.css */
+
+.evalupload-container {
+  text-align: center;
+}
+
+.evaluploadPageHeader {
+  font-size: 3em;
+  padding: 10px;
+  padding-top: 50px;
+  margin: 0;
+  color: var(--cardtext);
+}
+
+.EvalUpload {
+  margin: 100px auto;
+  padding: 20px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 60%;
+  max-width: 600px;
+}
+
+.evalupload-form {
+  margin: 20px 0;
+}
+
+.evalupload-form-heading {
+  text-align: center;
+  padding: 10px;
+  font-size: 2em;
+}
+
+.evalupload-form-input {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid var(--cardtext);
+  background: transparent;
+  margin-bottom: 20px;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+}
+
+.evalupload-form-button {
+  width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+
+.evalupload-form-button:hover {
+  background-color: var(--hover);
+}
