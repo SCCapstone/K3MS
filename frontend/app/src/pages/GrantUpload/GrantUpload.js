@@ -10,8 +10,12 @@ const GrantUpload = () => {
 
   const { user, userDispatch } = useAuthContext()
 
-//   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    }
+  }, [user, navigate]);
+
   const [error, setError] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
 
@@ -21,19 +25,9 @@ const GrantUpload = () => {
   const [year, setYear] = useState('')
 
 
-//   useEffect(() => {
-//     if (user) {
-//       navigate('/dashboard', { state: { mssg: 'Already Logged In', status: 'error'}})
-//     }
-//   },[user]);
-
   const grantupload = async (e) => {
-
-    // const navigate = useNavigate()
-    // const { user } = useAuthContext()
     e.preventDefault()
 
-    // GrantUpload at GRANT_UPLOAD_URL to get auth cookie from backend
     const response = await fetch(GRANT_UPLOAD_URL, {
       method: 'POST',
       credentials: 'include',
@@ -56,19 +50,13 @@ const GrantUpload = () => {
     if (response.ok) {
       setError(null)
       setEmptyFields([])
-    //   setEmail('')
-    //   setPassword('')
       setEmail('')
       setTitle('')
       setAmount('')
-      setAmount('')
-
-      // update the auth context and set local storage
-    //   userDispatch({type: 'LOGIN', payload: json[0]})
+      setYear('')
 
       // Navigate to grants page
       navigate('/research-info', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
-    //   navigate('/dashboard', { state: { mssg: 'Logged In', status: 'ok' }})
     }
   };
 

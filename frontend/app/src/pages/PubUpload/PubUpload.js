@@ -8,6 +8,14 @@ import './pubupload.css';
 function PubUpload() {
   const navigate = useNavigate()
   
+  const { user, userDispatch } = useAuthContext()
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    }
+  }, [user, navigate]);
+
   const [file, setFile] = useState()
 
   function handleChange(event) {

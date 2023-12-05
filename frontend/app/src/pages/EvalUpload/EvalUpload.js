@@ -6,6 +6,15 @@ import Alert from '../../components/Alert/Alert'
 import './evalupload.css';
 
 function EvalUpload() {
+
+  const { user, userDispatch } = useAuthContext()
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    }
+  }, [user, navigate]);
+
   const navigate = useNavigate()
   
   const [file, setFile] = useState()

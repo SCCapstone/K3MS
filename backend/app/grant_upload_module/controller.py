@@ -2,20 +2,6 @@ from http import HTTPStatus
 from app.models import Grants
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
-from flask_login import login_user, logout_user
-
-# signup_fields = [
-#     'email', 
-#     'first_name', 
-#     'last_name',
-#     'position',
-#     'password'
-# ]
-
-# login_fields = [    
-#     'email',
-#     'password'
-# ]
 
 form_fields = [  
     'email',  
@@ -31,12 +17,7 @@ def grant_upload_controller(req):
     if isinstance(ret, tuple):
         return ret
     
-    # json_data = req.get_json()
     json_data = ret
-
-    # Get fields
-    # email = json_data.get(login_fields[0])
-    # password = json_data.get(login_fields[1])
 
     # Get Grant fields
     email = json_data.get(form_fields[0])
@@ -46,16 +27,12 @@ def grant_upload_controller(req):
 
     print(email, title, amount, year)
     grant = f'{email} : {title} {amount} >> $ {year}'
-    # return dict(mssg=grant), HTTPStatus.OK
 
-    # 
     # Make sure grant with title doesn't already exist
     grant = Grants.query.filter_by(title=title).first()
     if grant:
         return dict(error='Grant already exists'), HTTPStatus.BAD_REQUEST
-    
-    # Create new user - hash password
-    # print("LENGTH:", len(generate_password_hash(password, method='scrypt')))
+
     new_grant = Grants(
         email=email, 
         title=title, 
@@ -69,12 +46,7 @@ def grant_upload_controller(req):
 
     return [new_grant], HTTPStatus.CREATED
 
-    return dict(mssg=grant), HTTPStatus.OK
-
-
-
-
-
+    # return dict(mssg=grant), HTTPStatus.OK
 
 
 def validate_request(req, fields):
@@ -102,42 +74,3 @@ def validate_request(req, fields):
         ), HTTPStatus.BAD_REQUEST
 
     return json_data
-
-
-
-#-------------------------------------------------------------------------------
-# For Spring semester: base off this sign up to add info to database:
-# def signup_controller(req):
-#     # Validate request
-#     # ret = validate_request(req, signup_fields)
-    
-#     # if isinstance(ret, tuple):
-#     #     return ret
-
-#     json_data = ret
-
-#     # Get fields
-#     email = json_data.get(form_fields[0])
-#     title = json_data.get(form_fields[1])
-#     amount = json_data.get(form_fields[2])
-#     year = json_data.get(form_fields[3])
-
-#     # Make sure user with email doesn't already exist
-#     grant = Grants.query.filter_by(email=email).first()
-#     if grant:
-#         return dict(error='Grant already exists'), HTTPStatus.BAD_REQUEST
-    
-#     # Create new user - hash password
-#     # print("LENGTH:", len(generate_password_hash(password, method='scrypt')))
-#     new_grant = Grants(
-#         email=email, 
-#         title=title, 
-#         year=year,
-#         amount=amount
-#     )
-
-#     # Add user to database
-#     db.session.add(new_grant)
-#     db.session.commit()
-
-#     return [new_grant], HTTPStatus.CREATED
