@@ -94,11 +94,11 @@ const GrantUpload = () => {
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
             <input 
-              type="text" 
+              type="number" 
               onChange={(e) => setAmount(e.target.value)} 
               value={ amount } 
               placeholder="Amount"
-              className={ emptyFields.includes('text') ? 'errorField' : '' }
+              className={ emptyFields.includes('number') ? 'errorField' : '' }
             />
             <input 
               type="text" 

@@ -11,4 +11,6 @@ module.exports = global.config = {
     EXPEN_URL: BASE_URL + "tmp_get_expen",
     STUDENT_EVALS_URL: BASE_URL + "student_evals",
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
+    PUB_UPLOAD_URL: BASE_URL + "pubupload",
+    EVAL_UPLOAD_URL: BASE_URL + "evalupload",
 }
