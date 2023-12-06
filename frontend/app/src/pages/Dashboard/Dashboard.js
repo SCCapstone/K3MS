@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DASHBOARD_URL, LOGOUT_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
-import './dashboard.css';
+// import './dashboard.css';
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -56,12 +56,6 @@ const Dashboard = () => {
       <h1 className='pageHeader'>Dashboard</h1>
 
       <p>{text}</p>
-      {/* <button onClick={ (e) => logout(e) }>Log out</button> */}
-      {/* <p id="test">BANANA</p> */}
-    
-      {/* <img id="image1" src="pages/Dashboard/test.jpg" alt="My Image"></img>     */}
-    
-    
     </div>
   );
 }
