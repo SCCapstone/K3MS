@@ -6,7 +6,7 @@ const Alert = () => {
   const location = useLocation();
 
   const [mssg, setMssg] = useState(location.state?.mssg || '')
-  const [status, setStatus] = useState(location.state?.status || '')
+  const [status] = useState(location.state?.status || '')
 
   useEffect(() => {
     window.history.replaceState({}, document.title)

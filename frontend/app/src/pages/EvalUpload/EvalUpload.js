@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { EVAL_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
-import Alert from '../../components/Alert/Alert'
 import './evalupload.css';
 
 function EvalUpload() {
 
-  const { user, userDispatch } = useAuthContext()
+  const { user } = useAuthContext()
   
   const navigate = useNavigate()
 
@@ -38,7 +37,7 @@ function EvalUpload() {
       });
 
       if(!response.ok) {
-        throw new Error('HTTP error! Status: ${response.status}');
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const responseData = await response.json();
