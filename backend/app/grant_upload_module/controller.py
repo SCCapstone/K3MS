@@ -2,9 +2,9 @@ from http import HTTPStatus
 from app.models import Grants
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
+from flask_login import current_user
 
 form_fields = [  
-    'email',  
     'title',
     'amount',
     'year'
@@ -20,21 +20,17 @@ def grant_upload_controller(req):
     json_data = ret
 
     # Get Grant fields
-    email = json_data.get(form_fields[0])
-    title = json_data.get(form_fields[1])
-    amount = json_data.get(form_fields[2])
-    year = json_data.get(form_fields[3])
+    title = json_data.get(form_fields[0])
+    amount = json_data.get(form_fields[1])
+    year = json_data.get(form_fields[2])
 
-    print(email, title, amount, year)
-    grant = f'{email} : {title} {amount} >> $ {year}'
-
-    # Make sure grant with title doesn't already exist
-    grant = Grants.query.filter_by(title=title).first()
+    # Make sure grant with title doesn't already exist for this user
+    grant = Grants.query.filter_by(email=current_user.email, title=title).first()
     if grant:
         return dict(error='Grant already exists'), HTTPStatus.BAD_REQUEST
 
     new_grant = Grants(
-        email=email, 
+        email=current_user.email, 
         title=title, 
         year=year,
         amount=amount
@@ -45,9 +41,6 @@ def grant_upload_controller(req):
     db.session.commit()
 
     return [new_grant], HTTPStatus.CREATED
-
-    # return dict(mssg=grant), HTTPStatus.OK
-
 
 def validate_request(req, fields):
     # Make sure request is JSON
