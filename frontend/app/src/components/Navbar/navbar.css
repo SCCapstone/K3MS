@@ -6,3 +6,41 @@
     position: fixed; 
     margin: 0;
 }
+
+.navbar button {
+    width: 80%;
+    background-color: var(--cardtext);
+    border: none;
+    display: block;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    padding: 8px 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 5%;
+    margin: 10px auto;
+    /* margin-right: 20px; */
+  }
+
+  .navbar #title {
+    width: 80%;
+    border: none;
+    display: block;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    padding: 8px 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 5%;
+    margin: 10px auto;
+
+  }
+  .navbar #user {
+    font-weight: bold;
+    color: black;
+    
+  }

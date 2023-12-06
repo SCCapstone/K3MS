@@ -26,8 +26,8 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <p>Navbar</p>
-      <p>{ user ? user.email : '' }</p>
+      <p id="title">Navbar</p>
+      <p id="user">{ user ? user.email : '' }</p>
       <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
       <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
       <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
