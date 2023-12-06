@@ -2,7 +2,8 @@ from http import HTTPStatus
 from app.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
+from flask import jsonify
 
 signup_fields = [
     'email', 
@@ -83,6 +84,15 @@ def login_controller(req):
 def logout_controller():
     logout_user()
     return dict(mssg='Logged out'), HTTPStatus.OK
+
+def check_auth_controller():
+    return [dict(
+        email=current_user.email, 
+        first_name=current_user.first_name,
+        last_name=current_user.last_name,
+        position=current_user.position,
+        date_added=current_user.date_added
+    )], HTTPStatus.OK
 
 
 def validate_request(req, fields):
