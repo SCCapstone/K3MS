@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from app.models import User
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from app.extensions import db
 from flask import request
 import os
@@ -23,10 +23,10 @@ def eval_upload_controller(request):
         folder_name = 'evaluploads'
 
         # Construct the full path to the specific folder in the same directory
-        save_path = os.path.join(os.getcwd(), folder_name, file.filename)
+        save_path = os.path.join(os.getcwd(), folder_name, secure_filename(file.filename))
 
         # Save the file to the specified folder (in this director FOR TESTING)
-        file.save(save_path)
+        # file.save(save_path) # no need to actually save file and make a mess of the cwd
 
         return dict(mssg='Eval File uploaded successfully'), HTTPStatus.OK
 

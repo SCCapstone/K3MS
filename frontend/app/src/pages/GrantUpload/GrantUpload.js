@@ -19,7 +19,6 @@ const GrantUpload = () => {
   const [error, setError] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
 
-  const [email, setEmail] = useState('')
   const [title, setTitle] = useState('')
   const [amount, setAmount] = useState('')
   const [year, setYear] = useState('')
@@ -33,7 +32,6 @@ const GrantUpload = () => {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        email: email,
         title: title,
         amount: amount,
         year: year
@@ -50,7 +48,6 @@ const GrantUpload = () => {
     if (response.ok) {
       setError(null)
       setEmptyFields([])
-      setEmail('')
       setTitle('')
       setAmount('')
       setYear('')
@@ -67,13 +64,6 @@ const GrantUpload = () => {
       <section className="grantuploadCard">
         <h1>Grant Information</h1>
         <form className="grantupload" onSubmit={ grantupload }>
-            <input 
-              type="text" 
-              onChange={(e) => setEmail(e.target.value)} 
-              value={ email } 
-              placeholder="Email"
-              className={ emptyFields.includes('text') ? 'errorField' : '' }
-            />
             <input 
               type="text" 
               onChange={(e) => setTitle(e.target.value)} 
