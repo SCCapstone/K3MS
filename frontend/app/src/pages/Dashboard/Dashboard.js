@@ -54,11 +54,12 @@ const Dashboard = () => {
   return (
     <div>
       <h1 className='pageHeader'>Dashboard</h1>
+
       <p>{text}</p>
-      <button onClick={ (e) => logout(e) }>Log out</button>
-      <p id="test">BANANA</p>
+      {/* <button onClick={ (e) => logout(e) }>Log out</button> */}
+      {/* <p id="test">BANANA</p> */}
     
-      <img id="First Image" src="pages/Dashboard/test.jpg" alt="My Image"></img>    
+      {/* <img id="image1" src="pages/Dashboard/test.jpg" alt="My Image"></img>     */}
     
     
     </div>

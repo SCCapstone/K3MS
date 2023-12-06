@@ -14,33 +14,74 @@
     display: block;
     cursor: pointer;
     color: white;
+    padding: 8px 18px;
     font-size: 16px;
     font-weight: 900;
-    padding: 8px 18px;
     text-decoration: none;
+    text-align: center;
     text-transform: uppercase;
-    border-radius: 5%;
+    border-radius: 6px;
     margin: 10px auto;
-    /* margin-right: 20px; */
+    /* margin-right: 20px; 
+    */
   }
+
+  .navbar button:hover{
+    background-color: #b00000;  /* #800000;*/
+    color: white;
+}
+
+  .navbar logoutbutton {
+    width: 68%;
+    background-color: var(--cardtext);
+    border: none;
+    display: block;
+    cursor: pointer;
+    color: white;
+    padding: 8px 18px;
+    font-size: 16px;
+    font-weight: 900;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 6px;
+    margin: 10px auto;
+    position:absolute;
+    bottom: 0%;
+    left: 10%;
+  }
+
+.navbar logoutbutton:hover{
+    background-color: #b00000;  /* #800000;*/
+    color: white;
+}
 
   .navbar #title {
     width: 80%;
     border: none;
     display: block;
     cursor: pointer;
-    color: white;
-    font-size: 16px;
+    color: #800000;
+    font-size: 32px;
     font-weight: 900;
     padding: 8px 18px;
+    text-align: center;
     text-decoration: none;
     text-transform: uppercase;
     border-radius: 5%;
     margin: 10px auto;
+    position: relative;
+    top: 2%;
 
   }
   .navbar #user {
     font-weight: bold;
     color: black;
+    text-align: center;
     
+  }
+
+  li a:hover {
+    background-color: #555;
+    color: white;
   }

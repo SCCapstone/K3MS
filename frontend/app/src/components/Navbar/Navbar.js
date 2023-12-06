@@ -26,7 +26,9 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <p id="title">Navbar</p>
+      <img id="sclogo" src="https://sc.edu/about/offices_and_divisions/communications/images/toolbox/logos/grid-usc-logo-horizontal.svg" alt="SC Logo"></img>
+      {/* <p id="title">Navbar</p> */}
+      <hr></hr>
       <p id="user">{ user ? user.email : '' }</p>
       <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
       <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
@@ -34,7 +36,7 @@ const Navbar = () => {
       <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
       <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
       <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
-      <button onClick={ (e) => logout(e) }>Log out</button>
+      <logoutbutton onClick={ (e) => logout(e) }>Log out</logoutbutton>
     </div>
   )
 }
