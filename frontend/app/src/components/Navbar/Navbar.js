@@ -2,6 +2,7 @@ import './navbar.css';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { LOGOUT_URL } from '../../config';
 import { useNavigate } from "react-router-dom";
+import USCLogo from '../../assets/navbar-usc-logo.svg';
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -26,12 +27,11 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
-      <img id="sclogo" src="https://sc.edu/about/offices_and_divisions/communications/images/toolbox/logos/grid-usc-logo-horizontal.svg" alt="SC Logo"></img>
-      {/* <p id="title">Navbar</p> */}
+      <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
       <hr></hr>
       <p id="user">{ user ? user.email : '' }</p>
-      <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
       <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
+      <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
       <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
       <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
       <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
