@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DASHBOARD_URL, LOGOUT_URL } from '../../config';
+import { DASHBOARD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 // import './dashboard.css';
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const navigate = useNavigate()
 
-  const { user, userDispatch } = useAuthContext()
+  const { user } = useAuthContext()
 
   const [text, setText] = useState('');
 
@@ -34,22 +34,6 @@ const Dashboard = () => {
     }
     fetchHome()
   }, [user]);
-
-  const logout = async (e) => {
-    e.preventDefault()
-
-    const response = await fetch(LOGOUT_URL, {
-      credentials: 'include'
-    })
-
-    if (response.ok) {
-      // update the auth context and remove from local storage
-      userDispatch({type: 'LOGOUT'})
-
-      // Navigate to login
-      navigate('/login', { state: { mssg: 'Logged Out', status: 'ok' }})
-    }
-  }
 
   return (
     <div>

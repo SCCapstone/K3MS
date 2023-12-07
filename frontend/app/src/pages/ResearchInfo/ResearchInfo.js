@@ -19,7 +19,6 @@ const ResearchInfo = () => {
 
   // Fetch grants
   useEffect(() => {
-    console.log('fetching')
     const fetchGrants = async () => {
       const response = await fetch(GRANTS_URL, {
         method: 'GET',

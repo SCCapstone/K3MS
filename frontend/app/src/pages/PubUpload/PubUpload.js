@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { PUB_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
-import Alert from '../../components/Alert/Alert'
 import './pubupload.css';
 
 function PubUpload() {
   const navigate = useNavigate()
   
-  const { user, userDispatch } = useAuthContext()
+  const { user } = useAuthContext()
 
   useEffect(() => {
     if (!user) {
