@@ -12,5 +12,7 @@ if uri is None:
 
 class Config:
     SQLALCHEMY_DATABASE_URI = uri
-
-    
+    SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY")
+    # SESSION_COOKIE_SECURE=True,
+    # SESSION_COOKIE_SAMESITE = 'Strict'    # This is needed for cross-site cookies
+    # SESSION_COOKIE_HTTPONLY = True

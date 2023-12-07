@@ -1,0 +1,33 @@
+.researchInfoCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.researchInfoCard h1 {
+  color: black;
+  text-align: left;
+  padding: 10px 40px;
+  font-size: 2em;
+}
+
+.researchInfoCardContent {
+  padding: 20px 50px;
+  font-size: 1.5em;
+}
+
+
+.researchInfoTable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.researchInfoTable th, .researchInfoTable td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
