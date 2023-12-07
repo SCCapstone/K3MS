@@ -1,0 +1,32 @@
+
+/* display currentCourses in a 2 column grid */
+.courses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0px;
+  padding: 20px;
+}
+
+.studentEvalsCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.studentEvalsCard h1 {
+  color: black;
+  text-align: left;
+  padding: 10px 40px;
+  font-size: 1.5em;
+}
+
+.studentEvalsCardContent {
+  padding: 20px 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
