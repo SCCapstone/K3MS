@@ -4,7 +4,6 @@ from app.models.publications import Publications
 from flask import jsonify
 
 # Grants Controller
-@login_required
 def grants_controller():
     # Get Current User's Email
     email = current_user.email
@@ -35,7 +34,6 @@ def grants_controller():
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Publications Controller
-@login_required
 def publications_controller():
     # Get Current User's Email
     email = current_user.email
