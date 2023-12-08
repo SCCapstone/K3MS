@@ -10,7 +10,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## Requirements
 - must have python3 installed. This project was built in python version `3.11.x`
-- must have node.js installed on the system. This project was built in node version `10.1.x`
+- must have node.js installed on the system. This project was built in node version `20.10.x`
 - if on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
     - run `sudo apt-get install -y pkg-config ` to install pkg-config package
@@ -18,7 +18,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     - install through homebrew: `brew install mysql`
 
 ## Setup
-- Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/workout-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
+- Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/k3ms-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
 - Alternatively (for development) do not create this file. This will prompt the app to create a temporary sqlite database file called `app.db`
 
 - Before running this app for the first time, initialize the database tables. Run the following commands
