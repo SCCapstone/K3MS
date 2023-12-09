@@ -1,5 +1,5 @@
 
-const BASE_URL=`http://${process.env.REACT_APP_IP}/dashboard-api/`
+const BASE_URL=`${process.env.REACT_APP_BASE_URL}/`
 
 module.exports = global.config = {
     HOME_URL: BASE_URL,
