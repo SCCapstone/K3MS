@@ -10,7 +10,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## Requirements
 - must have python3 installed. This project was built in python version `3.11.x`
-- must have node.js installed on the system. This project was built in node version `20.10.x`
+- must have node.js installed on the system. This project was built in node version `20.10.x` (npm version `10.2.x`)
 - if on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
     - run `sudo apt-get install -y pkg-config ` to install pkg-config package
@@ -46,3 +46,9 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## TODO:
 - Installation & setup process will be taken care of in a docker file.
+
+
+# Testing
+- Unit and Behavorial tests are implemented with Cypress
+- Behavorial tests are in the `tests/behavioral_tests` directory
+- Unit tests are in the `tests/unit_tests` directory
