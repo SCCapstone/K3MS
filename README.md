@@ -18,15 +18,25 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     - install through homebrew: `brew install mysql`
 
 ## Setup
-- Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/k3ms-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
-- Alternatively (for development) do not create this file. This will prompt the app to create a temporary sqlite database file called `app.db`
+- Create the file `backend/.env` and add the following:
+    - `DATABASE_URI='mysql://username:password@hostname/k3ms-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
+        - Alternatively (for development) do not add this. This will prompt the app to create a temporary sqlite database file called `app.db`
+    - `SESSION_SECRET_KEY=<Some Secret Key>`
+        - If you do not have one, you can generate a secret key with: `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- Create the file `frontend/app/.env` and add `REACT_APP_BASE_URL=<URL of backend server>` (eg. http://localhost:8000 if running locally)
 
-- Before running this app for the first time, initialize the database tables. Run the following commands
+- Before running this app for the first time, run the following commands to set up the environments:
     ```
     cd backend
     python3 -m venv env
     source env/bin/activate
     pip3 install -r requirements.txt
+
+    cd frontend/app
+    npm install
+    ```
+- If running a local database (rather than connected to the online shared database), run the following commands to initialize it:
+    ```
     env/bin/flask shell
     >>> db.create_all()
     >>> exit()
