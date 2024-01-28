@@ -19,6 +19,10 @@ login_fields = [
 ]
 
 def signup_controller(req):
+    # if user is not a chair, they cant create new users
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to create new users'), HTTPStatus.UNAUTHORIZED
+
     # Validate request
     ret = validate_request(req, signup_fields)
     
@@ -141,7 +145,7 @@ def validate_request(req, fields):
     for field in fields:
         if not json_data.get(field):
             empty_fields.append(field)
-    
+
     # If any fields are missing, return error
     if len(empty_fields) > 0:
         return dict(

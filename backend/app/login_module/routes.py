@@ -10,6 +10,7 @@ from app.login_module.controller import (
 )
 
 @blueprint.route('/signup', methods=['POST'])
+@login_required
 def signup():
     return signup_controller(request)
 

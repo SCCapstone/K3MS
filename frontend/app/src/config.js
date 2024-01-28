@@ -14,4 +14,6 @@ module.exports = global.config = {
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
+    USER_CREATION_URL: BASE_URL + "signup",
+    USER_DELETION_URL: BASE_URL + "delete_user",
 }

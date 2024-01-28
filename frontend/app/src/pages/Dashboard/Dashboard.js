@@ -38,7 +38,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Alert />
       <h1 className='pageHeader'>Dashboard</h1>
 
       <p>{text}</p>
