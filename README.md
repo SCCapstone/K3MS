@@ -33,7 +33,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     pip3 install -r requirements.txt
 
     cd frontend/app
-    npm install
+    npm ci
     ```
 - If running a local database (rather than connected to the online shared database), run the following commands to initialize it:
     ```
