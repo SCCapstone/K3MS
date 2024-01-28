@@ -5,7 +5,8 @@ from app.login_module.controller import (
     signup_controller,
     login_controller,
     logout_controller,
-    check_auth_controller
+    check_auth_controller,
+    delete_user_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
@@ -20,6 +21,11 @@ def login():
 @login_required
 def logout():
     return logout_controller()
+
+@blueprint.route('/delete_user', methods=['DELETE'])
+@login_required
+def delete_user():
+    return delete_user_controller(request)
 
 
 @blueprint.route('/check_auth', methods=['GET'])

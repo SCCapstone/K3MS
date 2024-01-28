@@ -94,6 +94,36 @@ def check_auth_controller():
         date_added=current_user.date_added
     )], HTTPStatus.OK
 
+def delete_user_controller(req):
+    # Make sure current user is a chair
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to delete users'), HTTPStatus.UNAUTHORIZED
+
+    # Get email from request
+    ret = validate_request(req, ['email'])
+    if isinstance(ret, tuple):
+        return ret
+    json_data = ret
+    email = json_data.get('email')
+
+    # Make sure user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+    
+    # Make sure user is not a chair
+    if user.position == 'chair':
+        return dict(error='You do not have authority to delete this user'), HTTPStatus.BAD_REQUEST
+    
+    # Delete user
+    try:
+        db.session.delete(user)
+        db.session.commit()
+    except:
+        return dict(error='Error deleting user'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return dict(mssg='User deleted'), HTTPStatus.OK
+
 
 def validate_request(req, fields):
     # Make sure request is JSON

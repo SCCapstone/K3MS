@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DASHBOARD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
+import Alert from '../../components/Alert/Alert';
 // import './dashboard.css';
 
 const Dashboard = () => {
@@ -37,6 +38,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <Alert />
       <h1 className='pageHeader'>Dashboard</h1>
 
       <p>{text}</p>
