@@ -1,0 +1,77 @@
+.userCreationPageHeader {
+  font-size: 3em;
+  width: 100%;
+  padding: 10px;
+  padding-top: 50px;
+  margin: 0px 0px 10px 0px;
+  text-align: center;
+  color: var(--cardtext);
+}
+
+.userCreationCard {
+  margin: 100px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 40%;
+}
+
+.userCreationCard h1 {
+  text-align: center;
+  padding: 10px;
+  font-size: 2em;
+}
+
+.userCreationCard form {
+  margin: 20px;
+}
+
+.userCreationCard input {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: none;
+  border-bottom: 1px solid var(--cardtext);
+  background: transparent;
+  margin-bottom: 20px;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext)
+}
+
+.userCreationCard button {
+  width: 30%;
+  background-color: var(--cardtext);
+  border: none;
+  display: block;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 8px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px auto;
+  /* margin-right: 20px; */
+}
+
+.userCreationCard button:hover {
+  /* background:linear-gradient(to bottom, #34CACA 5%, #30C9C9 100%); */
+  background-color: var(--hover);
+}
+
+.userCreationCard .errorField {
+  border-color: var(--error);
+  margin-top: 10px;
+}
+.userCreationCard .errorField::placeholder {
+  color: var(--error);
+}
+
+.errorField {
+  color: var(--error);
+}
