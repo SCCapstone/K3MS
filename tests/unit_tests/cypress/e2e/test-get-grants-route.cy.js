@@ -1,54 +1,47 @@
+import _ from 'lodash'
+
 describe('Grants Route Test', () => {
   it('If Logged Out Return No Grants', () => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In') // is not logged in
     cy.request({
-      url: Cypress.env('grantsUrl'),
+      url: Cypress.env('baseUrl') + '/grants',
       followRedirect: false,
       failOnStatusCode: false,
     }).then((response) => {
       expect(response.status).to.equal(401)
     })
-
   })
 
-  it('If Logged In Only Return Grants Belonging To User', () => {
+  it('If Logged In Return the Expected Grants for User and Only Those', () => {
     // Log in
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('section', 'Log In').find('input').first()
-      .type(Cypress.env('testEmail'))
-    cy.contains('section', 'Log In').find('input').last()
-      .type(Cypress.env('testPassword'))
-    cy.contains('button', 'Log in').click()
-
-    cy.url().should('include', '/dashboard') // make sure logged in
-
-    // Verify Access to Grants Backend
-    var data = 0
     cy.request({
-      url: Cypress.env('grantsUrl'),
+      url: Cypress.env('baseUrl') + '/login',
+      followRedirect: false,
+      failOnStatusCode: false,
+      method: 'POST',
+      body: {
+        email: Cypress.env('testEmail'),
+        password: Cypress.env('testPassword')
+      }
+    }).then((response) => {
+      expect(response.status).to.equal(200)
+    })
+
+    cy.request({
+      url: Cypress.env('baseUrl') + '/grants',
       followRedirect: false,
       failOnStatusCode: false,
     }).then((response) => {
       expect(response.status).to.equal(200)
-      if (response.ok) {
-        const data = response.json()
-      }
+      expect(response.body).to.have.length(Cypress.env('testGrantObjects').length)
+      response.body.forEach((grant) => {
+        let foundMatch = false
+        Cypress.env('testGrantObjects').forEach((testGrant) => {
+          if (_.isEqual(grant, testGrant)) {
+            foundMatch = true
+          }
+        })
+        expect(foundMatch).to.be.true
+      })
     })
-
-    console.log("Printing Output")
-    cy.expect(data.email).to.equal()
-    for (var index in data) {
-      cy.expect(data[index].email === Cypress.env('testEmail'))
-    }
-
-
-    
   })
-
-
-
-
-
-
 })
