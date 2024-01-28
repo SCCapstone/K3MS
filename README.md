@@ -62,3 +62,11 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - Unit and Behavorial tests are implemented with Cypress
 - Behavorial tests are in the `tests/behavioral_tests` directory
 - Unit tests are in the `tests/unit_tests` directory
+
+## Setup and Run the Tests
+- Follow the directions in `tests/README.md` to setup the environments
+- Run the tests: 
+    ```
+    cd tests
+    ./run_tests.sh
+    ```
