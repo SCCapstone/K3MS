@@ -28,6 +28,20 @@
   margin: 20px;
 }
 
+.userCreationCard select {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: none;
+  border-bottom: 1px solid var(--cardtext);
+  background: transparent;
+  margin-bottom: 20px;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext)
+}
+
 .userCreationCard input {
   width: 100%;
   box-sizing: border-box;
@@ -57,6 +71,12 @@
   border-radius: 5%;
   margin: 10px auto;
   /* margin-right: 20px; */
+}
+
+.userCreationCard p {
+  text-align: center;
+  font-size: 1em;
+  margin: 10px;
 }
 
 .userCreationCard button:hover {

@@ -128,6 +128,45 @@ def delete_user_controller(req):
 
     return dict(mssg='User deleted'), HTTPStatus.OK
 
+def update_user_controller(req):
+    # Make sure current user is a chair
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to update users'), HTTPStatus.UNAUTHORIZED
+
+    # Get email from request
+    ret = validate_request(req, ['email'])
+    if isinstance(ret, tuple):
+        return ret
+    json_data = ret
+
+    # get fields
+    email = json_data.get('email')
+    first_name = json_data.get('first_name')
+    last_name = json_data.get('last_name')
+    position = json_data.get('position')
+
+    print(email, first_name, last_name, position)
+
+    # Make sure user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+    
+    # if no fields are filled in, return no update
+    if not first_name and not last_name and not position:
+        return dict(mssg='No update'), HTTPStatus.OK
+    # Update User
+
+    try:
+        user.first_name = first_name if first_name else user.first_name
+        user.last_name = last_name if last_name else user.last_name
+        user.position = position if position else user.position
+        db.session.commit()
+    except:
+        return dict(error='Error updating user'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return dict(mssg='User Update'), HTTPStatus.OK
+
 
 def validate_request(req, fields):
     # Make sure request is JSON

@@ -16,4 +16,5 @@ module.exports = global.config = {
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
     USER_CREATION_URL: BASE_URL + "signup",
     USER_DELETION_URL: BASE_URL + "delete_user",
+    USER_UPDATE_URL: BASE_URL + "update_user",
 }
