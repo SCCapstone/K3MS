@@ -145,13 +145,15 @@ def update_user_controller(req):
     last_name = json_data.get('last_name')
     position = json_data.get('position')
 
-    print(email, first_name, last_name, position)
-
     # Make sure user exists
     user = User.query.filter_by(email=email).first()
     if not user:
         return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
-    
+
+    # Make sure user is not a chair
+    if user.position == 'chair':
+        return dict(error='You do not have authority to update this user'), HTTPStatus.BAD_REQUEST
+
     # if no fields are filled in, return no update
     if not first_name and not last_name and not position:
         return dict(mssg='No update'), HTTPStatus.OK
