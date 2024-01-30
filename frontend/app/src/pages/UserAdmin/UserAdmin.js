@@ -9,16 +9,26 @@ const UserAdmin = () => {
 
   const { user } = useAuthContext()
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [position, setPosition] = useState('')
+  // Create
+  const [firstNameCreate, setfirstNameCreate] = useState('')
+  const [lastNameCreate, setlastNameCreate] = useState('')
+  const [emailCreate, setEmailCreate] = useState('')
+  const [positionCreate, setPositionCreate] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [emptyFields, setEmptyFields] = useState([])
+
+  // Update
+  const [emailUpdate, setEmailUpdate] = useState('')
+  const [firstNameUpdate, setFirstNameUpdate] = useState('')
+  const [lastNameUpdate, setLastNameUpdate] = useState('')
+  const [positionUpdate, setPositionUpdate] = useState('')
   const [updateError, setUpdateError] = useState('')
   const [updateEmptyFields, setUpdateEmptyFields] = useState([])
+
+  // Delete
+  const [emailDelete, setEmailDelete] = useState('')
   const [deleteError, setDeleteError] = useState('')
   const [deleteEmptyFields, setDeleteEmptyFields] = useState([])
 
@@ -54,10 +64,10 @@ const UserAdmin = () => {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        position: position,
+        first_name: firstNameCreate,
+        last_name: lastNameCreate,
+        email: emailCreate,
+        position: positionCreate,
         password: password
       })
     })
@@ -72,10 +82,10 @@ const UserAdmin = () => {
     if (response.ok) {
       setError(null)
       setEmptyFields([])
-      setFirstName('')
-      setLastName('')
-      setEmail('')
-      setPosition('')
+      setfirstNameCreate('')
+      setlastNameCreate('')
+      setEmailCreate('')
+      setPositionCreate('')
       setPassword('')
       setConfirmPassword('')
 
@@ -91,7 +101,7 @@ const UserAdmin = () => {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        email: email
+        email: emailDelete
       })
     })
 
@@ -104,7 +114,7 @@ const UserAdmin = () => {
     if (response.ok) {
       setDeleteError(null)
       setDeleteEmptyFields([])
-      setEmail('')
+      setEmailDelete('')
 
       navigate('/dashboard', { state: { mssg: 'User Deleted', status: 'ok' }})
     }
@@ -118,10 +128,10 @@ const UserAdmin = () => {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        position: position
+        first_name: firstNameUpdate,
+        last_name: lastNameUpdate,
+        email: emailUpdate,
+        position: positionUpdate
       })
     })
 
@@ -134,10 +144,10 @@ const UserAdmin = () => {
     if (response.ok) {
       setUpdateError(null)
       setUpdateEmptyFields([])
-      setFirstName('')
-      setLastName('')
-      setEmail('')
-      setPosition('')
+      setFirstNameUpdate('')
+      setLastNameUpdate('')
+      setEmailUpdate('')
+      setPositionUpdate('')
 
       navigate('/dashboard', { state: { mssg: json.mssg, status: 'ok' }})
     }
@@ -151,28 +161,28 @@ const UserAdmin = () => {
         <form className="userCreationForm" onSubmit={ (e) => {createUser(e)} }>
             <input 
               type="text" 
-              onChange={(e) => setFirstName(e.target.value)} 
-              value={ firstName } 
+              onChange={(e) => setfirstNameCreate(e.target.value)} 
+              value={ firstNameCreate } 
               placeholder="First Name"
               className={ emptyFields.includes('first_name') ? 'errorField' : '' }
             />
             <input 
               type="text" 
-              onChange={(e) => setLastName(e.target.value)} 
-              value={ lastName } 
+              onChange={(e) => setlastNameCreate(e.target.value)} 
+              value={ lastNameCreate } 
               placeholder="Last Name"
               className={ emptyFields.includes('last_name') ? 'errorField' : '' }
             />
             <input 
               type="email" 
-              onChange={(e) => setEmail(e.target.value)} 
-              value={ email } 
+              onChange={(e) => setEmailCreate(e.target.value)} 
+              value={ emailCreate } 
               placeholder="Email"
               className={ emptyFields.includes('email') ? 'errorField' : '' }
             />
             <select
               type="text" 
-              onChange={(e) => setPosition(e.target.value)} 
+              onChange={(e) => setPositionCreate(e.target.value)} 
               className={ emptyFields.includes('position') ? 'errorField' : '' }>
               <option value="">Position</option>
               <option value="chair">Chair</option>
@@ -203,27 +213,26 @@ const UserAdmin = () => {
         <form className="userCreationForm" onSubmit={ (e) => {updateUser(e)} }>
             <input 
               type="email" 
-              onChange={(e) => setEmail(e.target.value)} 
-              value={ email } 
+              onChange={(e) => setEmailUpdate(e.target.value)} 
+              value={ emailUpdate } 
               placeholder="Email"
               className={ updateEmptyFields.includes('email') ? 'errorField' : '' }
             />
             <input 
               type="text" 
-              onChange={(e) => setFirstName(e.target.value)} 
-              value={ firstName } 
+              onChange={(e) => setFirstNameUpdate(e.target.value)} 
+              value={ firstNameUpdate } 
               placeholder="First Name"
             />
             <input 
               type="text" 
-              onChange={(e) => setLastName(e.target.value)} 
-              value={ lastName } 
+              onChange={(e) => setLastNameUpdate(e.target.value)} 
+              value={ lastNameUpdate } 
               placeholder="Last Name"
             />
             <select
               type="text" 
-              onChange={(e) => setPosition(e.target.value)} 
-              className={ emptyFields.includes('position') ? 'errorField' : '' }>
+              onChange={(e) => setPositionUpdate(e.target.value)}>
               <option value="">Position</option>
               <option value="chair">Chair</option>
               <option value="professor">Professor</option>
@@ -238,8 +247,8 @@ const UserAdmin = () => {
         <form className="userCreationForm" onSubmit={ (e) => {deleteUser(e)} }>
             <input 
               type="email" 
-              onChange={(e) => setEmail(e.target.value)} 
-              value={ email } 
+              onChange={(e) => setEmailDelete(e.target.value)} 
+              value={ emailDelete } 
               placeholder="Email"
               className={ deleteEmptyFields.includes('email') ? 'errorField' : '' }
             />
