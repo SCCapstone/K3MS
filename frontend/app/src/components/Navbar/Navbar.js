@@ -36,6 +36,7 @@ const Navbar = () => {
       <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
       <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
       <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
+      <button onClick={ (e) => navigate('/account-settings') }>Account Settings</button>
       <button className="navbarLogout" onClick={ (e) => logout(e) }>Log out</button>
     </div>
   )
