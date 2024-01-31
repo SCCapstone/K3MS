@@ -1,4 +1,5 @@
 from flask_login import login_required
+from flask import request
 from app.student_evals_module import blueprint
 from app.student_evals_module.controller import (
     eval_upload_controller,
@@ -6,7 +7,7 @@ from app.student_evals_module.controller import (
     get_student_eval_details_controller
 )
 
-@blueprint.route('/student_evals', methods=['POST'])
+@blueprint.route('/evalupload', methods=['POST'])
 @login_required
 def eval_upload():
     return eval_upload_controller(request)

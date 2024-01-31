@@ -10,6 +10,8 @@ function EvalUpload() {
   
   const navigate = useNavigate()
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (!user) {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
@@ -25,6 +27,11 @@ function EvalUpload() {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (!file) {
+      setError('No file selected')
+      return
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
@@ -37,12 +44,15 @@ function EvalUpload() {
       });
 
       if(!response.ok) {
+        setError('Error uploading file')
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
-      navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
-
+      if (response.ok) {
+        const responseData = await response.json();
+        setError(null)
+        navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
+      }
     } catch (error) {
       console.error('Fetch error: ', error.message);
     }
@@ -57,6 +67,7 @@ function EvalUpload() {
           <input type="file" onChange={handleChange} className="evalupload-form-input" />
           <button type="submit" className="evalupload-form-button">Upload</button>
         </form>
+        {error && <div className="errorField">{ error }</div>}
       </section>
     </div>
   );

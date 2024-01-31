@@ -17,6 +17,7 @@ class Config:
     # SESSION_COOKIE_SAMESITE = 'Strict'    # This is needed for cross-site cookies
     # SESSION_COOKIE_HTTPONLY = True
 
+    ALLOWED_EVAL_EXTENSIONS = ['xlsx']
     # These strings are exactly as they appear in the excel sheet - dont modify them
     QUESTIONS = {
         1: "the instructor clearly stated the instructional objectives of the course.",
