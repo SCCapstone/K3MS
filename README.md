@@ -10,7 +10,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## Requirements
 - must have python3 installed. This project was built in python version `3.11.x`
-- must have node.js installed on the system. This project was built in node version `20.10.x`
+- must have node.js installed on the system. This project was built in node version `20.10.x` (npm version `10.2.x`)
 - if on Ubuntu:
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
     - run `sudo apt-get install -y pkg-config ` to install pkg-config package
@@ -18,15 +18,25 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     - install through homebrew: `brew install mysql`
 
 ## Setup
-- Create the file `backend/.env` and add the line `DATABASE_URI='mysql://username:password@hostname/k3ms-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
-- Alternatively (for development) do not create this file. This will prompt the app to create a temporary sqlite database file called `app.db`
+- Create the file `backend/.env` and add the following:
+    - `DATABASE_URI='mysql://username:password@hostname/k3ms-db'` where "username" and "password" are used to log in to a mysql server being hosted by "hostname".
+        - Alternatively (for development) do not add this. This will prompt the app to create a temporary sqlite database file called `app.db`
+    - `SESSION_SECRET_KEY=<Some Secret Key>`
+        - If you do not have one, you can generate a secret key with: `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- Create the file `frontend/app/.env` and add `REACT_APP_BASE_URL=<URL of backend server>` (eg. http://localhost:8000 if running locally)
 
-- Before running this app for the first time, initialize the database tables. Run the following commands
+- Before running this app for the first time, run the following commands to set up the environments:
     ```
     cd backend
     python3 -m venv env
     source env/bin/activate
     pip3 install -r requirements.txt
+
+    cd frontend/app
+    npm ci
+    ```
+- If running a local database (rather than connected to the online shared database), run the following commands to initialize it:
+    ```
     env/bin/flask shell
     >>> db.create_all()
     >>> exit()
@@ -46,3 +56,17 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## TODO:
 - Installation & setup process will be taken care of in a docker file.
+
+
+# Testing
+- Unit and Behavorial tests are implemented with Cypress
+- Behavorial tests are in the `tests/behavioral_tests` directory
+- Unit tests are in the `tests/unit_tests` directory
+
+## Setup and Run the Tests
+- Follow the directions in `tests/README.md` to setup the environments
+- Run the tests: 
+    ```
+    cd tests
+    ./run_tests.sh
+    ```

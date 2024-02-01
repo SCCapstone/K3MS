@@ -19,6 +19,10 @@ login_fields = [
 ]
 
 def signup_controller(req):
+    # if user is not a chair, they cant create new users
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to create new users'), HTTPStatus.UNAUTHORIZED
+
     # Validate request
     ret = validate_request(req, signup_fields)
     
@@ -94,6 +98,77 @@ def check_auth_controller():
         date_added=current_user.date_added
     )], HTTPStatus.OK
 
+def delete_user_controller(req):
+    # Make sure current user is a chair
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to delete users'), HTTPStatus.UNAUTHORIZED
+
+    # Get email from request
+    ret = validate_request(req, ['email'])
+    if isinstance(ret, tuple):
+        return ret
+    json_data = ret
+    email = json_data.get('email')
+
+    # Make sure user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+    
+    # Make sure user is not a chair
+    if user.position == 'chair':
+        return dict(error='You do not have authority to delete this user'), HTTPStatus.BAD_REQUEST
+    
+    # Delete user
+    try:
+        db.session.delete(user)
+        db.session.commit()
+    except:
+        return dict(error='Error deleting user'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return dict(mssg='User deleted'), HTTPStatus.OK
+
+def update_user_controller(req):
+    # Make sure current user is a chair
+    if current_user.position != 'chair':
+        return dict(error='You do not have authority to update users'), HTTPStatus.UNAUTHORIZED
+
+    # Get email from request
+    ret = validate_request(req, ['email'])
+    if isinstance(ret, tuple):
+        return ret
+    json_data = ret
+
+    # get fields
+    email = json_data.get('email')
+    first_name = json_data.get('first_name')
+    last_name = json_data.get('last_name')
+    position = json_data.get('position')
+
+    # Make sure user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+
+    # Make sure user is not a chair
+    if user.position == 'chair':
+        return dict(error='You do not have authority to update this user'), HTTPStatus.BAD_REQUEST
+
+    # if no fields are filled in, return no update
+    if not first_name and not last_name and not position:
+        return dict(mssg='No update'), HTTPStatus.OK
+    # Update User
+
+    try:
+        user.first_name = first_name if first_name else user.first_name
+        user.last_name = last_name if last_name else user.last_name
+        user.position = position if position else user.position
+        db.session.commit()
+    except:
+        return dict(error='Error updating user'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return dict(mssg='User Update'), HTTPStatus.OK
+
 
 def validate_request(req, fields):
     # Make sure request is JSON
@@ -111,7 +186,7 @@ def validate_request(req, fields):
     for field in fields:
         if not json_data.get(field):
             empty_fields.append(field)
-    
+
     # If any fields are missing, return error
     if len(empty_fields) > 0:
         return dict(
