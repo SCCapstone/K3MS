@@ -12,9 +12,22 @@ function EvalUpload() {
 
   const [error, setError] = useState(null);
 
+  // Don't allow non-logged in users or non-chairs to access this page
   useEffect(() => {
     if (!user) {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (user.position !== 'chair') {
+      let redirect = user ? '/dashboard' : '/login'
+      navigate(redirect, { 
+        state: { 
+          mssg: 'You do not have access to this page - this incident will be reported', 
+          status: 'error'
+        }
+      })
     }
   }, [user, navigate]);
 
@@ -42,14 +55,16 @@ function EvalUpload() {
         credentials: 'include',
         body: formData,
       });
+      const json = await response.json();
 
       if(!response.ok) {
-        setError('Error uploading file')
+        if (json.error) {
+          setError(`Error uploading file - ${json.error}`)
+        }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       if (response.ok) {
-        const responseData = await response.json();
         setError(null)
         navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
       }

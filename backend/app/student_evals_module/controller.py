@@ -12,6 +12,10 @@ from io import BytesIO
 
 def eval_upload_controller(request):
     try:
+        # Make sure current user is a chair
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to upload student evaluations'), HTTPStatus.UNAUTHORIZED
+        
         # Check if the request contains a file
         if 'file' not in request.files:
             return dict(error='No file part'), HTTPStatus.BAD_REQUEST
@@ -187,6 +191,6 @@ def parse_and_upload_excel(fbytes):
         if skipped:
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
-
+    print(skipped_entries)
     return evals, details_rows, skipped_entries
         
