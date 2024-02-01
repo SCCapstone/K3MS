@@ -24,6 +24,12 @@ const AccountSettings = () => {
 
     const updatePassword = async (e) => {
         e.preventDefault()
+
+        // Check If new_password and confirm_new_password Match
+        if (new_password !== confirm_new_password) {
+            setError("Passwords Do Not Match");
+            return;
+        }
     
         const response = await fetch(ACCOUNT_SETTINGS_URL, {
           method: 'POST',
@@ -48,7 +54,8 @@ const AccountSettings = () => {
           setNewPassword('')
           setConfirmNewPassword('')
     
-          navigate('/dashboard', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
+            // Navigate to dashboard
+            navigate('/dashboard', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
         }
     };
 
