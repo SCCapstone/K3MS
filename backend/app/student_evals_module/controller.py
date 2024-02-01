@@ -79,24 +79,38 @@ def parse_and_upload_excel(fbytes):
     details_rows = []
     skipped_entries = []
 
+    questions = current_app.config['QUESTIONS']
+
     # loop through rows in excel sheet
     for i in range(len(df)):
         row = df.iloc[i].to_dict()
 
         # Get first few fields
-        first_name = row['first name']
-        last_name = row['last name']
-        semester = row['period'].split(' ')[0]
-        year = row['period'].split(' ')[-1]
-        course = row['course'].split('-')[0]
-        instructor_type = row['form of address']
-        participants_count = row['participants']
-        number_of_returns = row['no. of returns']
-        course_rating_mean = None
-        instructor_rating_mean = None
-
+        try:
+            first_name = row['first name']
+            last_name = row['last name']
+            semester = row['period'].split(' ')[0]
+            year = row['period'].split(' ')[-1]
+            course = row['course'].split('-')[0]
+            instructor_type = row['form of address']
+            participants_count = row['participants']
+            number_of_returns = row['no. of returns']
+            course_rating_mean = row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"]
+            instructor_rating_mean = row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"]
+        except KeyError:
+            skipped_entries.append(dict(
+                email=None, 
+                first_name=None, 
+                last_name=None, 
+                year=None, 
+                semester=None, 
+                course=None, 
+                reason='Fields are missing'
+            ))
+            continue
+        
         # Save row info for skipped entries
-        row_info  = dict(
+        row_info = dict(
             email=None,
             first_name=first_name,
             last_name=last_name,
@@ -111,7 +125,7 @@ def parse_and_upload_excel(fbytes):
             skipped_entries.append(dict(**row_info, reason='No email found for this user'))
             continue
 
-        email = row_user.first().email
+        email = row_user.email
         row_info['email'] = email    
 
         # Check if entry exists in database already
@@ -131,8 +145,20 @@ def parse_and_upload_excel(fbytes):
             skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
             continue
 
+        # Evaluation
+        evals.append(Eval(
+            email=email,
+            year=year,
+            semester=semester,
+            course=course,
+            instructor_type=instructor_type,
+            participants_count=participants_count,
+            number_of_returns=number_of_returns,
+            course_rating_mean=course_rating_mean,
+            instructor_rating_mean=instructor_rating_mean
+        ))
+
         # Get Evaluation details
-        questions = current_app.config['QUESTIONS']
 
         skipped = False
         for i,q in questions.items():
@@ -158,28 +184,9 @@ def parse_and_upload_excel(fbytes):
             )
             details_rows.append(eval_details)
 
-            # for these two questions, save in eval table also
-            if i == 20:
-                course_rating_mean = mean
-            elif i == 28:
-                instructor_rating_mean = mean
-
         if skipped:
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
-
-        # Evaluation
-        evals.append(Eval(
-            email=email,
-            year=year,
-            semester=semester,
-            course=course,
-            instructor_type=instructor_type,
-            participants_count=participants_count,
-            number_of_returns=number_of_returns,
-            course_rating_mean=course_rating_mean,
-            instructor_rating_mean=instructor_rating_mean
-        ))
 
     return evals, details_rows, skipped_entries
         

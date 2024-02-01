@@ -17,7 +17,8 @@ class Config:
     # SESSION_COOKIE_SAMESITE = 'Strict'    # This is needed for cross-site cookies
     # SESSION_COOKIE_HTTPONLY = True
 
-    ALLOWED_EVAL_EXTENSIONS = ['xlsx']
+    ALLOWED_EVAL_EXTENSIONS = ['xlsx', 'xls', 'ods']
+
     # These strings are exactly as they appear in the excel sheet - dont modify them
     QUESTIONS = {
         1: "the instructor clearly stated the instructional objectives of the course.",
@@ -51,3 +52,5 @@ class Config:
         29: "overall  i rate the performance of my instructor as:",
         30: "what is your major:"
     }
+    COURSE_MEAN_KEY = 21
+    INSTRUCTOR_MEAN_KEY = 29
