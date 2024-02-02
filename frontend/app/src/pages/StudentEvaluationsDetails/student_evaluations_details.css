@@ -24,6 +24,16 @@
   text-transform: capitalize;
 }
 
+/* Below is the spacer betweeen the questions, adjust for positioning */
+.SPACER {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.questions {
+  text-transform: capitalize;
+}
+
 .studentEvalsDetailsCardContent {
   padding: 20px 50px;
   font-size: 1.5em;

@@ -62,8 +62,10 @@ const StudentEvaluationsDetails = () => {
       }
     }
     if (!courses || courses[0].course != course_name) {
-      studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
+      // studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
       fetchStudentEvalsDetails()
+    } else{
+      console.log(courses)
     }
   }, [courses, studentEvalsDetailsDispatch])
 
@@ -122,17 +124,25 @@ const StudentEvaluationsDetails = () => {
                   <h1>{course.semester} {course.year}</h1>
                   <div className="studentEvalsDetailsCardContent">
                     
-                    <p>Instructor_type       :     {course.instructor_type       }</p>
-                    <p>Participants_count    :     {course.participants_count    }</p>
-                    <p>Number_of_returns     :     {course.number_of_returns     }</p>
-                    <p>Course_rating_mean    :     {course.course_rating_mean    }</p>
-                    <p>Instructor_rating_mean:     {course.instructor_rating_mean}</p>
-                    <p>Question_id           :     {course.question_id           }</p>
-                    <p>Mean                  :     {course.mean                  }</p>
-                    <p>STD                   :     {course.std                   }</p>
-                    <p>Median                :     {course.median                }</p>
-                    <p>Returns               :     {course.returns               }</p>
-                    
+                    <p>Instructor_type       :     {course.instructor_type                  }</p>
+                    <p>Participants_count    :     {course.participants_count               }</p>
+                    <p>Number_of_returns     :     {course.number_of_returns                }</p>
+                    <p>Course_rating_mean    :     {course.course_rating_mean               }</p>
+                    <p>Instructor_rating_mean:     {course.instructor_rating_mean           }</p>
+                    <div className='questions'>
+                      {course.details.map((detail, j) => (
+                        
+                        <div key={j}>
+                          <div className="SPACER">_</div>
+                          <p>Question: {detail.question}</p>
+                          <p>q_id: {detail.question_id}</p>
+                          <p>Mean: {detail.mean}</p>
+                          <p>STD: {detail.std}</p>
+                          <p>Median: {detail.median}</p>
+                          <p>Returns: {detail.returns}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               );
