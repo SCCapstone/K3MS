@@ -26,11 +26,15 @@ def update_password_controller(req):
     if confirm_new_password != new_password:
         return dict(error='New Password Cannot Be Confirmed'), HTTPStatus.BAD_REQUEST
     
-    # Reset current_user's Password In The DB
-    current_user.password_hash = generate_password_hash(new_password, method='scrypt')
+    
+    try:
+        # Reset current_user's Password In The DB
+        current_user.password_hash = generate_password_hash(new_password, method='scrypt')
 
-    # Commit Changes To The DB
-    db.session.commit()
+        # Commit Changes To The DB
+        db.session.commit()
+    except:
+        return dict(error='Error Updating Password'), HTTPStatus.INTERNAL_SERVER_ERROR
 
     return dict(mssg='Password Updated Successfully!'), HTTPStatus.OK
 

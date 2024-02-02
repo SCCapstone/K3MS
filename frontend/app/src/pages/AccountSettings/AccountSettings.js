@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ACCOUNT_SETTINGS_URL } from '../../config';
+import { UPDATE_PASSWORD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import Alert from '../../components/Alert/Alert'
@@ -31,7 +31,7 @@ const AccountSettings = () => {
             return;
         }
     
-        const response = await fetch(ACCOUNT_SETTINGS_URL, {
+        const response = await fetch(UPDATE_PASSWORD_URL, {
           method: 'POST',
           credentials: 'include',
           headers: {'Content-Type': 'application/json'},
