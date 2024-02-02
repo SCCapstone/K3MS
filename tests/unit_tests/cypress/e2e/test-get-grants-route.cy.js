@@ -3,7 +3,7 @@ import _ from 'lodash'
 describe('Grants Route Test', () => {
   it('If Logged Out Return No Grants', () => {
     cy.request({
-      url: Cypress.env('baseUrl') + '/grants',
+      url: Cypress.env('baseUrl') + 'grants',
       followRedirect: false,
       failOnStatusCode: false,
     }).then((response) => {
@@ -14,7 +14,7 @@ describe('Grants Route Test', () => {
   it('If Logged In Return the Expected Grants for User and Only Those', () => {
     // Log in
     cy.request({
-      url: Cypress.env('baseUrl') + '/login',
+      url: Cypress.env('baseUrl') + 'login',
       followRedirect: false,
       failOnStatusCode: false,
       method: 'POST',
@@ -27,7 +27,7 @@ describe('Grants Route Test', () => {
     })
 
     cy.request({
-      url: Cypress.env('baseUrl') + '/grants',
+      url: Cypress.env('baseUrl') + 'grants',
       followRedirect: false,
       failOnStatusCode: false,
     }).then((response) => {

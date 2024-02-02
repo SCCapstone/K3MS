@@ -12,8 +12,10 @@ from io import BytesIO
 
 def eval_upload_controller(request):
     try:
+        print("Recieved Request")
         # Check if the request contains a file
         if 'file' not in request.files:
+            print("Code fails here")
             return dict(error='No file part'), HTTPStatus.BAD_REQUEST
 
         file = request.files['file']
