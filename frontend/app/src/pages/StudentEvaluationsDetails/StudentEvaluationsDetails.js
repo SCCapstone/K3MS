@@ -134,8 +134,7 @@ const StudentEvaluationsDetails = () => {
                         
                         <div key={j}>
                           <div className="SPACER">_</div>
-                          <p>Question: {detail.question}</p>
-                          <p>q_id: {detail.question_id}</p>
+                          <p>{detail.question_id}. {detail.question}</p>
                           <p>Mean: {detail.mean}</p>
                           <p>STD: {detail.std}</p>
                           <p>Median: {detail.median}</p>
