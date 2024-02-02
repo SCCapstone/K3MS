@@ -39,17 +39,36 @@ const StudentEvaluations = () => {
     }
   }, [courses, studentEvalsDispatch])
 
+  // Function to handle button click and navigate to another page with data
+  const handleButtonClick = (course) => {
+    // Encode course object into a query parameter
+    const courseQueryParam = encodeURIComponent(JSON.stringify(course));
+    // Navigate to the desired page with data
+    navigate(`/student-evals-details?course=${courseQueryParam}`);
+  }
+
+  // // Function to handle button click and navigate to another page with data
+  // const handleButtonClick = (course) => {
+  //   // Generate a timestamp to make the URL unique
+  //   const timestamp = Date.now();
+  //   // Encode course object into a query parameter
+  //   const courseQueryParam = encodeURIComponent(JSON.stringify(course));
+  //   // Navigate to the desired page with data, appending the timestamp as a query parameter
+  //   navigate(`/student-evals-details?course=${courseQueryParam}&timestamp=${timestamp}`);
+  // }
+
   return (
     <div className="studentEvalsBody">
       <h1 className="pageHeader">My Student Evaluations</h1>
-      <div className='courses'>
-        {courses && courses.map((course, i) => {
+      <div className='courses'>        {courses && courses.map((course, i) => {
           return (
             <div className='studentEvalsCard' key={i}>
               <h1>{ course.course }</h1>
               <div className='studentEvalsCardContent'>
                 <p>Average Course Rating: { course.ave_course_rating_mean }</p>
                 <p>Average Instructor Rating: { course.ave_instructor_rating_mean }</p>
+                {/* Add button here */}
+                <button onClick={() => handleButtonClick(course.course)}>Details</button>
               </div>
             </div>
           )
