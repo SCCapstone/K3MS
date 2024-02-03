@@ -1,17 +1,11 @@
 // Test if file is uploaded to the database and is parsed succesfully
 // pull data from database after its been uploaded
 
-// should get 200 status
-// then make sure with a GET request that the file is there
-
 describe('Parse Student Evaluations Test', () => { 
 
     it('Test Successful Upload of Evaluation', () => {
         // Log In
         cy.visit(Cypress.env('baseUrl') + '/login')
-        cy.contains('Log In')
-
-        cy.visit(Cypress.env('baseUrl') + '/evalupload')
         cy.contains('section', 'Log In').find('input').first()
         .type(Cypress.env('testEmail'))
         cy.contains('section', 'Log In').find('input').last()
@@ -20,33 +14,30 @@ describe('Parse Student Evaluations Test', () => {
 
         cy.url().should('include', '/dashboard') // make sure logged in
 
+        // Check that there arent any courses there now
+        cy.contains('Students Evals').click()
+        Cypress.env('coursesInStudentEvalSampleForTestUser').forEach((course) => {
+            cy.contains(course).should('not.exist');
+        })
+
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
         cy.contains('Upload Student Evaluations Form')
 
         // Upload file
         const filename = Cypress.env('studentEvalSampleFN')
-        cy.fixture(filename).then(fileContent => {
-            cy.contains('section', 'Upload').get('input[type=file]').attachFile({
-                fileContent: fileContent.toString(),
-                fileName: filename,
-                mimeType: 'application/vnd.ms-excel'
-            })
-        })
+        cy.contains('section', 'Upload').get('input[type=file]')
+            .selectFile('cypress/fixtures/' + filename)
 
         // Submit
         cy.contains('section', 'Upload').contains('button', 'Upload').click()
 
+        // Check that redirected to student evals page
+        cy.url().should('include', '/student-evals')
+
+        // Check that courses show up on page
+        Cypress.env('coursesInStudentEvalSampleForTestUser').forEach((course) => {
+            cy.contains(course);
+        })
     })
-    // it('If Logged Out Return No Grants', () => {
-    //     cy.request({
-    //       url: Cypress.env('baseUrl') + '/grants',
-    //       followRedirect: false,
-    //       failOnStatusCode: false,
-    //     }).then((response) => {
-    //       expect(response.status).to.equal(401)
-    //     })
-    //   })
-
-
 })
