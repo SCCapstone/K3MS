@@ -24,13 +24,19 @@ describe('Parse Student Evaluations Test', () => {
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
         cy.contains('Upload Student Evaluations Form')
 
-        cy.fixture('test-student-eval-sample.xlsx').then(file => {
-            cy.contains('section', 'Log In').find('input').first().attachFile({
-                fileContent: file,
-                fileName: file.name
+        // Upload file
+        const filename = Cypress.env('studentEvalSampleFN')
+        cy.fixture(filename).then(fileContent => {
+            cy.contains('section', 'Upload').get('input[type=file]').attachFile({
+                fileContent: fileContent.toString(),
+                fileName: filename,
+                mimeType: 'application/vnd.ms-excel'
             })
-
         })
+
+        // Submit
+        cy.contains('section', 'Upload').contains('button', 'Upload').click()
+
     })
     // it('If Logged Out Return No Grants', () => {
     //     cy.request({
