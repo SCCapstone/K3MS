@@ -11,7 +11,7 @@ from io import BytesIO
 
 
 def eval_upload_controller(request):
-    try:
+    if True:
         # Make sure current user is a chair
         if current_user.position != 'chair':
             return dict(error='You do not have authority to upload student evaluations'), HTTPStatus.UNAUTHORIZED
@@ -31,22 +31,22 @@ def eval_upload_controller(request):
             current_app.config['ALLOWED_EVAL_EXTENSIONS']):
 
             return dict(error='File extension not allowed'), HTTPStatus.BAD_REQUEST
-
+        
         # Parse the file
         fbytes = BytesIO(file.stream.read())
         evals, eval_details, skipped_rows = parse_and_upload_excel(fbytes)
 
-        db.session.add_all(evals)
-        db.session.add_all(eval_details)
-        db.session.commit()
+        # db.session.add_all(evals)
+        # db.session.add_all(eval_details)
+        # db.session.commit()
 
         if skipped_rows:
             return dict(mssg='Eval File uploaded successfully - skipped rows', skipped_rows=skipped_rows), HTTPStatus.OK
         return dict(mssg='Eval File uploaded successfully'), HTTPStatus.OK
 
-    except Exception as e:
-        print(e)
-        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+    # except Exception as e:
+    #     print(e)
+    #     return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def get_student_evals_controller():
     email = current_user.email
@@ -76,7 +76,10 @@ def get_student_eval_details_controller(course, year, semester):
 
 
 def parse_and_upload_excel(fbytes):
+    print('before')
+    print(fbytes.read())
     df = pd.read_excel(fbytes)
+    print('after')
     df.columns = [c.lower() for c in df.columns]
 
     evals = []
