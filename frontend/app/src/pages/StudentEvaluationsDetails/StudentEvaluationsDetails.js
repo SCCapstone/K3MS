@@ -26,7 +26,7 @@ const StudentEvaluationsDetails = () => {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
     }
   }, [user, navigate]);
-
+  
   // Fetch student evals details
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -156,14 +156,3 @@ const StudentEvaluationsDetails = () => {
 }
 
 export default StudentEvaluationsDetails
-
-// 'instructor_type'       
-// 'participants_count'    
-// 'number_of_returns'     
-// 'course_rating_mean'    
-// 'instructor_rating_mean'
-// 'question_id'           
-// 'mean'                  
-// 'std'                   
-// 'median'                
-// 'returns'               

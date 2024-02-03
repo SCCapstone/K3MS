@@ -56,9 +56,7 @@ def get_student_evals_details_controller(course_name):
 
     # Create dictionaries to store data from each dataset
     eval_dict      = {(row.email, row.course, row.year, row.semester): row for row in course_evals}
-    # eval_dets_dict = {(row.email, row.course, row.year, row.semester): row for row in course_eval_details}
-
-    # START try code ----------------
+    
     # Stores details for each course
     eval_dets_dict = defaultdict(list)
 
@@ -71,7 +69,7 @@ def get_student_evals_details_controller(course_name):
 
     # Add each question to the details
     for row in course_eval_details:
-        
+
         # Get question string
         if row.question_id in questions_dict:
             question = questions_dict[row.question_id]
@@ -87,15 +85,12 @@ def get_student_evals_details_controller(course_name):
             'median'      : row.median,    
             'returns'     : row.returns   
         })
-    # END try code ----------------
-
 
     courses = []
 
     # Iterate through each key in the Eval dictionary
     for key in eval_dict:
-        
-        # START try code  ----------------
+
         eval_row = eval_dict[key]
 
         if key in eval_dets_dict:
@@ -117,48 +112,6 @@ def get_student_evals_details_controller(course_name):
             'details'                   : details
         }
         courses.append(combined_data)
-        # END try code  ----------------
-
-        # # Check if the key exists in both dictionaries
-        # if key in eval_dets_dict:
-        #     # If the key exists in both dictionaries, combine the data
-        #     eval_row = eval_dict[key]
-        #     eval_dets_row = eval_dets_dict[key]
-
-        #     combined_data = {
-        #         'email'                     : eval_row.email,
-        #         'course'                    : eval_row.course                ,
-        #         'year'                      : eval_row.year                  ,
-        #         'semester'                  : eval_row.semester              ,
-        #         'instructor_type'           : eval_row.instructor_type       ,
-        #         'participants_count'        : eval_row.participants_count    ,
-        #         'number_of_returns'         : eval_row.number_of_returns     ,
-        #         'course_rating_mean'        : eval_row.course_rating_mean    ,
-        #         'instructor_rating_mean'    : eval_row.instructor_rating_mean,
-        #         'question_id'               : eval_dets_row.question_id,
-        #         'mean'                      : eval_dets_row.mean      ,
-        #         'std'                       : eval_dets_row.std       ,
-        #         'median'                    : eval_dets_row.median    ,
-        #         'returns'                   : eval_dets_row.returns   ,
-        #         # Add more fields as needed
-        #     }
-        #     courses.append(combined_data)
-        # else:
-        #     eval_row = eval_dict[key]
-        #     combined_data = {
-        #         'email'                     : eval_row.email,
-        #         'course'                    : eval_row.course                ,
-        #         'year'                      : eval_row.year                  ,
-        #         'semester'                  : eval_row.semester              ,
-        #         'instructor_type'           : eval_row.instructor_type       ,
-        #         'participants_count'        : eval_row.participants_count    ,
-        #         'number_of_returns'         : eval_row.number_of_returns     ,
-        #         'course_rating_mean'        : eval_row.course_rating_mean    ,
-        #         'instructor_rating_mean'    : eval_row.instructor_rating_mean,
-        #     }
-        #     courses.append(combined_data)
-
-
 
     if not courses:
         return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND
