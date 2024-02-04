@@ -11,12 +11,13 @@
         - `testPassword`: password of known user
         - `testIncorrectEmail`: some incorrent email address
         - `testIncorrectPassword`: some incorrect password
-        -  `studentEvalSampleFN`: name of student evaluations excel sheet in fixtures
+        - `studentEvalSampleFN`: name of student evaluations excel sheet in fixtures
         - `coursesInStudentEvalSampleForTestUser`: list of courses that will be uploaded by the excel sheet for testEmail user
     - for `tests/unit_tests`, this should include:
         - `baseUrl`: URL of backend server
         - `testEmail`: email address of known user to test
         - `testPassword`: password of known user
+        - `testNewPassword`: new password for known user
         - `testGrantObjects`: list of grant objects that should be returned
     - Example files will be provided
 
