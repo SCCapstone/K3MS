@@ -14,10 +14,10 @@ describe('template spec', () => {
     cy.url().should('include', '/dashboard') // make sure logged in
 
     // Test that on grant upload page
-    cy.visit(Cypress.env('baseUrl') + 'grantupload')
+    cy.visit(Cypress.env('baseUrl') + '/grantupload')
     cy.contains('Upload Grant Form')
   })
-  it('Can Acces Grant Upload Page', () => {
+  it('Can Access Grant Upload Page', () => {
     // just the beforeEach part
   })
   it("Can't Upload Grant without a title", () => {
