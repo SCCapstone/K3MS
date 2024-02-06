@@ -11,6 +11,14 @@ export const courseAnalyticsReducer = (state, action) => {
         ...state, 
         courses: action.payload,  // list of courses
       }
+    case 'SET_ANON_DATA':
+      return { 
+        ...state, 
+        anonData: {
+          ...state.anonData,
+          [action.payload.course]: action.payload.data
+        }
+      }
     default:
       return state
   }
@@ -18,7 +26,9 @@ export const courseAnalyticsReducer = (state, action) => {
 
 export const CourseAnalyticsContextProvider = ({ children }) => {
   const [state, courseAnalyticsDispatch] = useReducer(courseAnalyticsReducer, { 
+    usersToChoose: null,
     courses: null,
+    anonData: null
   })
   
   // provide CourseAnalyticsContext context to all parts of app

@@ -12,7 +12,10 @@ module.exports = global.config = {
     EXPEN_URL: BASE_URL + "tmp_get_expen",
     STUDENT_EVALS_URL: BASE_URL + "student_evals",
     STUDENT_EVALS_DETAILS_URL: BASE_URL + "student_evals_details",
-    COURSE_ANALYTICS_URL: BASE_URL + "course_analytics",
+    COURSE_ANALYTICS_URLS: {
+        getAnonData: BASE_URL + "course_analytics",
+        getCourses: BASE_URL + "get_courses_for_user"
+    },
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",

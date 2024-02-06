@@ -7,6 +7,12 @@
   padding: 20px;
 }
 
+  .dropdowns {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+
 .courseAnalyticsCard {
   margin: 50px auto;
   padding: 5px;
