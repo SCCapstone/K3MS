@@ -14,7 +14,9 @@ module.exports = global.config = {
     STUDENT_EVALS_DETAILS_URL: BASE_URL + "student_evals_details",
     COURSE_ANALYTICS_URLS: {
         getAnonData: BASE_URL + "course_analytics",
-        getCourses: BASE_URL + "get_courses_for_user"
+        getCourses: BASE_URL + "get_courses_for_user",
+        getAllCourses: BASE_URL + "get_all_courses_in_db",
+        getUsersToChoose: BASE_URL + "get_users_in_chairs_dept",
     },
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
@@ -23,4 +25,6 @@ module.exports = global.config = {
     USER_CREATION_URL: BASE_URL + "signup",
     USER_DELETION_URL: BASE_URL + "delete_user",
     USER_UPDATE_URL: BASE_URL + "update_user",
+
+    DEC_PLACES: 2
 }

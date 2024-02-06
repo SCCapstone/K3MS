@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { COURSE_ANALYTICS_URLS } from '../../config'
+import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
@@ -10,7 +10,7 @@ const CourseAnalytics = () => {
   const navigate = useNavigate()
 
   const { user } = useAuthContext()
-  const { usersToChoose, courses, anonData, courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { usersToChoose, courses, anonData, allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
   const [ oldestFetched, setOldestFetched ] = useState(0)
   const [ chosenPerson, setChosenPerson ] = useState(user)
@@ -18,15 +18,52 @@ const CourseAnalytics = () => {
   const [ chosenCourse, setChosenCourse ] = useState('')
   const [ chosenPeriod, setChosenPeriod ] = useState(1)
 
-  const [ courseMean, setCourseMean ] = useState(0)
-  const [ instructorMean, setInstructorMean ] = useState(0)
+    // Don't allow non-logged in users to access this page
+    useEffect(() => {
+      if (!user) {
+        navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+      }
+    }, [user, navigate]);
 
-  // Don't allow non-logged in users to access this page
   useEffect(() => {
-    if (!user) {
-      navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    const fetchAllCourses = async () => {
+      const response = await fetch(`${COURSE_ANALYTICS_URLS.getAllCourses}`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        courseAnalyticsDispatch({type: 'SET_ALL_COURSES', payload: data})
+      }
+      else if (response.status === 401) {
+        console.log('error')
+      }
     }
-  }, [user, navigate]);
+    if (!allCoursesInDb)
+      fetchAllCourses()
+  }, [allCoursesInDb])
+
+  // Fetch users to choose from
+  useEffect(() => {
+    const fetchUsersToChoose = async () => {
+      const response = await fetch(`${COURSE_ANALYTICS_URLS.getUsersToChoose}`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        console.log(data)
+        courseAnalyticsDispatch({type: 'SET_USERS_TO_CHOOSE', payload: data})
+      }
+      else if (response.status === 401) {
+        console.log('error')
+      }
+    }
+    if (!usersToChoose)
+      fetchUsersToChoose()
+  }, [usersToChoose, courseAnalyticsDispatch])
 
   // Fetch student evals for current user or chosen user
   useEffect(() => {
@@ -48,18 +85,10 @@ const CourseAnalytics = () => {
     if (!courses) {
       fetchCourses()
     }
+    else if (!chosenCourse) {
+      setChosenCourse(courses[0])
+    }
   }, [courses, courseAnalyticsDispatch])
-
-  const setStats = () => {
-    if (!anonData || !anonData[chosenCourse.course]) 
-      return
-
-    const data = anonData[chosenCourse.course]
-    const courseMean = data.ave_course_rating_mean
-    const instructorMean = data.ave_instructor_rating_mean
-    setCourseMean(courseMean)
-    setInstructorMean(instructorMean)
-  }
 
   // Fetch analytics data
   useEffect(() => {
@@ -78,7 +107,6 @@ const CourseAnalytics = () => {
           data: data
         }})
         setOldestFetched(chosenPeriod)
-        setStats()
       }
       else if (response.status === 401) {
         console.log('error')
@@ -112,7 +140,9 @@ const CourseAnalytics = () => {
           <div className='choosePersonDropdown'>
             <h3>Choose Person</h3>
             <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
-              <option value={ user }>{ `${user.first_name} ${user.last_name}` }</option>
+              { usersToChoose && usersToChoose.map((person, i) =>
+                <option key={i} value={ person }>{ `${person.first_name} ${person.last_name}` }</option>
+              )}
             </select>
           </div>
         }
@@ -143,28 +173,30 @@ const CourseAnalytics = () => {
               <th>Instructor Rating</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th>{ chosenPersonName }</th>
-              <td>{ courses ? chosenCourse.ave_course_rating_mean : '' }</td>
-              <td>{ courses ? chosenCourse.ave_instructor_rating_mean : '' }</td>
-            </tr>
-            <tr>
-              <th>Average</th>
-              <td></td>
-              <td>Data</td>
-            </tr>
-            <tr>
-              <th>90%</th>
-              <td>Data</td>
-              <td>Data</td>
-            </tr>
-            <tr>
-              <th>50%</th>
-              <td>Data</td>
-              <td>Data</td>
-            </tr>
-          </tbody>
+          { courses && anonData && chosenCourse &&
+            <tbody>
+              <tr>
+                <th>{ chosenPersonName }</th>
+                <td>{ courses ? chosenCourse.ave_course_rating_mean.toFixed(DEC_PLACES) : '' }</td>
+                <td>{ courses ? chosenCourse.ave_instructor_rating_mean.toFixed(DEC_PLACES) : '' }</td>
+              </tr>
+              <tr>
+                <th>Average</th>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].mean_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].mean_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+              </tr>
+              <tr>
+                <th>Median</th>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].median_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].median_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+              </tr>
+              <tr>
+                <th>75%</th>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].course_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                <td>{ anonData ? (anonData[chosenCourse.course] ? anonData[chosenCourse.course].instructor_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
+              </tr>
+            </tbody>
+            }
         </table>
         </div>
       </div>
