@@ -64,7 +64,9 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - Unit tests are in the `tests/unit_tests` directory
 
 ## Setup and Run the Tests
-- Follow the directions in `tests/README.md` to setup the environments
+- Follow the directions in `tests/README.md` to setup the environments. Here are some example .env files that can be used (these are required for tests to run):
+    - Goes in tests/behavioral_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077571/cypress.env.json)
+    - Goes in tests/unit_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077577/cypress.env.json)
 - Run the tests: 
     ```
     cd tests
