@@ -7,6 +7,7 @@ import CourseAnalytics from './pages/CourseAnalytics/CourseAnalytics';
 import ResearchInfo from './pages/ResearchInfo/ResearchInfo';
 import GrantUpload from './pages/GrantUpload/GrantUpload';
 import EvalUpload from './pages/EvalUpload/EvalUpload';
+import AccountSettings from './pages/AccountSettings/AccountSettings';
 import UserAdmin from './pages/UserAdmin/UserAdmin';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
@@ -47,6 +48,7 @@ function App() {
         <Route path="/grantupload" element={ getMainLayoutPage(<GrantUpload />) } />
         <Route path="/pubupload" element={ getMainLayoutPage(<PubUpload />) } />
         <Route path="/evalupload" element={ getMainLayoutPage(<EvalUpload />) } />
+        <Route path="/account-settings" element={ getMainLayoutPage(<AccountSettings />) } />
         <Route path="/useradmin" element={ getMainLayoutPage(<UserAdmin />) } />
         <Route path="*" element={ defaultPage } />
       </Routes>

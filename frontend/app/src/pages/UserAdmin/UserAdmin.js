@@ -40,7 +40,7 @@ const UserAdmin = () => {
   }, [user, navigate]);
 
   useEffect(() => {
-    if (user.position !== 'chair') {
+    if (user && user.position !== 'chair') {
       let redirect = user ? '/dashboard' : '/login'
       navigate(redirect, { 
         state: { 

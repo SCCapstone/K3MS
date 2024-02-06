@@ -36,9 +36,11 @@ const Navbar = () => {
       <button onClick={ (e) => navigate('/course-analytics') }>Course Analytics</button>
       <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
       <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
-      <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
-      { user && user.position === 'chair' ? 
-        <button onClick={ (e) => navigate('/useradmin') }>User Administration</button> : ''
+      <button onClick={ (e) => navigate('/account-settings') }>Account Settings</button>
+
+      { user && user.position === 'chair' ? <>
+        <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
+        <button onClick={ (e) => navigate('/useradmin') }>User Administration</button></> : ''
       }
       <button className="navbarLogout" onClick={ (e) => logout(e) }>Log out</button>
     </div>
