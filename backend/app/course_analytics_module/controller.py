@@ -8,10 +8,17 @@ from flask import jsonify
 from sqlalchemy import cast, Integer
 import numpy as np
 
-def get_courses_for_user_controller(user_email):
+def get_oldest_year_from_period(period):
+    current_year = datetime.now().year
+    oldest_year = current_year - int(period)
+    return oldest_year
+
+def get_courses_for_user_controller(user_email, period):
     if current_user.position != 'chair' and current_user.email != user_email:
         return dict(error='You do not have authority access info about other users'), HTTPStatus.UNAUTHORIZED
     
+    oldest_year = get_oldest_year_from_period(period)
+
     courses = db.session.query(
         Eval.email, 
         Eval.course, 
@@ -20,10 +27,12 @@ def get_courses_for_user_controller(user_email):
     ).filter_by(email=user_email).group_by(
         Eval.email, 
         Eval.course
+    ).filter(
+        cast(Eval.year, Integer) >= oldest_year
     ).all()
 
     if not courses:
-        return dict(error='No courses found for this user'), HTTPStatus.NOT_FOUND
+        return dict(error='No courses found for this user for given time period'), HTTPStatus.NOT_FOUND
     
     return [{
         'email': user_email,
@@ -35,8 +44,8 @@ def get_courses_for_user_controller(user_email):
 def get_course_analytics_controller(course_name, period):
     # Get all evaluations for the course over the period
     # Do not return email addresses associated with the evaluations
-    current_year = datetime.now().year
-    oldest_year = current_year - int(period)
+
+    oldest_year = get_oldest_year_from_period(period)
 
     evals = db.session.query(
         Eval.course, 
@@ -49,9 +58,8 @@ def get_course_analytics_controller(course_name, period):
         cast(Eval.year, Integer) >= oldest_year
     ).all()
 
-    print(evals)
     if not evals:
-        return {'error': 'No courses found'}, HTTPStatus.NOT_FOUND
+        return {'error': 'No courses found for given time period'}, HTTPStatus.NOT_FOUND
     
 
     years = [course.year for course in evals]

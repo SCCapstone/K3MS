@@ -12,10 +12,10 @@ from app.course_analytics_module.controller import (
 def get_course_analytics(course_name, period):
     return get_course_analytics_controller(course_name, period)
 
-@blueprint.route('/get_courses_for_user/<user_email>', methods=['GET'])
+@blueprint.route('/get_courses_for_user/<user_email>/<period>', methods=['GET'])
 @login_required
-def get_courses_for_user(user_email):
-    return get_courses_for_user_controller(user_email)
+def get_courses_for_user(user_email, period):
+    return get_courses_for_user_controller(user_email, period)
 
 @blueprint.route('/get_all_courses_in_db', methods=['GET'])
 @login_required
