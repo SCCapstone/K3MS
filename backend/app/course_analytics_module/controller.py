@@ -49,9 +49,9 @@ def get_course_analytics_controller(course_name, period):
         cast(Eval.year, Integer) >= oldest_year
     ).all()
 
-
+    print(evals)
     if not evals:
-        return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND
+        return {'error': 'No courses found'}, HTTPStatus.NOT_FOUND
     
 
     years = [course.year for course in evals]
@@ -63,7 +63,9 @@ def get_course_analytics_controller(course_name, period):
     median_of_all_course_ratings = np.median(course_ratings)
     median_of_all_instructor_ratings = np.median(instructor_ratings)
     course_ratings_75th_percentile = np.percentile(course_ratings, 75)
-    instructor_ratings_75th_percentile = np.percentile(instructor_ratings, 75)
+    instructor_ratings_75th_percentile = np.percentile(instructor_ratings, 75)\
+    
+    # TODO create a plot with plotly and return the html
 
     return dict(
         mean_of_all_course_ratings=mean_of_all_course_ratings,

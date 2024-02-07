@@ -82,6 +82,9 @@ const CourseAnalytics = () => {
         console.log('error')
       }
     }
+    console.log('courses fetch')
+    console.log(courses)
+    console.log(chosenPerson)
     if (!courses) {
       fetchCourses()
     }
@@ -108,7 +111,9 @@ const CourseAnalytics = () => {
         }})
         setOldestFetched(chosenPeriod)
       }
-      else if (response.status === 401) {
+      else {
+        const data = await response.json()
+        console.log(data.error)
         console.log('error')
       }
     }
@@ -119,9 +124,11 @@ const CourseAnalytics = () => {
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, oldestFetched, anonData])
 
   const choosePerson = (e) => {
+    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+    console.log(chosenPersonTmp)
     courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
-    setChosenPerson(e.target.value)
-    setChosenPersonName(`${chosenPerson.first_name} ${chosenPerson.last_name}`)
+    setChosenPerson(chosenPersonTmp)
+    setChosenPersonName(`${chosenPersonTmp.first_name} ${chosenPersonTmp.last_name}`)
   }
 
   const handleChangeYear = (e) => {
@@ -141,7 +148,7 @@ const CourseAnalytics = () => {
             <h3>Choose Person</h3>
             <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
               { usersToChoose && usersToChoose.map((person, i) =>
-                <option key={i} value={ person }>{ `${person.first_name} ${person.last_name}` }</option>
+                <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
               )}
             </select>
           </div>
