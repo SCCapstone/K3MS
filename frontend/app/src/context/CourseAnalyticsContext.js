@@ -16,7 +16,7 @@ export const courseAnalyticsReducer = (state, action) => {
         ...state, 
         anonData: {
           ...state.anonData,
-          [action.payload.course + action.payload.period]: action.payload.data
+          [action.payload.key]: action.payload.data
         }
       }
     case 'SET_ALL_COURSES':    

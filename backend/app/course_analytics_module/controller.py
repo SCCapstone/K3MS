@@ -7,6 +7,9 @@ from app.extensions import db
 from flask import jsonify
 from sqlalchemy import cast, Integer
 import numpy as np
+import plotly.figure_factory as ff
+import plotly.express as px
+import plotly.io as pio
 
 def get_oldest_year_from_period(period):
     current_year = datetime.now().year
@@ -61,8 +64,17 @@ def get_course_analytics_controller(course_name, period):
     if not evals:
         return {'error': 'No courses found for given time period'}, HTTPStatus.NOT_FOUND
     
+    current_user_mean = db.session.query(
+        db.func.avg(Eval.course_rating_mean).label('ave_course_rating_mean'),
+        db.func.avg(Eval.instructor_rating_mean).label('ave_instructor_rating_mean')
+    ).filter(
+        Eval.email==current_user.email
+    ).filter(
+        cast(Eval.year, Integer) >= oldest_year
+    ).first()
+    print(current_user_mean)
 
-    years = [course.year for course in evals]
+    # years = [course.year for course in evals]
     course_ratings = [course.course_rating_mean for course in evals]
     instructor_ratings = [course.instructor_rating_mean for course in evals]
 
@@ -72,8 +84,6 @@ def get_course_analytics_controller(course_name, period):
     median_of_all_instructor_ratings = np.median(instructor_ratings)
     course_ratings_75th_percentile = np.percentile(course_ratings, 75)
     instructor_ratings_75th_percentile = np.percentile(instructor_ratings, 75)\
-    
-    # TODO create a plot with plotly and return the html
 
     return dict(
         mean_of_all_course_ratings=mean_of_all_course_ratings,
@@ -82,11 +92,15 @@ def get_course_analytics_controller(course_name, period):
         median_of_all_instructor_ratings=median_of_all_instructor_ratings,
         course_ratings_75th_percentile=course_ratings_75th_percentile,
         instructor_ratings_75th_percentile=instructor_ratings_75th_percentile,
-        all_data=[dict(
-            year=course.year,
-            course_rating=course.course_rating_mean,
-            instructor_rating=course.instructor_rating_mean
-        ) for course in evals]
+        # all_data=[dict(
+        #     year=course.year,
+        #     course_rating=course.course_rating_mean,
+        #     instructor_rating=course.instructor_rating_mean
+        # ) for course in evals],
+        plots={
+            'course_rating_plot': plot(course_ratings, current_user_mean[0]),
+            'instructor_rating_plot': plot(instructor_ratings, current_user_mean[1])
+        } if len(course_ratings) > 1 else {'error': 'Not enough data to plot'}
     ), HTTPStatus.OK
 
 def get_all_courses_in_db_controller():
@@ -109,6 +123,8 @@ def get_users_in_chairs_dept_controller():
         User.email,
         User.first_name,
         User.last_name
+    ).filter(
+        User.email != current_user.email
     ).all()
 
     if not users:
@@ -121,3 +137,24 @@ def get_users_in_chairs_dept_controller():
             last_name=user.last_name
         ) for user in users
     ], HTTPStatus.OK
+
+def plot(data, current_user_mean):
+    if len(data) < 2:
+        return
+    
+    mean = np.mean(data)
+    std_dev = np.std(data)
+    import plotly.graph_objects as go
+    # fig = px.histogram(x=data, histnorm='probability density')
+    fig = ff.create_distplot([data], group_labels=['Ave Course Ratings'], bin_size=0.05, show_hist=False)
+    fig.add_vline(x=mean, line_dash="dash", line_color="red", name="Mean")
+    fig.add_vline(x=mean + 2 * std_dev, line_dash="dash", line_color="green", name="+2 Std Dev")
+    fig.add_vline(x=mean - 2 * std_dev, line_dash="dash", line_color="green", name="-2 Std Dev")
+    fig.add_vline(x=current_user_mean, line_dash="solid", line_color="blue", name="Your Mean")
+    fig.update_layout(
+        title="Distribution Plot of Average Course Ratings with Mean and 2 Std Devs",
+        xaxis_title="Data",
+        yaxis_title="Density"
+    )
+
+    return pio.to_json(fig, pretty=True)

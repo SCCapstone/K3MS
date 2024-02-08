@@ -3,6 +3,7 @@ import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import Plot from 'react-plotly.js';
 
 import './course_analytics.css'
 
@@ -20,18 +21,19 @@ const CourseAnalytics = () => {
 
   const [ anonDataKey, setAnonDataKey ] = useState('')
   const [ anonDataError, setAnonDataError ] = useState('')
+  const [ plottingError, setPlottingError ] = useState('')
   const [ coursesError, setCoursesError ] = useState('')
 
   useEffect(() => {
     setAnonDataKey(chosenCourse.course + chosenPeriod)
-  }, [chosenCourse, chosenPeriod])
+  })
 
-    // Don't allow non-logged in users to access this page
-    useEffect(() => {
-      if (!user) {
-        navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
-      }
-    }, [user, navigate]);
+  // Don't allow non-logged in users to access this page
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchAllCourses = async () => {
@@ -54,6 +56,8 @@ const CourseAnalytics = () => {
 
   // Fetch users to choose from
   useEffect(() => {
+    if (user && user.position !== 'chair')
+      return
     const fetchUsersToChoose = async () => {
       const response = await fetch(`${COURSE_ANALYTICS_URLS.getUsersToChoose}`, {
         method: 'GET',
@@ -62,8 +66,14 @@ const CourseAnalytics = () => {
 
       if (response.ok) {
         const data = await response.json()
-        console.log(data)
-        courseAnalyticsDispatch({type: 'SET_USERS_TO_CHOOSE', payload: data})
+        courseAnalyticsDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
+          {
+            email: user.email, 
+            first_name: user.first_name,
+            last_name: user.last_name,
+          }, 
+          ...data
+        ]})
       }
       else {
         console.log('error')
@@ -94,6 +104,7 @@ const CourseAnalytics = () => {
         const data = await response.json()
         if (data && data.error) {
           setCoursesError(data.error)
+          setPlottingError(data.error)
         }
         else {
           setCoursesError('An error occurred')
@@ -122,13 +133,16 @@ const CourseAnalytics = () => {
       if (response.ok) {
         const data = await response.json()
         courseAnalyticsDispatch({type: 'SET_ANON_DATA', payload: {
-          // TODO replace with anonDataKey
-          course: chosenCourse.course,
+          key: chosenCourse.course + chosenPeriod,
           data: data,
-          period: chosenPeriod
         }})
-        // setOldestFetched(chosenPeriod)
         setAnonDataError('')
+        if (data.plots.error) {
+          setPlottingError(data.plots.error)
+        }
+        else {
+          setPlottingError(data.plots.error)
+        }
       }
       else {
         const data = await response.json()
@@ -141,10 +155,7 @@ const CourseAnalytics = () => {
       }
     }
 
-    // if (!anonData || !anonData[chosenCourse.course] || chosenPeriod > oldestFetched) {
-    console.log('prefetch')
-    if (!(anonData && anonData[anonDataKey])) {
-      console.log('fetching')
+    if (!(anonData && anonData[chosenCourse.course + chosenPeriod])) {
       fetchCourseAnalytics()
     }
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, anonData])
@@ -166,9 +177,9 @@ const CourseAnalytics = () => {
   return (
     <div className="courseAnalyticsBody">
       <h1 className="pageHeader">Course Analytics</h1>
-      <div className='courseAnalyticsCard'>        
+      <div className='courseAnalyticsCard'>
         <h2>Choose Course</h2>
-        {user && user.position === 'chair' &&
+        { user && user.position === 'chair' &&
           <div className='choosePersonDropdown'>
             <h3>Choose Person</h3>
             <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
@@ -198,41 +209,57 @@ const CourseAnalytics = () => {
         </div>
 
         <div className='courseAnalyticsTable'>
-        <h2>Data for {courses ? chosenCourse.course : ''}</h2>
-        { anonDataError && <p>{ anonDataError }</p> }
-        <table border="1">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Course Rating</th>
-              <th>Instructor Rating</th>
-            </tr>
-          </thead>
-          { courses && anonData && chosenCourse &&
-            <tbody>
+          <h2>Data for {courses ? chosenCourse.course : ''}</h2>
+          { anonDataError && <p>{ anonDataError }</p> }
+          <table border="1">
+            <thead>
               <tr>
-                <th>{ chosenPersonName }</th>
-                <td>{ courses ? chosenCourse.ave_course_rating_mean.toFixed(DEC_PLACES) : '' }</td>
-                <td>{ courses ? chosenCourse.ave_instructor_rating_mean.toFixed(DEC_PLACES) : '' }</td>
+                <th></th>
+                <th>Course Rating</th>
+                <th>Instructor Rating</th>
               </tr>
-              <tr>
-                <th>Average</th>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-              </tr>
-              <tr>
-                <th>Median</th>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-              </tr>
-              <tr>
-                <th>75%</th>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].course_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].instructor_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
-              </tr>
-            </tbody>
-            }
-        </table>
+            </thead>
+            { courses && anonData && chosenCourse &&
+              <tbody>
+                <tr>
+                  <th>{ chosenPersonName }</th>
+                  <td>{ courses ? chosenCourse.ave_course_rating_mean.toFixed(DEC_PLACES) : '' }</td>
+                  <td>{ courses ? chosenCourse.ave_instructor_rating_mean.toFixed(DEC_PLACES) : '' }</td>
+                </tr>
+                <tr>
+                  <th>Average</th>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                </tr>
+                <tr>
+                  <th>Median</th>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                </tr>
+                <tr>
+                  <th>75%</th>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].course_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].instructor_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
+                </tr>
+              </tbody>
+              }
+          </table>
+        </div>
+        <div className="analyticsPlot">
+          { plottingError && <p>{ plottingError }</p> }
+          <h2>Course Ratings Over Time</h2>
+          { anonData && anonData[anonDataKey] && !anonData[anonDataKey].plots.error && !plottingError &&
+            <div>
+              <Plot 
+                data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
+                layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+              />
+              <Plot 
+                data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
+                layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+              />
+            </div>
+          }
         </div>
       </div>
     </div>
