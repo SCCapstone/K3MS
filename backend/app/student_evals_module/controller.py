@@ -37,7 +37,7 @@ def eval_upload_controller(request):
         evals, eval_details, skipped_rows = parse_and_upload_excel(fbytes)
 
         db.session.add_all(evals)
-        db.session.add_all(eval_details)
+        # db.session.add_all(eval_details)
         db.session.commit()
 
         if skipped_rows:
@@ -96,6 +96,7 @@ def parse_and_upload_excel(fbytes):
             semester = row['period'].split(' ')[0]
             year = row['period'].split(' ')[-1]
             course = row['course'].split('-')[0]
+            section = row['course'].split('-')[1]
             instructor_type = row['form of address']
             participants_count = row['participants']
             number_of_returns = row['no. of returns']
@@ -107,6 +108,7 @@ def parse_and_upload_excel(fbytes):
                 first_name=None, 
                 last_name=None, 
                 year=None, 
+                section=None,
                 semester=None, 
                 course=None, 
                 reason='Fields are missing'
@@ -120,7 +122,8 @@ def parse_and_upload_excel(fbytes):
             last_name=last_name,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         )
 
         # Get email from user table
@@ -137,13 +140,15 @@ def parse_and_upload_excel(fbytes):
             email=email,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         ).first()
         details_row_exists = EvaluationDetails.query.filter_by(
             email=email,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         ).first()
         if row_exists or details_row_exists:
             skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
@@ -155,6 +160,7 @@ def parse_and_upload_excel(fbytes):
             year=year,
             semester=semester,
             course=course,
+            section=section,
             instructor_type=instructor_type,
             participants_count=participants_count,
             number_of_returns=number_of_returns,
@@ -180,6 +186,7 @@ def parse_and_upload_excel(fbytes):
                 year=year,
                 semester=semester,
                 course=course,
+                section=section,
                 question_id=i,
                 mean=mean,
                 std=std,
@@ -192,5 +199,6 @@ def parse_and_upload_excel(fbytes):
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
     print(skipped_entries)
+    
     return evals, details_rows, skipped_entries
         

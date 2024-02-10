@@ -125,6 +125,8 @@ def get_users_in_chairs_dept_controller():
         User.last_name
     ).filter(
         User.email != current_user.email
+    ).filter(
+        User.position != 'chair'
     ).all()
 
     if not users:
