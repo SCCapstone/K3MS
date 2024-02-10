@@ -174,43 +174,51 @@ const CourseAnalytics = () => {
     setChosenCourse(courses[e.target.value])
   }
   return (
-    <div className="courseAnalyticsBody">
+    <div className="courseAnalytics">
       <h1 className="pageHeader">Course Analytics</h1>
-      <div className='courseAnalyticsCard'>
-        <h2>Choose Course</h2>
-        { user && user.position === 'chair' &&
-          <div className='choosePersonDropdown'>
-            <h3>Choose Person</h3>
-            <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
-              { usersToChoose && usersToChoose.map((person, i) =>
-                <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-              )}
-            </select>
+      <div className='courseAnalyticsBody'>
+        <div className='courseAnalyticsCard'>
+          <h1>Filters</h1>
+          <div className='dropdowns'>
+            { user && user.position === 'chair' &&
+              <div className='choosePersonDropdown dropdownBox'>
+                <h3>Choose Person</h3>
+                <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
+                  { usersToChoose && usersToChoose.map((person, i) =>
+                    <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
+                  )}
+                </select>
+              </div>
+            }
+            { coursesError && <p>{ coursesError }</p> }
+            <div className="chooseCourseDropdown dropdownBox">
+              <h3>Courses for { chosenPersonName}</h3>
+              <select name="course" id="course" className="dropdown" required onChange={ handleChangeCourse }>
+                { courses && courses.map((course, i) => 
+                  <option key={i} value={i}>{ course.course }</option>
+                )}
+              </select>
+            </div>
+            <div className="searchCourse dropdownBox">
+              <h3>Search All Courses</h3>
+              <input type="text" id="course" className="dropdown" placeholder="Search for a course" />
+            </div>
+            <div className="choosePeriodDropdown dropdownBox">
+              <h3>Showing Data From</h3>
+              <select name="course" id="course" className="dropdown" required onChange={ handleChangeYear }>
+                <option value={1}>Last Year</option>
+                <option value={5}>Last Five Years</option>
+                <option value={10}>Last Ten Years</option>
+                <option value={1000}>All Time</option>
+              </select>
+            </div>
           </div>
-        }
-        { coursesError && <p>{ coursesError }</p> }
-        <div className='dropdowns'>
-          <h3>Courses for { chosenPersonName}</h3>
-          <select name="course" id="course" className="dropdown" required onChange={ handleChangeCourse }>
-            { courses && courses.map((course, i) => 
-              <option key={i} value={i}>{ course.course }</option>
-            )}
-          </select>
-          <h3>Search for a Course</h3>
-          <input type="text" id="course" className="dropdown" placeholder="Search for a course" />
-          <h3>Showing Data From</h3>
-          <select name="course" id="course" className="dropdown" required onChange={ handleChangeYear }>
-            <option value={1}>Last Year</option>
-            <option value={5}>Last Five Years</option>
-            <option value={10}>Last Ten Years</option>
-            <option value={1000}>All Time</option>
-          </select>
         </div>
 
-        <div className='courseAnalyticsTable'>
-          <h2>Data for {courses ? chosenCourse.course : ''}</h2>
+        <div className='analyticsTableDiv'>
+          <h1>Data for {courses ? chosenCourse.course : ''}</h1>
           { anonDataError && <p>{ anonDataError }</p> }
-          <table border="1">
+          <table className="analyticsTable">
             <thead>
               <tr>
                 <th></th>
@@ -242,19 +250,29 @@ const CourseAnalytics = () => {
             </tbody>
           </table>
         </div>
+
         <div className="analyticsPlot">
           { plottingError && <p>{ plottingError }</p> }
-          <h2>Course Ratings Over Time</h2>
           { anonData && anonData[anonDataKey] && !anonData[anonDataKey].plots.error && !plottingError &&
             <div>
-              <Plot 
-                data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
-                layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-              />
-              <Plot 
-                data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
-                layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-              />
+              <div>
+                <h1>Course Rating Distribution</h1>
+                <div className="plot">
+                  <Plot
+                    data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
+                    layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+                  />
+                </div>
+              </div>
+              <div>
+                <h1>Instructor Rating Distribution</h1>
+                <div className="plot">
+                  <Plot 
+                    data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
+                    layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+                  />
+                </div>
+              </div>
             </div>
           }
         </div>

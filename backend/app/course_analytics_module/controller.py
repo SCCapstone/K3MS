@@ -72,7 +72,6 @@ def get_course_analytics_controller(course_name, period):
     ).filter(
         cast(Eval.year, Integer) >= oldest_year
     ).first()
-    print(current_user_mean)
 
     # years = [course.year for course in evals]
     course_ratings = [course.course_rating_mean for course in evals]
@@ -98,8 +97,8 @@ def get_course_analytics_controller(course_name, period):
         #     instructor_rating=course.instructor_rating_mean
         # ) for course in evals],
         plots={
-            'course_rating_plot': plot(course_ratings, current_user_mean[0]),
-            'instructor_rating_plot': plot(instructor_ratings, current_user_mean[1])
+            'course_rating_plot': plot(course_ratings, current_user_mean[0], 'Course'),
+            'instructor_rating_plot': plot(instructor_ratings, current_user_mean[1], 'Instructor')
         } if len(course_ratings) > 1 else {'error': 'Not enough data to plot'}
     ), HTTPStatus.OK
 
@@ -140,23 +139,30 @@ def get_users_in_chairs_dept_controller():
         ) for user in users
     ], HTTPStatus.OK
 
-def plot(data, current_user_mean):
+def plot(data, current_user_mean, metric):
     if len(data) < 2:
         return
     
     mean = np.mean(data)
     std_dev = np.std(data)
     import plotly.graph_objects as go
-    # fig = px.histogram(x=data, histnorm='probability density')
-    fig = ff.create_distplot([data], group_labels=['Ave Course Ratings'], bin_size=0.05, show_hist=False)
-    fig.add_vline(x=mean, line_dash="dash", line_color="red", name="Mean")
-    fig.add_vline(x=mean + 2 * std_dev, line_dash="dash", line_color="green", name="+2 Std Dev")
-    fig.add_vline(x=mean - 2 * std_dev, line_dash="dash", line_color="green", name="-2 Std Dev")
-    fig.add_vline(x=current_user_mean, line_dash="solid", line_color="blue", name="Your Mean")
+    fig = ff.create_distplot([data], group_labels=[f'Mean {metric} Ratings'], bin_size=0.05, show_hist=False)
+    fig.add_vline(x=mean, line_dash="dash", line_color="red", name="Mean", showlegend=True)
+    fig.add_vline(x=mean + 1 * std_dev, line_dash="dash", line_color="green", name="+1 Std Dev", showlegend=True)
+    fig.add_vline(x=mean - 1 * std_dev, line_dash="dash", line_color="green", name="-1 Std Dev", showlegend=True)
+    fig.add_vline(x=current_user_mean, line_dash="solid", line_color="blue", name="Your Mean", showlegend=True)
     fig.update_layout(
-        title="Distribution Plot of Average Course Ratings with Mean and 2 Std Devs",
-        xaxis_title="Data",
-        yaxis_title="Density"
+        title=f"Distribution Plot of Mean {metric} Ratings for each Section Taught",
+        xaxis_title=f'Mean {metric} Rating',
+        yaxis_title="Density",
+        height=600,
+        width=800,
+        legend=dict(
+            yanchor="top",
+            y=-0.35,
+            xanchor="center",
+            x=0.5
+        )
     )
 
     return pio.to_json(fig, pretty=True)

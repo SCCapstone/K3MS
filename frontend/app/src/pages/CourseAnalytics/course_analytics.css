@@ -1,53 +1,91 @@
-
-/* display currentCourses in a 2 column grid */
-.courses {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0px;
-  padding: 20px;
+.courseAnalytics {
+  color: var(--cardtext);
 }
-
-  .dropdowns {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
+  .courseAnalyticsBody {
+    margin-top: 20px;
   }
 
-.courseAnalyticsCard {
-  margin: 50px auto;
-  padding: 5px;
-  background-color: var(--cardbg);
-  color: var(--cardtext);
-  box-shadow: 1px 0px 4px black;
-  border-radius: 20px;
-  width: 80%;
-}
+  .courseAnalyticsBody h1 {
+    padding: 10px;
+    font-size: 2em;
+    text-align: center;
+  }
 
-.courseAnalyticsCard h1 {
-  color: black;
-  text-align: left;
-  padding: 10px 40px;
-  font-size: 1.5em;
-}
+  .courseAnalyticsCard {
+    margin: 50px auto;
+    padding: 5px;
+    background-color: var(--cardbg);
+    color: var(--cardtext);
+    box-shadow: 1px 0px 4px black;
+    border-radius: 20px;
+    width: 60%;
+  }
+    .courseAnalyticsCard h1 {
+      margin-bottom: 2px;
+    }
 
-.courseAnalyticsCardContent {
-  padding: 20px 50px;
-  font-size: 1.5em;
-  font-weight: bold;
-}
+    .dropdowns {
+      display: flex;
+      padding: 20px;
+      justify-content: space-around;
+      align-items: end;
+    }
 
-.courseAnalyticsCardContent button {
-  width: 100%;
-  background-color: var(--cardtext);
-  border: none;
-  cursor: pointer;
-  color: white;
-  font-size: 16px;
-  font-weight: 900;
-  padding: 10px;
-  text-decoration: none;
-  text-transform: uppercase;
-  border-radius: 5%;
-  margin: 10px 0;
-}
+    .dropdownBox {
+      flex: 1 1 0px;
+      padding: 10px;
+    }
+    .dropdown {
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      padding: 7px;
+      border: thin solid var(--cardtext);
+      background: transparent;
+      margin-bottom: 20px;
+      font: 16px Arial, Helvetica, sans-serif;
+      height: 45px;
+      color: var(--cardtext);
+    }
+  
+  .analyticsTableDiv {
+    margin: 100px 0px;
+  }
+  .analyticsTable {
+    border-collapse: collapse;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    width: 40%;
+    margin: auto;
+  }
+    .analyticsTable thead tr {
+      background-color: var(--cardtext);
+      color: #ffffff;
+      text-align: center;
+    }
 
+    .analyticsTable th, .analyticsTable td {
+      padding: 12px 15px;
+      text-align: center;
+    }
+
+    .analyticsTable tbody tr {
+      border-bottom: 1px solid #dddddd;
+    }
+    
+    .analyticsTable tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+    
+    .analyticsTable tbody tr:last-of-type {
+        border-bottom: 2px solid var(--cardtext);
+    }
+
+  .courseAnalytics .plot {
+    margin: 50px auto;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    border: black solid thin;
+  }
