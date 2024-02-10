@@ -37,7 +37,7 @@ def eval_upload_controller(request):
         evals, eval_details, skipped_rows = parse_and_upload_excel(fbytes)
 
         db.session.add_all(evals)
-        # db.session.add_all(eval_details)
+        db.session.add_all(eval_details)
         db.session.commit()
 
         if skipped_rows:
@@ -199,6 +199,7 @@ def parse_and_upload_excel(fbytes):
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
     print(skipped_entries)
+    print(details_rows)
     
     return evals, details_rows, skipped_entries
         

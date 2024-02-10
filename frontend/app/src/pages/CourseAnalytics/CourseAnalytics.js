@@ -13,7 +13,6 @@ const CourseAnalytics = () => {
   const { user } = useAuthContext()
   const { usersToChoose, courses, anonData, allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
-  const [ oldestFetched, setOldestFetched ] = useState(0)
   const [ chosenPerson, setChosenPerson ] = useState(user)
   const [ chosenPersonName, setChosenPersonName ] = useState(`${user.first_name} ${user.last_name}`)
   const [ chosenCourse, setChosenCourse ] = useState('')
@@ -154,7 +153,7 @@ const CourseAnalytics = () => {
         }
       }
     }
-
+    
     if (!(anonData && anonData[chosenCourse.course + chosenPeriod])) {
       fetchCourseAnalytics()
     }
@@ -219,30 +218,28 @@ const CourseAnalytics = () => {
                 <th>Instructor Rating</th>
               </tr>
             </thead>
-            { courses && anonData && chosenCourse &&
-              <tbody>
-                <tr>
-                  <th>{ chosenPersonName }</th>
-                  <td>{ courses ? chosenCourse.ave_course_rating_mean.toFixed(DEC_PLACES) : '' }</td>
-                  <td>{ courses ? chosenCourse.ave_instructor_rating_mean.toFixed(DEC_PLACES) : '' }</td>
-                </tr>
-                <tr>
-                  <th>Average</th>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].mean_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                </tr>
-                <tr>
-                  <th>Median</th>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_course_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].median_of_all_instructor_ratings.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                </tr>
-                <tr>
-                  <th>75%</th>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].course_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                  <td>{ anonData ? (anonData[anonDataKey] ? anonData[anonDataKey].instructor_ratings_75th_percentile.toFixed(DEC_PLACES) : '' ) : ''}</td>
-                </tr>
-              </tbody>
-              }
+            <tbody>
+              <tr>
+                <th>{ chosenPersonName }</th>
+                <td>{ chosenCourse?.ave_course_rating_mean?.toFixed(DEC_PLACES) }</td>
+                <td>{ chosenCourse?.ave_instructor_rating_mean?.toFixed(DEC_PLACES) }</td>
+              </tr>
+              <tr>
+                <th>Average</th>
+                <td>{ anonData?.[anonDataKey]?.mean_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
+                <td>{ anonData?.[anonDataKey]?.mean_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
+              </tr>
+              <tr>
+                <th>Median</th>
+                <td>{ anonData?.[anonDataKey]?.median_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
+                <td>{ anonData?.[anonDataKey]?.median_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
+              </tr>
+              <tr>
+                <th>75%</th>
+                <td>{ anonData?.[anonDataKey]?.course_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
+                <td>{ anonData?.[anonDataKey]?.instructor_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div className="analyticsPlot">
