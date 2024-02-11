@@ -24,6 +24,17 @@
       margin-bottom: 2px;
     }
 
+    .dropDownError {
+      color: var(--error);;
+      text-align: center;
+      width: 50%;
+      margin: 10px;
+      padding: 10px;
+      font-size: 1.3em;
+      border: solid thin;
+      margin-bottom: 30px;
+    }
+
     .dropdowns {
       display: flex;
       padding: 20px;
@@ -47,6 +58,11 @@
       height: 45px;
       color: var(--cardtext);
     }
+
+  .anonDataError {
+    color: var(--error);
+    text-align: center;
+  }
   
   .analyticsTableDiv {
     margin: 100px 0px;
@@ -81,6 +97,16 @@
     .analyticsTable tbody tr:last-of-type {
         border-bottom: 2px solid var(--cardtext);
     }
+
+  .plottingError {
+    color: var(--error);
+    text-align: center;
+    width: 50% auto;
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.3em;
+    margin-bottom: 30px;
+  }
 
   .courseAnalytics .plot {
     margin: 50px auto;

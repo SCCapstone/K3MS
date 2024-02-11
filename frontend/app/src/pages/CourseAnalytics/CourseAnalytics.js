@@ -10,6 +10,12 @@ import './course_analytics.css'
 const CourseAnalytics = () => {
   const navigate = useNavigate()
 
+  useEffect(()=>{
+    console.log(coursesError)
+    console.log(anonDataError)
+    console.log(plottingError)
+  })
+
   const { user } = useAuthContext()
   const { usersToChoose, courses, anonData, allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
@@ -157,6 +163,15 @@ const CourseAnalytics = () => {
     if (!(anonData && anonData[chosenCourse.course + chosenPeriod])) {
       fetchCourseAnalytics()
     }
+    else {
+      if (anonData[chosenCourse.course + chosenPeriod].plots?.error) {
+        setPlottingError(anonData[chosenCourse.course + chosenPeriod].plots?.error)
+      }
+      else {
+        setPlottingError('')
+      }
+      setAnonDataError('')
+    }
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, anonData])
 
   const choosePerson = (e) => {
@@ -167,6 +182,7 @@ const CourseAnalytics = () => {
   }
 
   const handleChangeYear = (e) => {
+    courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
     setChosenPeriod(parseInt(e.target.value))
   }
 
@@ -190,19 +206,22 @@ const CourseAnalytics = () => {
                 </select>
               </div>
             }
-            { coursesError && <p>{ coursesError }</p> }
-            <div className="chooseCourseDropdown dropdownBox">
-              <h3>Courses for { chosenPersonName}</h3>
-              <select name="course" id="course" className="dropdown" required onChange={ handleChangeCourse }>
-                { courses && courses.map((course, i) => 
-                  <option key={i} value={i}>{ course.course }</option>
-                )}
-              </select>
-            </div>
-            <div className="searchCourse dropdownBox">
-              <h3>Search All Courses</h3>
-              <input type="text" id="course" className="dropdown" placeholder="Search for a course" />
-            </div>
+            { coursesError ? <p className='dropDownError'>{ coursesError }</p> :
+              <>
+                <div className="chooseCourseDropdown dropdownBox">
+                  <h3>Courses for { chosenPersonName}</h3>
+                  <select name="course" id="course" className="dropdown" required onChange={ handleChangeCourse }>
+                    { courses && courses.map((course, i) => 
+                      <option key={i} value={i}>{ course.course }</option>
+                    )}
+                  </select>
+                </div>
+                <div className="searchCourse dropdownBox">
+                  <h3>Search All Courses</h3>
+                  <input type="text" id="course" className="dropdown" placeholder="Search for a course" />
+                </div>
+              </>
+            }
             <div className="choosePeriodDropdown dropdownBox">
               <h3>Showing Data From</h3>
               <select name="course" id="course" className="dropdown" required onChange={ handleChangeYear }>
@@ -217,7 +236,7 @@ const CourseAnalytics = () => {
 
         <div className='analyticsTableDiv'>
           <h1>Data for {courses ? chosenCourse.course : ''}</h1>
-          { anonDataError && <p>{ anonDataError }</p> }
+          { anonDataError && <p className='anonDataError'>{ anonDataError }</p> }
           <table className="analyticsTable">
             <thead>
               <tr>
@@ -252,28 +271,31 @@ const CourseAnalytics = () => {
         </div>
 
         <div className="analyticsPlot">
-          { plottingError && <p>{ plottingError }</p> }
-          { anonData && anonData[anonDataKey] && !anonData[anonDataKey].plots.error && !plottingError &&
-            <div>
-              <div>
-                <h1>Course Rating Distribution</h1>
-                <div className="plot">
-                  <Plot
-                    data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
-                    layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-                  />
-                </div>
-              </div>
-              <div>
-                <h1>Instructor Rating Distribution</h1>
-                <div className="plot">
-                  <Plot 
-                    data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
-                    layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-                  />
-                </div>
-              </div>
-            </div>
+          { plottingError ? <p className='plottingError'>{ plottingError }</p> :
+            <>
+              { anonData?.[anonDataKey]?.plots && !anonData[anonDataKey].plots.error &&
+                <>
+                  <div>
+                    <h1>Course Rating Distribution</h1>
+                    <div className="plot">
+                      <Plot
+                        data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
+                        layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h1>Instructor Rating Distribution</h1>
+                    <div className="plot">
+                      <Plot 
+                        data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
+                        layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
+                      />
+                    </div>
+                  </div>
+                </>
+              }
+            </>
           }
         </div>
       </div>
