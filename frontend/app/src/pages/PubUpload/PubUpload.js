@@ -50,8 +50,9 @@ function PubUpload() {
       setError(null)
       setEmptyFields([])
       setTitle('')
-      setAmount('')
-      setYear('')
+      setAuthors('')
+      setPublicationYear('')
+      setISBN('')
 
       // Navigate To Publications Page
       navigate('/research-info', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})

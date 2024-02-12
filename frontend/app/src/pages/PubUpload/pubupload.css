@@ -1,67 +1,75 @@
-/* pubupload.css */
-
-.pubupload-container {
-  text-align: center;
-}
-
-.pubuploadPageHeader {
+.pubUploadPageHeader {
   font-size: 3em;
+  width: 100%;
   padding: 10px;
   padding-top: 50px;
-  margin: 0;
+  margin: 0px 0px 10px 0px;
+  text-align: center;
   color: var(--cardtext);
 }
 
-.PubUpload {
+.pubUploadCard {
   margin: 100px auto;
-  padding: 20px;
+  padding: 5px;
   background-color: var(--cardbg);
   color: var(--cardtext);
   box-shadow: 1px 0px 4px black;
   border-radius: 20px;
-  width: 60%;
-  max-width: 600px;
+  width: 40%;
 }
 
-.pubupload-form {
-  margin: 20px 0;
-}
-
-.pubupload-form-heading {
+.pubUploadCard h1 {
   text-align: center;
   padding: 10px;
   font-size: 2em;
 }
 
-.pubupload-form-input {
+.pubUploadCard form {
+  margin: 20px;
+}
+
+.pubUploadCard input {
   width: 100%;
   box-sizing: border-box;
   outline: none;
-  padding: 10px;
+  padding: 7px;
   border: none;
   border-bottom: 1px solid var(--cardtext);
   background: transparent;
   margin-bottom: 20px;
   font: 16px Arial, Helvetica, sans-serif;
   height: 45px;
-  color: var(--cardtext);
+  color: var(--cardtext)
 }
 
-.pubupload-form-button {
-  width: 100%;
+.pubUploadCard button {
+  width: 30%;
   background-color: var(--cardtext);
   border: none;
+  display: block;
   cursor: pointer;
   color: white;
   font-size: 16px;
   font-weight: 900;
-  padding: 10px;
+  padding: 8px 18px;
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 5%;
-  margin: 10px 0;
+  margin: 10px auto;
 }
 
-.pubupload-form-button:hover {
+.pubUploadCard button:hover {
   background-color: var(--hover);
+}
+
+.pubUploadCard .errorField {
+  border-color: var(--error);
+  margin-top: 10px;
+}
+.pubUploadCard .errorField::placeholder {
+  color: var(--error);
+}
+
+.errorField {
+  color: var(--error);
 }
