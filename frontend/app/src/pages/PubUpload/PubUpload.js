@@ -91,7 +91,7 @@ function PubUpload() {
               type="text" 
               onChange={(e) => setISBN(e.target.value)} 
               value={ isbn } 
-              placeholder="ISBN"
+              placeholder="ISBN (Optional)"
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
             <button>Upload</button>
