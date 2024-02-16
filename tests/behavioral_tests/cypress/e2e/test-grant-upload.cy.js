@@ -1,4 +1,4 @@
-describe('template spec', () => {
+describe('Grant Upload Test Spec', () => {
   // login before each
   beforeEach(() => {
     cy.visit(Cypress.env('baseUrl'))
