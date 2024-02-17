@@ -1,0 +1,89 @@
+
+/* display currentCourses in a 2 column grid */
+
+.course_details {
+  display: flex;
+  justify-content: center; /* Move the dropdown to the right */
+}
+
+.studentEvalsDetailsCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.studentEvalsDetailsCard h1 {
+  color: black;
+  text-align: center;
+  padding: 10px 40px;
+  font-size: 2.5em;
+  text-transform: capitalize;
+}
+
+/* Below is the spacer betweeen the questions, adjust for positioning */
+.SPACER {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.questions {
+  text-transform: capitalize;
+}
+
+.studentEvalsDetailsCardContent {
+  padding: 20px 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.studentEvalsDetailsCardContent p {
+  margin: 10px 0;
+}
+
+.studentEvalsDetailsCardContent button {
+  width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+
+.dropdown {
+  display: flex;
+  justify-content: center; /* Move the dropdown to the right */
+  padding: 10px 60px;
+
+}
+
+.dropdown select{
+  color: rgb(255, 255, 255);
+  text-align: left;
+  padding: 10px 40px;
+  font-size: 16px;
+  font-weight: 900;
+  background-color:  var(--cardtext);
+  margin: 40px 0;
+  text-transform: capitalize;
+
+}
+
+.dropdown select option{
+  color: rgb(255, 255, 255);
+  text-align: left;
+  padding: 10px 40px;
+  font-size: 16px;
+  font-weight: 900;
+  background-color:  var(--cardtext);
+  text-transform: capitalize;
+}
