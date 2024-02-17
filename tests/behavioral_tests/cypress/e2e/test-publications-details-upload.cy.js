@@ -89,14 +89,6 @@ describe('Publication Details Upload Test Spec', () => {
   
       // Check that redirected to research info page or if test publication already exists
       cy.wait(500)
-      cy.url().then(url => {
-        if (url === Cypress.env('baseUrl' + '/research-info')) {
-          // URL matches, no need to check text
-          cy.url().should('include', '/research-info')
-        } else {
-          // URL doesn't match, check for text
-          cy.contains('Publication Already Exists')
-        }
-      });
+      cy.url().should('include', '/research-info')
     })
   })
