@@ -1,4 +1,9 @@
-from app.models.student_evaluations import Evaluations as Eval, EvaluationDetails
+from app.models.student_evaluations import (
+    Evaluations as Eval, 
+    EvaluationDetails as EvalDetails, 
+    EvaluationQuestions as EvalQuestions
+)
+from app.models.student_evaluations import EvaluationDetails
 from app.models.user import User
 from flask_login import current_user
 from http import HTTPStatus
@@ -8,7 +13,7 @@ from flask import jsonify, current_app
 from werkzeug.utils import secure_filename
 import pandas as pd
 from io import BytesIO
-
+from collections import defaultdict
 
 def eval_upload_controller(request):
     try:
@@ -71,8 +76,139 @@ def get_student_evals_controller():
         'ave_instructor_rating_mean': course.ave_instructor_rating_mean
     } for course in courses], HTTPStatus.OK
 
-def get_student_eval_details_controller(course, year, semester):
-    return {'mssg': 'get_student_eval_details - not implemented'}, HTTPStatus.OK
+
+def get_student_evals_details_controller(course_name):
+    email = current_user.email
+    
+    course_evals = db.session.query(
+        Eval.email, 
+        Eval.course,
+        Eval.year,
+        Eval.semester,
+        Eval.section,
+        Eval.instructor_type,
+        Eval.participants_count,
+        Eval.number_of_returns,
+        Eval.course_rating_mean,
+        Eval.instructor_rating_mean,
+    ).filter_by(email=email, course=course_name).group_by(
+        Eval.email, 
+        Eval.course,
+        Eval.year,
+        Eval.semester,
+        Eval.section
+    ).all()
+
+    course_eval_details = db.session.query(
+        EvalDetails.email, 
+        EvalDetails.course,
+        EvalDetails.year,
+        EvalDetails.semester,
+        EvalDetails.section,
+        EvalDetails.question_id,
+        EvalDetails.mean,
+        EvalDetails.std,
+        EvalDetails.median,
+        EvalDetails.returns
+    ).filter_by(email=email, course=course_name).group_by(
+        EvalDetails.email, 
+        EvalDetails.course,
+        EvalDetails.year,
+        EvalDetails.semester,
+        EvalDetails.section,
+        EvalDetails.question_id
+    ).all()
+
+    course_eval_questions = db.session.query(
+        EvalQuestions.question_id, 
+        EvalQuestions.question_text
+    ).group_by(
+        EvalQuestions.question_id, 
+        EvalQuestions.question_text
+    )
+
+    # Create dictionaries to store data from each dataset
+    eval_dict = {(row.email, row.course, row.year, row.semester, row.section): row for row in course_evals}
+    
+    # Stores details for each course
+    eval_dets_dict = defaultdict(list)
+
+    # Create a dictionary to store question_id as key and question_text as value
+    questions_dict = {}
+
+    # Iterate through the query result and construct the dictionary
+    for question_id, question_text in course_eval_questions:
+        questions_dict[question_id] = question_text
+
+    # Add each question to the details
+    for row in course_eval_details:
+        # Get question string
+        if row.question_id in questions_dict:
+            question = questions_dict[row.question_id]
+        else:
+            question = "Fake Question"
+
+        key = (row.email, row.course, row.year, row.semester, row.section)
+        eval_dets_dict[key].append({
+            'question'    : question,
+            'question_id' : row.question_id,
+            'mean'        : row.mean,      
+            'std'         : row.std,       
+            'median'      : row.median,    
+            'returns'     : row.returns   
+        })
+
+    courses = []
+
+    # Iterate through each key in the Eval dictionary
+    for key in eval_dict:
+
+        eval_row = eval_dict[key]
+
+        if key in eval_dets_dict:
+            details = eval_dets_dict[key]
+        else:
+            details = []
+        
+
+        combined_data = {
+            'email'                     : eval_row.email,
+            'course'                    : eval_row.course                ,
+            'year'                      : eval_row.year                  ,
+            'semester'                  : eval_row.semester              ,
+            'section'                   : eval_row.section               ,
+            'instructor_type'           : eval_row.instructor_type       ,
+            'participants_count'        : eval_row.participants_count    ,
+            'number_of_returns'         : eval_row.number_of_returns     ,
+            'course_rating_mean'        : eval_row.course_rating_mean    ,
+            'instructor_rating_mean'    : eval_row.instructor_rating_mean,
+            'details'                   : details
+        }
+        courses.append(combined_data)
+
+    if not courses:
+        return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND
+    
+    return [{
+        'course'                : course.get('course'                , 'N/A'),
+        'year'                  : course.get('year'                  , 'N/A'),
+        'semester'              : course.get('semester'              , 'N/A'),
+        'section'               : course.get('section'               , 'N/A'),
+        'instructor_type'       : course.get('instructor_type'       , 'N/A'),
+        'participants_count'    : course.get('participants_count'    , 'N/A'),
+        'number_of_returns'     : course.get('number_of_returns'     , 'N/A'),
+        'course_rating_mean'    : course.get('course_rating_mean'    , 'N/A'),
+        'instructor_rating_mean': course.get('instructor_rating_mean', 'N/A'),
+        'details': [{
+            'question'          : detail.get('question'             , 'N/A'),
+            'question_id'       : detail.get('question_id'          , 'N/A'),
+            'mean'              : detail.get('mean'                 , 'N/A'),
+            'std'               : detail.get('std'                  , 'N/A'),
+            'median'            : detail.get('median'               , 'N/A'),
+            'returns'           : detail.get('returns'              , 'N/A')
+        } for detail in course.get('details', [])]
+    } for course in courses], HTTPStatus.OK
+
 
 
 def parse_and_upload_excel(fbytes):
@@ -96,6 +232,7 @@ def parse_and_upload_excel(fbytes):
             semester = row['period'].split(' ')[0]
             year = row['period'].split(' ')[-1]
             course = row['course'].split('-')[0]
+            section = row['course'].split('-')[1]
             instructor_type = row['form of address']
             participants_count = row['participants']
             number_of_returns = row['no. of returns']
@@ -107,6 +244,7 @@ def parse_and_upload_excel(fbytes):
                 first_name=None, 
                 last_name=None, 
                 year=None, 
+                section=None,
                 semester=None, 
                 course=None, 
                 reason='Fields are missing'
@@ -120,7 +258,8 @@ def parse_and_upload_excel(fbytes):
             last_name=last_name,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         )
 
         # Get email from user table
@@ -137,13 +276,15 @@ def parse_and_upload_excel(fbytes):
             email=email,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         ).first()
         details_row_exists = EvaluationDetails.query.filter_by(
             email=email,
             year=year,
             semester=semester,
-            course=course
+            course=course,
+            section=section
         ).first()
         if row_exists or details_row_exists:
             skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
@@ -155,6 +296,7 @@ def parse_and_upload_excel(fbytes):
             year=year,
             semester=semester,
             course=course,
+            section=section,
             instructor_type=instructor_type,
             participants_count=participants_count,
             number_of_returns=number_of_returns,
@@ -180,6 +322,7 @@ def parse_and_upload_excel(fbytes):
                 year=year,
                 semester=semester,
                 course=course,
+                section=section,
                 question_id=i,
                 mean=mean,
                 std=std,
@@ -191,6 +334,5 @@ def parse_and_upload_excel(fbytes):
         if skipped:
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
-    print(skipped_entries)
+    
     return evals, details_rows, skipped_entries
-        

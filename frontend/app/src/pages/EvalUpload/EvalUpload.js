@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { EVAL_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
+import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
+import { useStudentEvalsDetailsContext } from '../../hooks/useStudentEvalsDetailsContext';
 import { useNavigate } from "react-router-dom";
 import './evalupload.css';
 
 function EvalUpload() {
 
   const { user } = useAuthContext()
+  const { courses, studentEvalsDispatch } = useStudentEvalsContext()
+  const { courseDetails, studentEvalsDetailsDispatch } = useStudentEvalsDetailsContext()
   
   const navigate = useNavigate()
 
@@ -66,6 +70,8 @@ function EvalUpload() {
 
       if (response.ok) {
         setError(null)
+        studentEvalsDispatch({type: 'SET_COURSES', payload: null})
+        studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
         navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
       }
     } catch (error) {

@@ -1,0 +1,82 @@
+
+/* display currentCourses in a 2 column grid */
+
+.course_details {
+  display: flex;
+  justify-content: center; /* Move the dropdown to the right */
+}
+
+.studentEvalsDetailsCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.studentEvalsDetailsCard h1 {
+  color: black;
+  text-align: center;
+  padding: 10px 40px;
+  font-size: 2.5em;
+  text-transform: capitalize;
+}
+
+/* Below is the spacer betweeen the questions, adjust for positioning */
+.SPACER {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.questions {
+  text-transform: capitalize;
+}
+
+.studentEvalsDetailsCardContent {
+  padding: 20px 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.studentEvalsDetailsCardContent p {
+  margin: 10px 0;
+}
+
+.studentEvalsDetailsCardContent button {
+  width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+.dropdowns {
+  display: flex;
+  padding: 20px;
+  justify-content: space-around;
+  align-items: end;
+}
+.dropdownBox {
+  flex: 1 1 0px;
+  padding: 10px;
+}
+.dropdown {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: thin solid var(--cardtext);
+  background: transparent;
+  margin-bottom: 20px;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+}

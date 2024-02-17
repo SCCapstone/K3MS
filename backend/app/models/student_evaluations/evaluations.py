@@ -8,6 +8,7 @@ class Evaluations(db.Model):
     year: str = db.Column(db.String(100), nullable=False, primary_key=True)
     semester: str = db.Column(db.String(100), nullable=False, primary_key=True) # fall, spring, summer
     course: str = db.Column(db.String(100), nullable=False, primary_key=True)
+    section: str = db.Column(db.String(100), nullable=False, primary_key=True)
     instructor_type: str = db.Column(db.String(100), nullable=False) # form of address field
     participants_count: int = db.Column(db.Integer, nullable=False)
     number_of_returns: int = db.Column(db.Integer, nullable=False)
