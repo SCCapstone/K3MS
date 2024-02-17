@@ -17,8 +17,12 @@ const StudentEvaluationsDetails = () => {
   // TEST for Dropdown
   const [selectedSemester, setSelectedSemester] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const [selectedSection, setSelectedSection] = useState('');
   const [semesterOptions, setSemesterOptions] = useState([]);
   const [yearOptions, setYearOptions] = useState([]);
+  const [sectionOptions, setSectionOptions] = useState([]);
+
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -36,7 +40,6 @@ const StudentEvaluationsDetails = () => {
     setName(course_name);
 
     const fetchStudentEvalsDetails = async () => {
-      // const response = await fetch(STUDENT_EVALS_DETAILS_URL, {
       const response = await fetch(`${STUDENT_EVALS_DETAILS_URL}/${course_name}`, {
         method: 'GET',
         credentials: 'include'
@@ -46,16 +49,13 @@ const StudentEvaluationsDetails = () => {
         const data = await response.json()
         studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: data})
         // Extract available semester and year options for each course
-        const semesters = new Set();
         const years = new Set();
 
         data.forEach(course => {
-          semesters.add(course.semester);
           years.add(course.year);
         });
-
-        setSemesterOptions([...semesters]);
         setYearOptions([...years]);
+        setSelectedYear([...years][0])
       }
       else if (response.status === 401) {
         console.log('error')
@@ -64,92 +64,139 @@ const StudentEvaluationsDetails = () => {
     if (!courses || courses[0].course != course_name) {
       // studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
       fetchStudentEvalsDetails()
-    } else{
-      console.log(courses)
+    } 
+    else {
+      // If context is already set but options are empty, fill them in
+      if (yearOptions.length === 0) {
+      const years = new Set();
+        courses.forEach(course => {
+          years.add(course.year);
+        });
+        setYearOptions([...years]);
+        setSelectedYear([...years][0])
+      }
     }
   }, [courses, studentEvalsDetailsDispatch])
 
-  // Event handler for selecting semester
-  const handleSemesterChange = (event) => {
-    setSelectedSemester(event.target.value);
-  };
-
+  // Always update the semester options when the year changes
   useEffect(() => {
-    console.log("Selected Semester:", selectedSemester);
-  }, [selectedSemester]);
+    if (courses && selectedYear) {
+      const semesters = new Set();
+      courses.forEach(course => {
+        if (course.year === selectedYear) {
+          semesters.add(course.semester);
+        }
+      })
+      setSemesterOptions([...semesters]);
+      setSelectedSemester([...semesters][0])
+    }
+  }, [selectedYear, courses])
+
+  // Always update the section options when the semester changes
+  useEffect(() => {
+    if (courses && selectedSemester) {
+      const sections = new Set();
+      courses.forEach(course => {
+        if (
+          course.year === selectedYear &&
+          course.semester === selectedSemester
+        ) {
+          sections.add(course.section);
+        }
+      })
+      setSectionOptions([...sections]);
+      setSelectedSection([...sections][0])
+    }
+   }, [selectedYear, selectedSemester, courses])
+
+  // Always update the current course based on year, semester, and section
+  useEffect(() => {
+    if (courses && selectedYear && selectedSemester && selectedSection) {
+      courses.forEach(course => {
+        if (
+          course.year === selectedYear &&
+          course.semester === selectedSemester &&
+          course.section === selectedSection
+        ) {
+          // set course
+          setSelectedCourse(course)
+        }
+      })
+    }
+  }, [selectedYear, selectedSemester, selectedSection])
 
   // Event handler for selecting year
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
+  
+  // Event handler for selecting semester
+  const handleSemesterChange = (event) => {
+    setSelectedSemester(event.target.value);
+  };
 
-  useEffect(() => {
-    console.log("Selected Year:", selectedYear);
-  }, [selectedYear]);
+  // Event handler for selecting section
+  const handleSectionChange = (event) => {
+    setSelectedSection(event.target.value);
+  };
 
   return (
     <div className="studentEvalsDetailsBody">
       <h1 className="pageHeader">{name} Evaluation Details</h1>
-      <div className="dropdown">
-        {/* Dropdown for selecting semester */}
-        <select value={selectedSemester} onChange={handleSemesterChange}>
-          <option value="">Select Semester</option>
-          {/* Map over semester options and populate the dropdown */}
-          {/* Assuming semesterOptions is an array of semester options */}
-          {semesterOptions.map((semester) => (
-            <option key={semester} value={semester}>
-              {semester}
-            </option>
-          ))}
-        </select>
-        {/* Dropdown for selecting year */}
-        <select value={selectedYear} onChange={handleYearChange}>
-          <option value="">Select Year</option>
-          {/* Map over year options and populate the dropdown */}
-          {/* Assuming yearOptions is an array of year options */}
-          {yearOptions.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+      <div className="studentEvalsCard">
+        <h1>Filters</h1>
+        <div className='dropdowns'>
+          <div className='dropdownBox'>
+            <h3>Year</h3>
+            <select className='dropdown' value={selectedYear} onChange={handleYearChange}>
+              {yearOptions.map((year) => (
+                <option key={ year } value={ year }>{ year }</option>
+              ))}
+            </select>
+          </div>
+          <div className='dropdownBox'>
+            <h3>Semester</h3>
+            <select className='dropdown' value={selectedSemester} onChange={handleSemesterChange}>
+              {semesterOptions.map((semester) => (
+                <option key={ semester } value={ semester }>{ semester }</option>
+              ))}
+            </select>
+          </div>
+          <div className='dropdownBox'>
+            <h3>Section</h3>
+            <select className='dropdown' value={selectedSection} onChange={handleSectionChange}>
+              {sectionOptions.map((section) => (
+                <option key={ section } value={ section }>{ section }</option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
       <div className="course_details">
-        {courses &&
-          courses.map((course, i) => {
-            // Check if the course matches the selected semester and year
-            if (course.semester === selectedSemester && course.year === selectedYear) {
-              return (
-                <div className="studentEvalsDetailsCard" key={i}>
-                  <h1>{course.semester} {course.year}</h1>
-                  <div className="studentEvalsDetailsCardContent">
-                    
-                    <p>Instructor_type       :     {course.instructor_type                  }</p>
-                    <p>Participants_count    :     {course.participants_count               }</p>
-                    <p>Number_of_returns     :     {course.number_of_returns                }</p>
-                    <p>Course_rating_mean    :     {course.course_rating_mean               }</p>
-                    <p>Instructor_rating_mean:     {course.instructor_rating_mean           }</p>
-                    <div className='questions'>
-                      {course.details.map((detail, j) => (
-                        
-                        <div key={j}>
-                          <div className="SPACER">_</div>
-                          <p>{detail.question_id}. {detail.question}</p>
-                          <p>Mean: {detail.mean}</p>
-                          <p>STD: {detail.std}</p>
-                          <p>Median: {detail.median}</p>
-                          <p>Returns: {detail.returns}</p>
-                        </div>
-                      ))}
-                    </div>
+        {selectedCourse &&
+          <div className="studentEvalsDetailsCard">
+            <h1>{selectedCourse.semester} {selectedCourse.year} {selectedCourse.section}</h1>
+            <div className="studentEvalsDetailsCardContent">
+              <p>Instructor_type       :     {selectedCourse.instructor_type                  }</p>
+              <p>Participants_count    :     {selectedCourse.participants_count               }</p>
+              <p>Number_of_returns     :     {selectedCourse.number_of_returns                }</p>
+              <p>Course_rating_mean    :     {selectedCourse.course_rating_mean               }</p>
+              <p>Instructor_rating_mean:     {selectedCourse.instructor_rating_mean           }</p>
+              <div className='questions'>
+                {selectedCourse.details.map((detail, j) => (
+                  <div key={j}>
+                    <div className="SPACER">_</div>
+                    <p>{detail.question_id}. {detail.question}</p>
+                    <p>Mean: {detail.mean}</p>
+                    <p>STD: {detail.std}</p>
+                    <p>Median: {detail.median}</p>
+                    <p>Returns: {detail.returns}</p>
                   </div>
-                </div>
-              );
-            } else {
-              // If the course doesn't match, return null or an empty fragment
-              return null;
-            }
-          })}
+                ))}
+              </div>
+            </div>
+          </div>
+          }
       </div>
     </div>
   );

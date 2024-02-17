@@ -85,6 +85,7 @@ def get_student_evals_details_controller(course_name):
         Eval.course,
         Eval.year,
         Eval.semester,
+        Eval.section,
         Eval.instructor_type,
         Eval.participants_count,
         Eval.number_of_returns,
@@ -94,7 +95,8 @@ def get_student_evals_details_controller(course_name):
         Eval.email, 
         Eval.course,
         Eval.year,
-        Eval.semester
+        Eval.semester,
+        Eval.section
     ).all()
 
     course_eval_details = db.session.query(
@@ -102,6 +104,7 @@ def get_student_evals_details_controller(course_name):
         EvalDetails.course,
         EvalDetails.year,
         EvalDetails.semester,
+        EvalDetails.section,
         EvalDetails.question_id,
         EvalDetails.mean,
         EvalDetails.std,
@@ -112,6 +115,7 @@ def get_student_evals_details_controller(course_name):
         EvalDetails.course,
         EvalDetails.year,
         EvalDetails.semester,
+        EvalDetails.section,
         EvalDetails.question_id
     ).all()
 
@@ -124,7 +128,7 @@ def get_student_evals_details_controller(course_name):
     )
 
     # Create dictionaries to store data from each dataset
-    eval_dict      = {(row.email, row.course, row.year, row.semester): row for row in course_evals}
+    eval_dict = {(row.email, row.course, row.year, row.semester, row.section): row for row in course_evals}
     
     # Stores details for each course
     eval_dets_dict = defaultdict(list)
@@ -138,14 +142,13 @@ def get_student_evals_details_controller(course_name):
 
     # Add each question to the details
     for row in course_eval_details:
-
         # Get question string
         if row.question_id in questions_dict:
             question = questions_dict[row.question_id]
         else:
             question = "Fake Question"
 
-        key = (row.email, row.course, row.year, row.semester)
+        key = (row.email, row.course, row.year, row.semester, row.section)
         eval_dets_dict[key].append({
             'question'    : question,
             'question_id' : row.question_id,
@@ -173,6 +176,7 @@ def get_student_evals_details_controller(course_name):
             'course'                    : eval_row.course                ,
             'year'                      : eval_row.year                  ,
             'semester'                  : eval_row.semester              ,
+            'section'                   : eval_row.section               ,
             'instructor_type'           : eval_row.instructor_type       ,
             'participants_count'        : eval_row.participants_count    ,
             'number_of_returns'         : eval_row.number_of_returns     ,
@@ -189,6 +193,7 @@ def get_student_evals_details_controller(course_name):
         'course'                : course.get('course'                , 'N/A'),
         'year'                  : course.get('year'                  , 'N/A'),
         'semester'              : course.get('semester'              , 'N/A'),
+        'section'               : course.get('section'               , 'N/A'),
         'instructor_type'       : course.get('instructor_type'       , 'N/A'),
         'participants_count'    : course.get('participants_count'    , 'N/A'),
         'number_of_returns'     : course.get('number_of_returns'     , 'N/A'),

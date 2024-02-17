@@ -7,7 +7,6 @@ export const StudentEvalsDetailsContext = createContext()
 export const studentEvalsDetailsReducer = (state, action) => {
   switch (action.type) {
     case 'SET_COURSES': 
-      console.log({...action.payload})
       return { 
         ...state, 
         courses: action.payload,  // list of courses
