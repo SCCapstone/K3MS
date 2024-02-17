@@ -6,7 +6,6 @@ from app.login_module import blueprint as login_bp
 from app.tmp_module import blueprint as tmp_bp
 from app.research_info_module import blueprint as research_info_bp
 from app.student_evals_module import blueprint as student_evals_bp
-from app.student_evals_details_module import blueprint as student_evals_details_bp
 from app.course_analytics_module import blueprint as course_analytics_bp
 from app.grant_upload_module import blueprint as grantupload_bp
 from app.pub_upload_module import blueprint as pubupload_bp
@@ -38,7 +37,6 @@ def create_app(config_class=Config):
     app.register_blueprint(tmp_bp)
     app.register_blueprint(research_info_bp)
     app.register_blueprint(student_evals_bp)
-    app.register_blueprint(student_evals_details_bp)
     app.register_blueprint(course_analytics_bp)
     app.register_blueprint(grantupload_bp)
     app.register_blueprint(pubupload_bp)
