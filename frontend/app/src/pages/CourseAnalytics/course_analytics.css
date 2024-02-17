@@ -1,0 +1,117 @@
+.courseAnalytics {
+  color: var(--cardtext);
+}
+  .courseAnalyticsBody {
+    margin-top: 20px;
+  }
+
+  .courseAnalyticsBody h1 {
+    padding: 10px;
+    font-size: 2em;
+    text-align: center;
+  }
+
+  .courseAnalyticsCard {
+    margin: 50px auto;
+    padding: 5px;
+    background-color: var(--cardbg);
+    color: var(--cardtext);
+    box-shadow: 1px 0px 4px black;
+    border-radius: 20px;
+    width: 60%;
+  }
+    .courseAnalyticsCard h1 {
+      margin-bottom: 2px;
+    }
+
+    .dropDownError {
+      color: var(--error);;
+      text-align: center;
+      width: 50%;
+      margin: 10px;
+      padding: 10px;
+      font-size: 1.3em;
+      border: solid thin;
+      margin-bottom: 30px;
+    }
+
+    .dropdowns {
+      display: flex;
+      padding: 20px;
+      justify-content: space-around;
+      align-items: end;
+    }
+
+    .dropdownBox {
+      flex: 1 1 0px;
+      padding: 10px;
+    }
+    .dropdown {
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      padding: 7px;
+      border: thin solid var(--cardtext);
+      background: transparent;
+      margin-bottom: 20px;
+      font: 16px Arial, Helvetica, sans-serif;
+      height: 45px;
+      color: var(--cardtext);
+    }
+
+  .anonDataError {
+    color: var(--error);
+    text-align: center;
+  }
+  
+  .analyticsTableDiv {
+    margin: 100px 0px;
+  }
+  .analyticsTable {
+    border-collapse: collapse;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    width: 40%;
+    margin: auto;
+  }
+    .analyticsTable thead tr {
+      background-color: var(--cardtext);
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .analyticsTable th, .analyticsTable td {
+      padding: 12px 15px;
+      text-align: center;
+    }
+
+    .analyticsTable tbody tr {
+      border-bottom: 1px solid #dddddd;
+    }
+    
+    .analyticsTable tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+    
+    .analyticsTable tbody tr:last-of-type {
+        border-bottom: 2px solid var(--cardtext);
+    }
+
+  .plottingError {
+    color: var(--error);
+    text-align: center;
+    width: 50% auto;
+    margin: 10px;
+    padding: 10px;
+    font-size: 1.3em;
+    margin-bottom: 30px;
+  }
+
+  .courseAnalytics .plot {
+    margin: 50px auto;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    border: black solid thin;
+  }

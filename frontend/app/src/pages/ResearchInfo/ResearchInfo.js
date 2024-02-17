@@ -120,6 +120,7 @@ const ResearchInfo = () => {
                 <thead>
                   <tr>
                     <th>Title</th>
+                    <th>Authors</th>
                     <th>Publication Year</th>
                     <th>ISBN</th>
                   </tr>
@@ -129,6 +130,7 @@ const ResearchInfo = () => {
                   return (
                     <tr key={ pub.title }>
                       <td>{ pub.title }</td>
+                      <td>{ pub.authors }</td>
                       <td>{ pub.publication_year }</td>
                       <td>{ pub.isbn }</td>
                     </tr>

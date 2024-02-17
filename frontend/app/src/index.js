@@ -6,6 +6,7 @@ import { AuthContextProvider } from './context/AuthContext';
 import { ResearchInfoContextProvider } from './context/ResearchInfoContext';
 import { StudentEvalsContextProvider } from './context/StudentEvalsContext';
 import { StudentEvalsDetailsContextProvider } from './context/StudentEvalsDetailsContext';
+import { CourseAnalyticsContextProvider } from './context/CourseAnalyticsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,9 @@ root.render(
       <ResearchInfoContextProvider>
         <StudentEvalsContextProvider>
           <StudentEvalsDetailsContextProvider>
-            <App />
+            <CourseAnalyticsContextProvider>
+              <App />
+            </CourseAnalyticsContextProvider>
           </StudentEvalsDetailsContextProvider>
         </StudentEvalsContextProvider>
       </ResearchInfoContextProvider>

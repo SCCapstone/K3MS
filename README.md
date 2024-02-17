@@ -67,6 +67,8 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - Follow the directions in `tests/README.md` to setup the environments. Here are some example .env files that can be used (these are required for tests to run):
     - Goes in tests/behavioral_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077571/cypress.env.json)
     - Goes in tests/unit_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077577/cypress.env.json)
+- Download the test database from Google Drive (app.db) with necessary users and entries
+- Switch the backend mode to use the local database (in backend/.env, delete or comment out DATABASE_URI entry)
 - Run the tests: 
     ```
     cd tests
