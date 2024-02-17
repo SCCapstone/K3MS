@@ -13,6 +13,7 @@ describe('Test User Administration Functionality', () => {
     cy.url().should('include', '/dashboard') // make sure logged in
 
     // Test that on grant upload page
+    cy.wait(500)
     cy.visit(Cypress.env('baseUrl') + '/useradmin')
     cy.contains('User Administration')
   })
