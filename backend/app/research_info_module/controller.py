@@ -1,4 +1,4 @@
-from flask_login import login_required, current_user
+from flask_login import current_user
 from app.models.grants import Grants
 from app.models.publications import Publications
 from flask import jsonify
@@ -52,8 +52,7 @@ def publications_controller():
         for publication in publications:
             publication_dict = {
                 'title': publication.title,
-                'first_name': publication.first_name,
-                'last_name': publication.last_name,
+                'authors': publication.authors,
                 'publication_year': publication.publication_year,
                 'isbn': publication.isbn
             }

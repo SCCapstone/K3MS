@@ -1,35 +1,78 @@
 from http import HTTPStatus
-from app.models import User
-from werkzeug.utils import secure_filename
+from app.models import Publications
+from flask_login import current_user
 from app.extensions import db
-from flask import request
-import os
 
-def pub_upload_controller(request):
-    try:
-        # Check if the request contains a file
-        if 'file' not in request.files:
-            return dict(error='No file part'), HTTPStatus.BAD_REQUEST
+form_fields = [  
+    'title',
+    'authors',
+    'publication_year',
+    'isbn'
+]
 
-        file = request.files['file']
+def pub_upload_controller(req):
+    ret = validate_request(req, form_fields)
 
-        # Check if the file is present and has an allowed extension (if needed)
-        if file.filename == '':
-            return dict(error='No selected file'), HTTPStatus.BAD_REQUEST
+    if isinstance(ret, tuple):
+        return ret
+    
+    json_data = ret
 
-        # Save the file to a desired location
+    # Get Publication Fields
+    title = json_data.get(form_fields[0])
+    authors = json_data.get(form_fields[1])
+    publication_year = json_data.get(form_fields[2])
+    isbn = json_data.get(form_fields[3])
 
-        # Specify the folder name where you want to save the file
-        folder_name = 'pubuploads'
+    # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
+    publication = Publications.query.filter_by(email=current_user.email, title=title).first()
+    if publication:
+        return dict(error='Publication Already Exists'), HTTPStatus.BAD_REQUEST
+    
+     # Set isbn To None, If It Is Null
+    if isbn is None:
+        isbn = None
 
-        # Construct the full path to the specific folder in the same directory
-        save_path = os.path.join(os.getcwd(), folder_name, secure_filename(file.filename))
+    new_publication = Publications(
+        email = current_user.email, 
+        title = title, 
+        authors = authors,
+        publication_year = publication_year,
+        isbn = isbn
+    )
 
-        # Save the file to the specified folder (in this director FOR TESTING)
-        # file.save(save_path) # no need to actually save file and make a mess of the cwd
+    # Add user to database
+    db.session.add(new_publication)
+    db.session.commit()
 
-        return dict(mssg='Pub File uploaded successfully'), HTTPStatus.OK
+    return [new_publication], HTTPStatus.CREATED
+    
+def validate_request(req, fields):
+    # Make Sure Request Is JSON
+    content_type = req.headers.get('Content-Type')
+    if content_type != 'application/json':
+        return dict(error='Content-Type not supported'), HTTPStatus.BAD_REQUEST
 
-    except Exception as e:
-        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+    # Make Sure Request Has JSON Data
+    json_data = req.get_json()
+    if not json_data:
+        return dict(error='Missing JSON data'), HTTPStatus.BAD_REQUEST
+
+    # Make Sure All Fields Are Filled In
+    empty_fields = [] # Track Any Missing Fields
+    for field in fields:
+        # Skip isbn, Because It Can Be Null
+        if field == 'isbn':
+            continue
+        if not json_data.get(field):
+            empty_fields.append(field)
+    
+    # If Any Fields Are Missing, Return Error
+    if len(empty_fields) > 0:
+        return dict(
+            error='Please fill in all fields',
+            empty_fields=empty_fields
+        ), HTTPStatus.BAD_REQUEST
+
+    return json_data
 

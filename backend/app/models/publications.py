@@ -6,8 +6,7 @@ from datetime import datetime
 class Publications(db.Model):
     email: str = db.Column(db.String(100), nullable=False, primary_key=True)
     title: str = db.Column(db.String(500), nullable=False, primary_key=True)
-    first_name: str = db.Column(db.String(100), nullable=False)
-    last_name: str = db.Column(db.String(100), nullable=False)
+    authors: str = db.Column(db.String(5000), nullable=False)
     publication_year: str = db.Column(db.String(100), nullable=False)
-    isbn: str = db.Column(db.String(100), nullable=False)
+    isbn: str = db.Column(db.String(100), nullable=True)
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
