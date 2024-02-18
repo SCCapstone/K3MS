@@ -10,18 +10,12 @@ import './course_analytics.css'
 const CourseAnalytics = () => {
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    console.log(coursesError)
-    console.log(anonDataError)
-    console.log(plottingError)
-  })
-
   const { user } = useAuthContext()
   const { usersToChoose, courses, anonData, allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
-  const [ chosenPerson, setChosenPerson ] = useState(user)
-  const [ chosenPersonName, setChosenPersonName ] = useState(`${user.first_name} ${user.last_name}`)
-  const [ chosenCourse, setChosenCourse ] = useState('')
+  const [ chosenPerson, setChosenPerson ] = useState(null)
+  const [ chosenPersonName, setChosenPersonName ] = useState('')
+  const [ chosenCourse, setChosenCourse ] = useState(null)
   const [ chosenPeriod, setChosenPeriod ] = useState(1)
 
   const [ anonDataKey, setAnonDataKey ] = useState('')
@@ -30,7 +24,9 @@ const CourseAnalytics = () => {
   const [ coursesError, setCoursesError ] = useState('')
 
   useEffect(() => {
-    setAnonDataKey(chosenCourse.course + chosenPeriod)
+    if (chosenCourse && chosenPeriod){
+      setAnonDataKey(chosenCourse.course + chosenPeriod)
+    }
   })
 
   // Don't allow non-logged in users to access this page
@@ -40,6 +36,16 @@ const CourseAnalytics = () => {
     }
   }, [user, navigate]);
 
+  // On first render, set chosenPerson
+  useEffect(() => {
+    if (user) {
+      courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
+      setChosenPerson(user)
+      setChosenPersonName(`${user.first_name} ${user.last_name}`)
+    }
+  }, [user, courseAnalyticsDispatch])
+
+  // Fetch all courses in db
   useEffect(() => {
     const fetchAllCourses = async () => {
       const response = await fetch(`${COURSE_ANALYTICS_URLS.getAllCourses}`, {
@@ -88,7 +94,7 @@ const CourseAnalytics = () => {
       fetchUsersToChoose()
   }, [usersToChoose, courseAnalyticsDispatch])
 
-  // Fetch student evals for current user or chosen user
+  // Fetch student evals for current user or chosen user - run whenever chosenPerson or chosenPeriod changes
   useEffect(() => {
     const fetchCourses = async () => {
       const response = await fetch(
@@ -99,14 +105,14 @@ const CourseAnalytics = () => {
         }
       )
 
+      const data = await response.json()
+      // console.log(data)
       if (response.ok) {
-        const data = await response.json()
         courseAnalyticsDispatch({type: 'SET_COURSES', payload: data})
         setChosenCourse(data[0])
         setCoursesError('')
       }
       else {
-        const data = await response.json()
         if (data && data.error) {
           setCoursesError(data.error)
           setPlottingError(data.error)
@@ -117,13 +123,16 @@ const CourseAnalytics = () => {
         courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
       }
     }
-    if (!courses) {
-      fetchCourses()
+    if (chosenPerson) {
+      if (!courses) {
+        console.log('fetching courses')
+        fetchCourses()
+      }
+      else if (!chosenCourse) {
+        setChosenCourse(courses[0])
+      }
     }
-    else if (!chosenCourse) {
-      setChosenCourse(courses[0])
-    }
-  }, [courses, chosenPeriod, courseAnalyticsDispatch])
+  }, [courses, chosenPerson, chosenPeriod, courseAnalyticsDispatch])
 
   // Fetch analytics data
   useEffect(() => {
@@ -160,17 +169,20 @@ const CourseAnalytics = () => {
       }
     }
     
-    if (!(anonData && anonData[chosenCourse.course + chosenPeriod])) {
-      fetchCourseAnalytics()
-    }
-    else {
-      if (anonData[chosenCourse.course + chosenPeriod].plots?.error) {
-        setPlottingError(anonData[chosenCourse.course + chosenPeriod].plots?.error)
+    if (chosenCourse) {
+      if (!(anonData && anonData[chosenCourse.course + chosenPeriod])) {
+        console.log('fetching anon data')
+        fetchCourseAnalytics()
       }
       else {
-        setPlottingError('')
+        if (anonData[chosenCourse.course + chosenPeriod].plots?.error) {
+          setPlottingError(anonData[chosenCourse.course + chosenPeriod].plots?.error)
+        }
+        else {
+          setPlottingError('')
+        }
+        setAnonDataError('')
       }
-      setAnonDataError('')
     }
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, anonData])
 
@@ -235,7 +247,7 @@ const CourseAnalytics = () => {
         </div>
 
         <div className='analyticsTableDiv'>
-          <h1>Data for {courses ? chosenCourse.course : ''}</h1>
+          <h1>Data for {chosenCourse ? chosenCourse.course : ''}</h1>
           { anonDataError && <p className='anonDataError'>{ anonDataError }</p> }
           <table className="analyticsTable">
             <thead>

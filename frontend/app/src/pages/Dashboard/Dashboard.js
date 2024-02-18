@@ -157,6 +157,40 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        <div className='dashboardCard'>
+          <div className='dashboardCardHeader'>
+            <h1>Course Analytics</h1>
+            <button onClick={ (e) => navigate('/course-analytics') }>See All</button>
+          </div>
+          {coursesError && <p className='error'>{coursesError}</p>}
+          <div className="dashboardCardContent">
+            <div className="dashboardTable">
+              { courses ?
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Course</th>
+                      <th>Ave. Course Rating</th>
+                      <th>Ave. Instr. Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  { courses.map((course) => {
+                    return (
+                      <tr key={ course.course }>
+                        <td>{ course.course }</td>
+                        <td>{ course.ave_course_rating_mean.toFixed(2) }</td>
+                        <td>{ course.ave_instructor_rating_mean.toFixed(2) }</td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+                : coursesError ? coursesError : <p>Loading...</p>
+              }
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
