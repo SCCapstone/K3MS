@@ -18,6 +18,12 @@
   text-align: left;
   font-size: 2em;
 }
+.dashboardCard h2 {
+  color: black;
+  text-align: left;
+  font-size: 1em;
+  margin: 5px; 
+}
 
 .dashboardCardHeader {
   display: flex;
@@ -59,4 +65,9 @@
   text-align: center;
   text-transform: uppercase;
   border-radius: 6px;
+}
+
+.dashboardPlot {
+  justify-content: center;
+  /* border: black solid thin; */
 }

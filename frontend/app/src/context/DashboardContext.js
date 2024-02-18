@@ -21,6 +21,11 @@ export const dashboardReducer = (state, action) => {
         ...state, 
         courses: action.payload,
       }
+    case 'SET_ANON_DATA':
+      return { 
+        ...state, 
+        anonData: action.payload,
+      }
     default:
       return state
   }
@@ -30,7 +35,8 @@ export const DashboardContextProvider = ({ children }) => {
   const [state, dashboardDispatch] = useReducer(dashboardReducer, { 
     grants: null,
     pubs: null,
-    courses: null
+    courses: null,
+    anonData: null,
   })
   
   // provide DashboardContext context to all parts of app
