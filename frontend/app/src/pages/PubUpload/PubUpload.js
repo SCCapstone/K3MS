@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PUB_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
+import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
 import './pubupload.css';
 
@@ -8,6 +9,7 @@ function PubUpload() {
   const navigate = useNavigate()
 
   const { user, userDispatch } = useAuthContext()
+  const { researchInfoDispatch } = useResearchInfoContext()
 
   useEffect(() => {
     if (!user) {
@@ -53,6 +55,7 @@ function PubUpload() {
       setPublicationYear('')
       setISBN('')
 
+      researchInfoDispatch({type: 'UPDATE_PUBS', payload: json})
       // Navigate To Publications Page
       navigate('/research-info', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
     }

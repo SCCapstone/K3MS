@@ -21,3 +21,8 @@ def get_student_evals():
 @login_required
 def get_student_evals_details(course_name):
     return get_student_evals_details_controller(course_name=course_name)
+
+@blueprint.route('/limited_student_evals', methods=['GET'])
+@login_required
+def get_limited_student_evals():
+    return get_student_evals_controller(limit=True)

@@ -5,22 +5,39 @@ import { createContext, useReducer } from 'react'
 export const ResearchInfoContext = createContext()
 
 export const researchInfoReducer = (state, action) => {
+  console.log(state.grants)
   switch (action.type) {
     case 'SET_GRANTS':
       return { 
         ...state, 
-        grants: action.payload  // list of grants
+        grants: action.payload
+      }
+    case 'UPDATE_GRANTS':
+      return { 
+        ...state, 
+        grants: state.grants.concat(action.payload)
       }
     case 'SET_PUBS':
       return { 
         ...state, 
-        pubs: action.payload    // list of publicatons
+        pubs: action.payload
+      }
+    case 'UPDATE_PUBS':
+      return { 
+        ...state, 
+        pubs: state.pubs.concat(action.payload)
       }
     case 'SET_EXPEN':
         return { 
           ...state, 
-          expen: action.payload // list of expenditures (per year)
+          expen: action.payload
         }
+    case 'UPDATE_EXPEN':
+        return { 
+          ...state, 
+          expen: state.expen.concat(action.payload)
+        }
+
     default:
       return state
   }
