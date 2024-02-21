@@ -61,7 +61,7 @@ const StudentEvaluationsDetails = () => {
         console.log('error')
       }
     }
-    if (!courses || courses[0].course != course_name) {
+    if (!courses || courses[0].course !== course_name) {
       // studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
       fetchStudentEvalsDetails()
     } 
