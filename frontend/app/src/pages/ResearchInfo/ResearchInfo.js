@@ -17,6 +17,18 @@ const ResearchInfo = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    if (user && (user.position !== 'chair' && user.position !== 'professor')) {
+      let redirect = user ? '/dashboard' : '/login'
+      navigate(redirect, { 
+        state: { 
+          mssg: 'You do not have access to this page - this incident will be reported', 
+          status: 'error'
+        }
+      })
+    }
+  }, [user, navigate]);
+
   // Fetch grants
   useEffect(() => {
     const fetchGrants = async () => {
