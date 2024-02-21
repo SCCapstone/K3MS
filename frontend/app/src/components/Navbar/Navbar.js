@@ -31,7 +31,9 @@ const Navbar = () => {
       <hr></hr>
       <p id="user">{ user ? user.email : '' }</p>
       <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
-      <button onClick={ (e) => navigate('/research-info') }>Research Info</button>
+      { user && (user.position === 'chair' || user.position === 'professor') ?
+        <button onClick={ (e) => navigate('/research-info') }>Research Info</button> : ''
+      }
       <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
       <button onClick={ (e) => navigate('/course-analytics') }>Course Analytics</button>
       <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
