@@ -7,6 +7,7 @@ import { ResearchInfoContextProvider } from './context/ResearchInfoContext';
 import { StudentEvalsContextProvider } from './context/StudentEvalsContext';
 import { StudentEvalsDetailsContextProvider } from './context/StudentEvalsDetailsContext';
 import { CourseAnalyticsContextProvider } from './context/CourseAnalyticsContext';
+import { TeamAssessmentsContextProvider } from './context/TeamAssessmentsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,7 +17,9 @@ root.render(
         <StudentEvalsContextProvider>
           <StudentEvalsDetailsContextProvider>
             <CourseAnalyticsContextProvider>
-              <App />
+              <TeamAssessmentsContextProvider>
+                <App />
+              </TeamAssessmentsContextProvider>
             </CourseAnalyticsContextProvider>
           </StudentEvalsDetailsContextProvider>
         </StudentEvalsContextProvider>
