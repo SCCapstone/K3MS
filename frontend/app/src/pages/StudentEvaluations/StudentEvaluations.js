@@ -65,8 +65,8 @@ const StudentEvaluations = () => {
             <div className='studentEvalsCard' key={i}>
               <h1>{ course.course }</h1>
               <div className='studentEvalsCardContent'>
-                <p>Average Course Rating: { course.ave_course_rating_mean }</p>
-                <p>Average Instructor Rating: { course.ave_instructor_rating_mean }</p>
+                <p>Average Course Rating: { course.ave_course_rating_mean.toFixed(2) }</p>
+                <p>Average Instructor Rating: { course.ave_instructor_rating_mean.toFixed(2) }</p>
                 {/* Add button here */}
                 <button onClick={() => handleButtonClick(course.course)}>Details</button>
               </div>
