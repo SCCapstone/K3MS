@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useState } from 'react'
 import { TEAM_ASSESSMENTS_URL } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
@@ -40,29 +41,38 @@ const TeamAssessments = () => {
     }
   }, [team, teamAssessmentsDispatch])
 
-  // Function to handle button click and navigate to another page with data
+  const [isVisible, setIsVisible] = useState(false);
+  const [userDetails, setUserDetails] = useState({});
+  const [userCard, setUserCard] = useState('');
+
+  //Handler to ensure only one set of details show at one point
   const handleButtonClick = (user) => {
-    // Encode user object into a query parameter
-    const userQueryParam = encodeURIComponent(JSON.stringify(user));
-    // Navigate to the desired page with data
-    navigate(`/student-evals-details?user=${userQueryParam}`);
+    setUserCard(user.email);
   }
 
   return (
     <div className="teamAssessmentsBody">
       <h1 className="pageHeader">My Team Assessments</h1>
       <div className='team'>        {team && team.map((user, i) => {
+          
           return (
             <div className='teamAssessmentsCard' key={i}>
               <h1>{ user.first_name +' '+user.last_name }</h1>
               <div className='teamAssessmentsCardContent'>
-                <p>Average Course Rating: { user.ave_all_course_rating_mean }</p>
-                <p>Average Instructor Rating: { user.ave_all_instructor_rating_mean }</p>
-                {/* Add button here */}
-                <button onClick={() => navigate('/course-analytics')}>Course Analytics</button>
-                <button onClick={() => navigate('/student-evals')}>Student Evaluations</button>
-                <button onClick={() => navigate('/research-info')}>Research Info</button>
-                <button onClick={() => handleButtonClick(user.email)}>Details</button>
+                <div>
+                  <button onClick={() => {
+                    setIsVisible(!isVisible)
+                    setUserDetails(user)
+                    handleButtonClick(user)
+                  }}>View Details</button>
+                  {isVisible && userCard == user.email ? 
+                    <div>
+                      <p>Position: { user.position }</p>
+                      <p>Average Course Rating: { user.ave_all_course_rating_mean }</p>
+                      <p>Average Instructor Rating: { user.ave_all_instructor_rating_mean }</p>
+                    </div>
+                  : null}
+                </div>
               </div>
             </div>
           )

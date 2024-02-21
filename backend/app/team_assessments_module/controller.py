@@ -35,7 +35,6 @@ def get_team_assessments_controller():
         User.position
     ).all()
 
-    
     team_assessments = []
 
     for user in team:
@@ -45,10 +44,12 @@ def get_team_assessments_controller():
             'last_name': user.last_name,
             'position': user.position,
             'ave_all_course_rating_mean': 'N/A',
-            'ave_all_instructor_rating_mean': 'N/A'
+            'ave_all_instructor_rating_mean': 'N/A',
         }
 
+        # Add courses
         user_courses = [course for course in courses if course.email == user.email]
+        
         if user_courses:
             ave_all_course_rating_mean = sum(course.ave_course_rating_mean for course in user_courses) / len(user_courses)
             user_assessment['ave_all_course_rating_mean'] = ave_all_course_rating_mean
@@ -59,13 +60,3 @@ def get_team_assessments_controller():
         team_assessments.append(user_assessment)
 
     return team_assessments, HTTPStatus.OK
-
-
-    if not courses:
-        return {'error': 'No courses found for any user.'}, HTTPStatus.NOT_FOUND
-    
-    return [{
-        'course': course.course,
-        'ave_course_rating_mean': course.ave_course_rating_mean,
-        'ave_instructor_rating_mean': course.ave_instructor_rating_mean
-    } for course in courses], HTTPStatus.OK
