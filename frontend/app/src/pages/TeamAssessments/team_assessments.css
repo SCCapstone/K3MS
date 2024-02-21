@@ -1,0 +1,47 @@
+
+/* display currentCourses in a 2 column grid */
+.courses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0px;
+  padding: 20px;
+}
+
+.teamAssessmentsCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.teamAssessmentsCard h1 {
+  color: black;
+  text-align: left;
+  padding: 10px 40px;
+  font-size: 1.5em;
+}
+
+.teamAssessmentsCardContent {
+  padding: 20px 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.teamAssessmentsCardContent button {
+  width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+
