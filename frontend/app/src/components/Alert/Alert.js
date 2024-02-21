@@ -9,6 +9,7 @@ const Alert = () => {
   const [status] = useState(location.state?.status || '')
 
   useEffect(() => {
+    console.log('Alert useEffect', location.state)
     window.history.replaceState({}, document.title)
     setTimeout(() => {
       setMssg('');
