@@ -21,32 +21,19 @@
   color: black;
   text-align: left;
   padding: 10px 40px;
+  margin-bottom: 0;
   font-size: 1.5em;
 }
 
 .teamAssessmentsCardContent {
-  padding: 20px 50px;
+  padding: 0px 40px;
   font-size: 1.5em;
-  font-weight: bold;
-}
-
-.details {
-  width: 100%;
-  background-color: var(--cardtext);
-  border: none;
-  cursor: pointer;
-  color: white;
-  font-size: 16px;
-  font-weight: 900;
-  padding: 10px;
-  text-decoration: none;
-  text-transform: uppercase;
-  border-radius: 5%;
-  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .course_analytics {
-  width: 20%; /* Adjust the width as desired */
+  height: 80%;
   background-color: var(--cardtext);
   border: none;
   cursor: pointer;
@@ -57,6 +44,6 @@
   text-decoration: none;
   text-transform: uppercase;
   border-radius: 5%;
-  margin: 10px 0;
+  margin: auto 0;
 }
 

@@ -19,10 +19,20 @@ const TeamAssessments = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    if (user && user.position !== 'chair') {
+      let redirect = user ? '/dashboard' : '/login'
+      navigate(redirect, { 
+        state: { 
+          mssg: 'You do not have access to this page - this incident will be reported', 
+          status: 'error'
+        }
+      })
+    }
+  }, [user, navigate]);
+
   // Fetch team assessments
   useEffect(() => {
-    if (user && user.position !== 'chair')
-        return
     const fetchTeamAssessments = async () => {
       const response = await fetch(TEAM_ASSESSMENTS_URL, {
         method: 'GET',
@@ -43,16 +53,7 @@ const TeamAssessments = () => {
     }
   }, [team, teamAssessmentsDispatch])
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [userDetails, setUserDetails] = useState({});
-  const [userCard, setUserCard] = useState('');
-
-  //Handler to ensure only one set of details show at one point
-  const handleButtonClick = (user) => {
-    setUserCard(user.email);
-  }
-
-  const handleButtonClick_analytics = (user) => {
+  const handleAnalyticsButtonClick = (user) => {
     // redirect to course-analytics page passing in user name as a query parameter
     navigate(`/course-analytics?email=${user.email}`)
   }
@@ -60,42 +61,23 @@ const TeamAssessments = () => {
   return (
     <div className="teamAssessmentsBody">
       <h1 className="pageHeader">My Team Assessments</h1>
-      <div className='team'>        {team && team.map((user, i) => {
-          
-          return (
-            <div className='teamAssessmentsCard' key={i}>
-              <h1>{ user.first_name +' '+user.last_name }</h1>
-              <div className='teamAssessmentsCardContent'>
-                <div>
-                  <button className='details' onClick={() => {
-                    setIsVisible(!isVisible)
-                    setUserDetails(user)
-                    handleButtonClick(user)
-                  }}>View Details</button>
-                  {isVisible && userCard === user.email && (
-                    <div>
-                      <p>Position: {user.position}</p>
-                      {user.ave_all_course_rating_mean != null && (
-                        <p>Average Course Rating: {user.ave_all_course_rating_mean}</p>
-                      )}
-                      {user.ave_all_instructor_rating_mean != null && (
-                        <p>Average Instructor Rating: {user.ave_all_instructor_rating_mean}</p>
-                      )}
-                      <button
-                        className="course_analytics"
-                        onClick={() => {
-                          handleButtonClick_analytics(user);
-                        }}
-                      >
-                        Course Analytics
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        })}
+      <div className='team'>        
+      {team && team.map((user, i) => 
+        <div className='teamAssessmentsCard' key={i}>
+          <h1>{ user.first_name +' '+user.last_name }</h1>
+          <div className='teamAssessmentsCardContent'>
+            <p><b>Position:</b> {user.position}</p>
+            <p><b>Average Course Rating:</b> {user?.ave_all_course_rating_mean}</p>
+            <p><b>Average Instructor Rating:</b> {user?.ave_all_instructor_rating_mean}</p>
+            <button
+              className="course_analytics"
+              onClick={() => handleAnalyticsButtonClick(user)}
+            >
+              Course Analytics
+            </button>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   )
