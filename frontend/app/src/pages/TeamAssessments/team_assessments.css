@@ -30,8 +30,23 @@
   font-weight: bold;
 }
 
-.teamAssessmentsCardContent button {
+.details {
   width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+
+.course_analytics {
+  width: 20%; /* Adjust the width as desired */
   background-color: var(--cardtext);
   border: none;
   cursor: pointer;

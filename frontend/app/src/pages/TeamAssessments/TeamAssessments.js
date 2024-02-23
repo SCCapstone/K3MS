@@ -21,6 +21,8 @@ const TeamAssessments = () => {
 
   // Fetch team assessments
   useEffect(() => {
+    if (user && user.position !== 'chair')
+        return
     const fetchTeamAssessments = async () => {
       const response = await fetch(TEAM_ASSESSMENTS_URL, {
         method: 'GET',
@@ -50,6 +52,11 @@ const TeamAssessments = () => {
     setUserCard(user.email);
   }
 
+  const handleButtonClick_analytics = (user) => {
+    // redirect to course-analytics page passing in user name as a query parameter
+    navigate(`/course-analytics?email=${user.email}`)
+  }
+
   return (
     <div className="teamAssessmentsBody">
       <h1 className="pageHeader">My Team Assessments</h1>
@@ -60,18 +67,30 @@ const TeamAssessments = () => {
               <h1>{ user.first_name +' '+user.last_name }</h1>
               <div className='teamAssessmentsCardContent'>
                 <div>
-                  <button onClick={() => {
+                  <button className='details' onClick={() => {
                     setIsVisible(!isVisible)
                     setUserDetails(user)
                     handleButtonClick(user)
                   }}>View Details</button>
-                  {isVisible && userCard == user.email ? 
+                  {isVisible && userCard === user.email && (
                     <div>
-                      <p>Position: { user.position }</p>
-                      <p>Average Course Rating: { user.ave_all_course_rating_mean }</p>
-                      <p>Average Instructor Rating: { user.ave_all_instructor_rating_mean }</p>
+                      <p>Position: {user.position}</p>
+                      {user.ave_all_course_rating_mean != null && (
+                        <p>Average Course Rating: {user.ave_all_course_rating_mean}</p>
+                      )}
+                      {user.ave_all_instructor_rating_mean != null && (
+                        <p>Average Instructor Rating: {user.ave_all_instructor_rating_mean}</p>
+                      )}
+                      <button
+                        className="course_analytics"
+                        onClick={() => {
+                          handleButtonClick_analytics(user);
+                        }}
+                      >
+                        Course Analytics
+                      </button>
                     </div>
-                  : null}
+                  )}
                 </div>
               </div>
             </div>
