@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import Plot from 'react-plotly.js';
+import { useLocation } from 'react-router-dom'
 
 import './course_analytics.css'
 
 const CourseAnalytics = () => {
   const navigate = useNavigate()
+
+  const query = new URLSearchParams(useLocation().search)
+  const queryEmail = query.get('email')
 
   const { user } = useAuthContext()
   const { usersToChoose, courses, anonData, allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
@@ -23,6 +27,8 @@ const CourseAnalytics = () => {
   const [ plottingError, setPlottingError ] = useState('')
   const [ coursesError, setCoursesError ] = useState('')
 
+  const usersDropdownRef = useRef(null)
+
   useEffect(() => {
     if (chosenCourse && chosenPeriod){
       setAnonDataKey(chosenCourse.course + chosenPeriod)
@@ -36,14 +42,33 @@ const CourseAnalytics = () => {
     }
   }, [user, navigate]);
 
-  // On first render, set chosenPerson
+  // On first render or when userToChoose is set, set chosenPerson
   useEffect(() => {
-    if (user) {
-      courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
-      setChosenPerson(user)
-      setChosenPersonName(`${user.first_name} ${user.last_name}`)
+    console.log('setChosenPerson')
+    if (user && !chosenPerson) {
+      if (queryEmail) {
+          if (usersToChoose) {
+            const chosenPersonTmp = usersToChoose.find(person => person.email === queryEmail)
+            if (!chosenPersonTmp) {
+              navigate('/course-analytics', { state: { mssg: 'You cannot view data for this user. This incident will be reported!', status: 'error'}})
+              return
+            }
+            console.log(chosenPersonTmp)
+            courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
+            setChosenPerson(chosenPersonTmp)
+            setChosenPersonName(`${chosenPersonTmp.first_name} ${chosenPersonTmp.last_name}`)
+            if (usersDropdownRef?.current) {
+              usersDropdownRef.current.value = chosenPersonTmp.email
+            }
+          }
+      }
+      else {
+        courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
+        setChosenPerson(user)
+        setChosenPersonName(`${user.first_name} ${user.last_name}`)
+      }
     }
-  }, [user, courseAnalyticsDispatch])
+  }, [user, courseAnalyticsDispatch, usersToChoose])
 
   // Fetch all courses in db
   useEffect(() => {
@@ -211,7 +236,7 @@ const CourseAnalytics = () => {
             { user && user.position === 'chair' &&
               <div className='choosePersonDropdown dropdownBox'>
                 <h3>Choose Person</h3>
-                <select name="person" id="person" className="dropdown" required onChange={ choosePerson }>
+                <select name="person" id="person" className="dropdown" required onChange={ choosePerson } ref={ usersDropdownRef }>
                   { usersToChoose && usersToChoose.map((person, i) =>
                     <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
                   )}
