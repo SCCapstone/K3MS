@@ -53,7 +53,7 @@ def eval_upload_controller(request):
         print(e)
         return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
-def get_student_evals_controller():
+def get_student_evals_controller(limit=False):
     email = current_user.email
 
     # SELECT email, course, AVG(course_rating_mean) AS ave_course_rating_mean, AVG(instructor_rating_mean) AS avg_instructor_rating_mean FROM evaluations WHERE email = 'email' GROUP BY email, year;
@@ -66,6 +66,9 @@ def get_student_evals_controller():
         Eval.email, 
         Eval.course
     ).all()
+
+    if limit:
+        courses = courses[:4]
 
     if not courses:
         return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND

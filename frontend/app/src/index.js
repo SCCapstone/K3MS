@@ -8,23 +8,26 @@ import { StudentEvalsContextProvider } from './context/StudentEvalsContext';
 import { StudentEvalsDetailsContextProvider } from './context/StudentEvalsDetailsContext';
 import { CourseAnalyticsContextProvider } from './context/CourseAnalyticsContext';
 import { TeamAssessmentsContextProvider } from './context/TeamAssessmentsContext';
+import { DashboardContextProvider } from './context/DashboardContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <ResearchInfoContextProvider>
-        <StudentEvalsContextProvider>
-          <StudentEvalsDetailsContextProvider>
-            <CourseAnalyticsContextProvider>
-              <TeamAssessmentsContextProvider>
-                <App />
-              </TeamAssessmentsContextProvider>
-            </CourseAnalyticsContextProvider>
-          </StudentEvalsDetailsContextProvider>
-        </StudentEvalsContextProvider>
-      </ResearchInfoContextProvider>
-    </AuthContextProvider>
+    <DashboardContextProvider>
+      <AuthContextProvider>
+        <ResearchInfoContextProvider>
+          <StudentEvalsContextProvider>
+            <StudentEvalsDetailsContextProvider>
+              <CourseAnalyticsContextProvider>
+                <TeamAssessmentsContextProvider>
+                  <App />
+                </TeamAssessmentsContextProvider>
+              </CourseAnalyticsContextProvider>
+            </StudentEvalsDetailsContextProvider>
+          </StudentEvalsContextProvider>
+        </ResearchInfoContextProvider>
+      </AuthContextProvider>
+    </DashboardContextProvider>
   </React.StrictMode>
 );
 
