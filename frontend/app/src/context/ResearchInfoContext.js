@@ -5,7 +5,6 @@ import { createContext, useReducer } from 'react'
 export const ResearchInfoContext = createContext()
 
 export const researchInfoReducer = (state, action) => {
-  console.log(state.grants)
   switch (action.type) {
     case 'SET_GRANTS':
       return { 

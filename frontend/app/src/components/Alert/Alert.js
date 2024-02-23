@@ -5,16 +5,19 @@ import './alert.css';
 const Alert = () => {
   const location = useLocation();
 
-  const [mssg, setMssg] = useState(location.state?.mssg || '')
-  const [status] = useState(location.state?.status || '')
+  const [mssg, setMssg] = useState('')
+  const [status, setStatus] = useState('')
 
   useEffect(() => {
-    console.log('Alert useEffect', location.state)
+    setMssg(location.state?.mssg)
+    setStatus(location.state?.status)
+
     window.history.replaceState({}, document.title)
+
     setTimeout(() => {
       setMssg('');
     }, 3000); // 3000 ms = 3s
-  }, []);
+  }, [location.state]);
 
   const onClick = () => {
     setMssg('');
@@ -23,12 +26,10 @@ const Alert = () => {
 
   return (
     <>
-    { mssg &&
-      <div className={ `alert ${status}` }>
-        <span className="closebtn" onClick={ onClick }>&times;</span>
-        { mssg }
-      </div>
-    }
+    <div className={ `alert ${status}` } style={ mssg ? {} : {display: "none"} }>
+      <span className="closebtn" onClick={ onClick }>&times;</span>
+      { mssg }
+    </div>
     </>
   );
 }
