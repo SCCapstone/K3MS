@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import StudentEvaluations from './pages/StudentEvaluations/StudentEvaluations';
 import StudentEvaluationsDetails from './pages/StudentEvaluationsDetails/StudentEvaluationsDetails';
 import CourseAnalytics from './pages/CourseAnalytics/CourseAnalytics';
+import TeamAssessments from './pages/TeamAssessments/TeamAssessments';
 import ResearchInfo from './pages/ResearchInfo/ResearchInfo';
 import GrantUpload from './pages/GrantUpload/GrantUpload';
 import EvalUpload from './pages/EvalUpload/EvalUpload';
@@ -44,6 +45,7 @@ function App() {
         <Route path="/student-evals" element={ getMainLayoutPage(<StudentEvaluations />) } />
         <Route path="/student-evals-details" element={ getMainLayoutPage(<StudentEvaluationsDetails />) } />
         <Route path="/course-analytics" element={ getMainLayoutPage(<CourseAnalytics />) } />
+        <Route path="/teamassessments" element={ getMainLayoutPage(<TeamAssessments />) } />
         <Route path="/research-info" element={ getMainLayoutPage(<ResearchInfo />) } />
         <Route path="/grantupload" element={ getMainLayoutPage(<GrantUpload />) } />
         <Route path="/pubupload" element={ getMainLayoutPage(<PubUpload />) } />

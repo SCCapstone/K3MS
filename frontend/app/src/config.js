@@ -25,7 +25,8 @@ module.exports = global.config = {
         getAllCourses: BASE_URL + "get_all_courses_in_db",
         getUsersToChoose: BASE_URL + "get_users_in_chairs_dept",
     },
-
+    TEAM_ASSESSMENTS_URL: BASE_URL + "team_assessments",
+    
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
