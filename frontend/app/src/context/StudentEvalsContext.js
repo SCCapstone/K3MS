@@ -11,6 +11,16 @@ export const studentEvalsReducer = (state, action) => {
         ...state, 
         courses: action.payload,  // list of courses
       }
+    case 'SET_COURSE_DETAILS':
+      return { 
+        ...state, 
+        courseDetails: action.payload
+      }
+    case 'CLEAR_DATA':
+      return {
+        courses: null,
+        courseDetails: null
+      }
     default:
       return state
   }
@@ -19,6 +29,7 @@ export const studentEvalsReducer = (state, action) => {
 export const StudentEvalsContextProvider = ({ children }) => {
   const [state, studentEvalsDispatch] = useReducer(studentEvalsReducer, { 
     courses: null,
+    courseDetails: null,
   })
   
   // provide StudentEvalsContext context to all parts of app

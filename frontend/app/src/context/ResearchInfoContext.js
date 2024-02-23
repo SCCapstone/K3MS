@@ -9,18 +9,39 @@ export const researchInfoReducer = (state, action) => {
     case 'SET_GRANTS':
       return { 
         ...state, 
-        grants: action.payload  // list of grants
+        grants: action.payload
+      }
+    case 'UPDATE_GRANTS':
+      return { 
+        ...state, 
+        grants: state.grants ? state.grants.concat(action.payload) : action.payload
       }
     case 'SET_PUBS':
       return { 
         ...state, 
-        pubs: action.payload    // list of publicatons
+        pubs: action.payload
+      }
+    case 'UPDATE_PUBS':
+      return { 
+        ...state, 
+        pubs: state.pubs ? state.pubs.concat(action.payload) : action.payload
       }
     case 'SET_EXPEN':
         return { 
           ...state, 
-          expen: action.payload // list of expenditures (per year)
+          expen: action.payload
         }
+    case 'UPDATE_EXPEN':
+        return { 
+          ...state, 
+          expen: state.expen.concat(action.payload)
+        }
+    case 'CLEAR_DATA':
+      return {
+        grants: null,
+        pubs: null,
+        expen: null
+      }
     default:
       return state
   }

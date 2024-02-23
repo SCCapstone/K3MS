@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GRANT_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
+import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
 import Alert from '../../components/Alert/Alert'
 import './grantupload.css';
@@ -9,6 +10,8 @@ const GrantUpload = () => {
   const navigate = useNavigate()
 
   const { user, userDispatch } = useAuthContext()
+  const { researchInfoDispatch } = useResearchInfoContext()
+
 
   useEffect(() => {
     if (!user) {
@@ -51,6 +54,10 @@ const GrantUpload = () => {
       setTitle('')
       setAmount('')
       setYear('')
+
+      // Update grants
+      console.log(json)
+      researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
 
       // Navigate to grants page
       navigate('/research-info', { state: { mssg: 'Grant Uploaded', status: 'ok' }})

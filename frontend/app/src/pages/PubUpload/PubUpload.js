@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { PUB_UPLOAD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
+import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
 import './pubupload.css';
 
 function PubUpload() {
   const navigate = useNavigate()
-  
-  const { user } = useAuthContext()
+
+  const { user, userDispatch } = useAuthContext()
+  const { researchInfoDispatch } = useResearchInfoContext()
 
   useEffect(() => {
     if (!user) {
@@ -15,51 +17,89 @@ function PubUpload() {
     }
   }, [user, navigate]);
 
-  const [file, setFile] = useState()
+  const [error, setError] = useState(null)
+  const [emptyFields, setEmptyFields] = useState([])
 
-  function handleChange(event) {
-    setFile(event.target.files[0])
-  }
+  const [title, setTitle] = useState('')
+  const [authors, setAuthors] = useState('')
+  const [publication_year, setPublicationYear] = useState('')
+  const [isbn, setISBN] = useState('')
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  const pubupload = async (e) => {
+    e.preventDefault()
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileName', file.name);
+    const response = await fetch(PUB_UPLOAD_URL, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        title: title,
+        authors: authors,
+        publication_year: publication_year,
+        isbn: isbn,
+      })
+    })
 
-    try {
-      const response = await fetch(PUB_UPLOAD_URL, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      });
-
-      if(!response.ok) {
-        const json_data = await response.json()
-        console.log(json_data.error)
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const responseData = await response.json()
-      navigate('/research-info', { state: { mssg: 'Publication Uploaded', status: 'ok' }})
-
-    } catch (error) {
-      console.error('Fetch error: ', error.message);
+    const json = await response.json()
+    if (!response.ok) {
+      setError(json.error)
+      if (json.empty_fields)
+        setEmptyFields(json.empty_fields)
     }
-  }
+
+    if (response.ok) {
+      setError(null)
+      setEmptyFields([])
+      setTitle('')
+      setAuthors('')
+      setPublicationYear('')
+      setISBN('')
+
+      researchInfoDispatch({type: 'UPDATE_PUBS', payload: json})
+      // Navigate To Publications Page
+      navigate('/research-info', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
+    }
+  };
 
   return (
-    <div className="pubupload-container">
-      <h1 className="pubuploadPageHeader">Upload Publication Form</h1>
-      <section className="PubUpload">
-        <form onSubmit={handleSubmit} className="pubupload-form">
-          <h2 className="pubupload-form-heading">Upload CSV File</h2>
-          <input type="file" onChange={handleChange} className="pubupload-form-input" />
-          <button type="submit" className="pubupload-form-button">Upload</button>
+    <>
+      <h1 className="pubUploadPageHeader">Upload Publication Form</h1>
+      <section className="pubUploadCard">
+        <h1>Publication Information</h1>
+        <form className="pubUpload" onSubmit={ pubupload }>
+            <input 
+              type="text" 
+              onChange={(e) => setTitle(e.target.value)} 
+              value={ title } 
+              placeholder="Title"
+              className={ emptyFields.includes('text') ? 'errorField' : '' }
+            />
+            <input 
+              type="text" 
+              onChange={(e) => setAuthors(e.target.value)} 
+              value={ authors } 
+              placeholder="Authors (Separate Each Author By A ,)"
+              className={ emptyFields.includes('text') ? 'errorField' : '' }
+            />
+            <input 
+              type="text" 
+              onChange={(e) => setPublicationYear(e.target.value)} 
+              value={ publication_year } 
+              placeholder="Publication Year"
+              className={ emptyFields.includes('text') ? 'errorField' : '' }
+            />
+            <input 
+              type="text" 
+              onChange={(e) => setISBN(e.target.value)} 
+              value={ isbn } 
+              placeholder="ISBN (Optional)"
+              className={ emptyFields.includes('text') ? 'errorField' : '' }
+            />
+            <button>Upload</button>
+            {error && <div className="errorField">{ error }</div>}
         </form>
       </section>
-    </div>
+    </>
   );
 
 

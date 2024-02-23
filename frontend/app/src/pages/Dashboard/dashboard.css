@@ -1,0 +1,73 @@
+.dashboardBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboardCard {
+  margin: 50px auto;
+  padding: 5px;
+  background-color: var(--cardbg);
+  color: var(--cardtext);
+  box-shadow: 1px 0px 4px black;
+  border-radius: 20px;
+  width: 80%;
+}
+
+.dashboardCard h1 {
+  color: black;
+  text-align: left;
+  font-size: 2em;
+}
+.dashboardCard h2 {
+  color: black;
+  text-align: left;
+  font-size: 1em;
+  margin: 5px; 
+}
+
+.dashboardCardHeader {
+  display: flex;
+  justify-content: space-between;
+  /* padding: 10px 50px; */
+  align-items: center;
+  padding: 0px 50px;
+}
+
+.dashboardCardContent {
+  padding: 10px 50px;
+  font-size: 1.5em;
+}
+
+
+.dashboardTable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.dashboardTable th, .dashboardTable td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.dashboardBody button {
+  width: 30%;
+  height: 50%;
+  background-color: var(--cardtext);
+  border: none;
+  display: block;
+  cursor: pointer;
+  color: white;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 6px;
+}
+
+.dashboardPlot {
+  justify-content: center;
+  /* border: black solid thin; */
+}

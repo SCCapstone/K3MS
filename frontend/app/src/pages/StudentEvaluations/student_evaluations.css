@@ -30,3 +30,18 @@
   font-weight: bold;
 }
 
+.studentEvalsCardContent button {
+  width: 100%;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 0;
+}
+
