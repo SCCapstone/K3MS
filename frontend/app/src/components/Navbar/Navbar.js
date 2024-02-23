@@ -45,24 +45,43 @@ const Navbar = () => {
     <div className="navbar">
       <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
       <hr></hr>
-      <p id="user">{ user ? user.email : '' }</p>
-      <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
-      { user && (user.position === 'chair' || user.position === 'professor') ?
-        <button onClick={ (e) => navigate('/research-info') }>Research Info</button> : ''
-      }
-      <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
-      <button onClick={ (e) => navigate('/course-analytics') }>Course Analytics</button>
-      <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
-      <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
-      <button onClick={ (e) => navigate('/account-settings') }>Account Settings</button>
-
-      { user && user.position === 'chair' ? <>
-        <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
-        <button onClick={ (e) => navigate('/useradmin') }>User Administration</button>
-        <button onClick={ (e) => navigate('/teamassessments') }>Team Assessments</button>
-        </> : ''
-      }
-      <button className="navbarLogout" onClick={ (e) => logout(e) }>Log out</button>
+      <p className="user">{ user ? user.email : '' }</p>
+      <div className="buttons">
+        <div className='buttonGroup'>
+          <p>View Data</p>
+          <button onClick={ (e) => navigate('/dashboard') }>Dashboard</button>
+          <button onClick={ (e) => navigate('/student-evals') }>Students Evals</button>
+          <button onClick={ (e) => navigate('/course-analytics') }>Course Analytics</button>
+          { user && (user.position === 'chair' || user.position === 'professor') ?
+            <button onClick={ (e) => navigate('/research-info') }>Research Info</button> : ''
+          }
+          { user && user.position === 'chair' ?
+              <button onClick={ (e) => navigate('/teamassessments') }>Team Assessments</button>
+            : ''
+          }
+        </div>
+        <div className='buttonGroup'>
+          <p>Enter & Upload Data</p>
+          <button onClick={ (e) => navigate('/grantupload') }>Grant Upload</button>
+          <button onClick={ (e) => navigate('/pubupload') }>Publication Upload</button>
+          { user && user.position === 'chair' ? <>
+            <button onClick={ (e) => navigate('/evalupload') }>Evaluations Upload</button>
+            <button onClick={ (e) => navigate('/useradmin') }>User Administration</button>
+            </> : ''
+          }
+        </div>
+        
+        <div className='buttonGroup'>
+          <p>Account</p>
+          <button onClick={ (e) => navigate('/account-settings') }>Account Settings</button>
+          { user && user.position === 'chair' ? <>
+              <button onClick={ (e) => navigate('/useradmin') }>User Administration</button>
+            </> : ''
+          }
+          <button onClick={ (e) => logout(e) }>Log out</button>
+        </div>
+      </div>
+      
     </div>
   )
 }
