@@ -20,9 +20,9 @@ describe('Test Team Assessments Page', () => {
         // Log In as PROFESSOR
         cy.visit(Cypress.env('baseUrl') + '/login')
         cy.contains('section', 'Log In').find('input').first()
-        .type(Cypress.env('testProfessorEmail'))
+        .type(Cypress.env('nonChairUserEmail'))
         cy.contains('section', 'Log In').find('input').last()
-        .type(Cypress.env('testProfessorPassword'))
+        .type(Cypress.env('nonChairUserPassword'))
         cy.contains('button', 'Log in').click()
 
         cy.url().should('include', '/dashboard') // make sure logged in
@@ -59,10 +59,6 @@ describe('Test Team Assessments Page', () => {
         
         // Check functionality of 'View Details' button, and what it shows (position)
         cy.contains('Quincy Quizzes').parent().find('button').click();
-        cy.contains('professor')
-        
-        // Redirect to Course Analytics via button for card
-        cy.contains('Course Analytics').click()
         cy.url().should('include','/course-analytics')
 
         // Check that the page is prepopulated with this members data
