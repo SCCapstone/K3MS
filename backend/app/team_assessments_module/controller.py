@@ -35,6 +35,10 @@ def get_team_assessments_controller():
         User.first_name, 
         User.last_name,
         User.position
+    ).filter(
+        User.email != current_user.email
+    ).filter(
+        User.position != 'chair'
     ).all()
 
     team_assessments = []

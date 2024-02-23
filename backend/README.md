@@ -8,5 +8,3 @@
 - Here's how to migrate the database:
     - Run `env/bin/flask db migrate -m "message"`. This step will create a script in `backend/migrations/versions/<tag>_<message>.py`. Review this script to make sure the changes you want will occur
     - Run `env/bin/flask db upgrade`. This step will create/delete/modify the tables in the actual database.
-
-# TEST 
