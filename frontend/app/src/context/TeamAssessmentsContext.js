@@ -17,7 +17,11 @@ export const teamAssessmentsReducer = (state, action) => {
         ...state,
         team: action.payload, // list of team members
       }
-
+    case 'CLEAR_DATA':
+      return {
+        courses: null,
+        team: null
+      }
     default:
       return state
   }

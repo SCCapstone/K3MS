@@ -5,7 +5,6 @@ import { createContext, useReducer } from 'react'
 export const ResearchInfoContext = createContext()
 
 export const researchInfoReducer = (state, action) => {
-  console.log(state.grants)
   switch (action.type) {
     case 'SET_GRANTS':
       return { 
@@ -15,7 +14,7 @@ export const researchInfoReducer = (state, action) => {
     case 'UPDATE_GRANTS':
       return { 
         ...state, 
-        grants: state.grants.concat(action.payload)
+        grants: state.grants ? state.grants.concat(action.payload) : action.payload
       }
     case 'SET_PUBS':
       return { 
@@ -25,7 +24,7 @@ export const researchInfoReducer = (state, action) => {
     case 'UPDATE_PUBS':
       return { 
         ...state, 
-        pubs: state.pubs.concat(action.payload)
+        pubs: state.pubs ? state.pubs.concat(action.payload) : action.payload
       }
     case 'SET_EXPEN':
         return { 
@@ -37,7 +36,12 @@ export const researchInfoReducer = (state, action) => {
           ...state, 
           expen: state.expen.concat(action.payload)
         }
-
+    case 'CLEAR_DATA':
+      return {
+        grants: null,
+        pubs: null,
+        expen: null
+      }
     default:
       return state
   }

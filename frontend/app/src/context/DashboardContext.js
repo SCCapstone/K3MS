@@ -26,6 +26,13 @@ export const dashboardReducer = (state, action) => {
         ...state, 
         anonData: action.payload,
       }
+    case 'CLEAR_DATA':
+      return {
+        grants: null,
+        pubs: null,
+        courses: null,
+        anonData: null
+      }
     default:
       return state
   }

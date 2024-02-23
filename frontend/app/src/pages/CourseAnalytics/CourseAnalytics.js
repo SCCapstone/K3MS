@@ -44,16 +44,14 @@ const CourseAnalytics = () => {
 
   // On first render or when userToChoose is set, set chosenPerson
   useEffect(() => {
-    console.log('setChosenPerson')
     if (user && !chosenPerson) {
       if (queryEmail) {
           if (usersToChoose) {
             const chosenPersonTmp = usersToChoose.find(person => person.email === queryEmail)
             if (!chosenPersonTmp) {
-              navigate('/course-analytics', { state: { mssg: 'You cannot view data for this user. This incident will be reported!', status: 'error'}})
+              navigate('/dashboard', { state: { mssg: 'You cannot view data for this user. This incident will be reported!', status: 'error'}})
               return
             }
-            console.log(chosenPersonTmp)
             courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
             setChosenPerson(chosenPersonTmp)
             setChosenPersonName(`${chosenPersonTmp.first_name} ${chosenPersonTmp.last_name}`)
@@ -131,7 +129,6 @@ const CourseAnalytics = () => {
       )
 
       const data = await response.json()
-      // console.log(data)
       if (response.ok) {
         courseAnalyticsDispatch({type: 'SET_COURSES', payload: data})
         setChosenCourse(data[0])

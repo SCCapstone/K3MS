@@ -10,6 +10,9 @@ const ResearchInfo = () => {
   const { user } = useAuthContext()
   const { grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
 
+  const [grantsError, setGrantsError] = useState(null)
+  const [pubsError, setPubsError] = useState(null)
+
   // Don't allow non-logged in users to access this page
   useEffect(() => {
     if (!user) {
@@ -37,12 +40,12 @@ const ResearchInfo = () => {
         credentials: 'include'
       })
 
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         researchInfoDispatch({type: 'SET_GRANTS', payload: data})
       }
-      else if (response.status === 401) {
-        console.log('error')
+      else if (response.status === 404) {
+        setGrantsError(data?.error)
       }
     }
 
@@ -52,12 +55,12 @@ const ResearchInfo = () => {
         credentials: 'include'
       })
 
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         researchInfoDispatch({type: 'SET_PUBS', payload: data})
       }
-      else if (response.status === 401) {
-        console.log('error')
+      else if (response.status === 404) {
+        setPubsError(data?.error)
       }
     }
 
@@ -117,7 +120,7 @@ const ResearchInfo = () => {
                 })}
                 </tbody>
               </table>
-              : <p>Loading...</p>
+              : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
             }
           </div>
         </div>
@@ -150,7 +153,7 @@ const ResearchInfo = () => {
                 })}
                 </tbody>
               </table>
-              : <p>Loading...</p>
+              : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
             }
           </div>
         </div>
