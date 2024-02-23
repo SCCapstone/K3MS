@@ -3,13 +3,29 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import { LOGOUT_URL } from '../../config';
 import { useNavigate } from "react-router-dom";
 import USCLogo from '../../assets/navbar-usc-logo.svg';
+import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
+import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
+import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
+import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 
 const Navbar = () => {
   const navigate = useNavigate()
   const { user, userDispatch } = useAuthContext()
+  const { studentEvalsDispatch } = useStudentEvalsContext()
+  const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { dashboardDispatch } = useDashboardContext()
+  const { teamAssessmentsDispatch } = useTeamAssessmentsContext()
+  const { researchInfoDispatch } = useResearchInfoContext()
 
   const logout = async (e) => {
     e.preventDefault()
+
+    studentEvalsDispatch({type: 'CLEAR_DATA'})
+    courseAnalyticsDispatch({type: 'CLEAR_DATA'})
+    dashboardDispatch({type: 'CLEAR_DATA'})
+    teamAssessmentsDispatch({type: 'CLEAR_DATA'})
+    researchInfoDispatch({type: 'CLEAR_DATA'})
 
     const response = await fetch(LOGOUT_URL, {
       credentials: 'include'

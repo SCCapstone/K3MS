@@ -36,7 +36,12 @@ export const researchInfoReducer = (state, action) => {
           ...state, 
           expen: state.expen.concat(action.payload)
         }
-
+    case 'CLEAR_DATA':
+      return {
+        grants: null,
+        pubs: null,
+        expen: null
+      }
     default:
       return state
   }

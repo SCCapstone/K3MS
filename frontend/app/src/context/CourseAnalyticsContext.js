@@ -29,7 +29,13 @@ export const courseAnalyticsReducer = (state, action) => {
         ...state,
         usersToChoose: action.payload
       }
-        
+    case 'CLEAR_DATA':
+      return {
+        usersToChoose: null,
+        courses: null,
+        anonData: null,
+        allCoursesInDb: null
+      }
     default:
       return state
   }

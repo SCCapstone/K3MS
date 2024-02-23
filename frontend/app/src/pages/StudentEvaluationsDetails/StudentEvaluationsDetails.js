@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { STUDENT_EVALS_DETAILS_URL } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
-import { useStudentEvalsDetailsContext } from '../../hooks/useStudentEvalsDetailsContext';
+import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
 import './student_evaluations_details.css'
 
 const StudentEvaluationsDetails = () => {
@@ -11,7 +11,7 @@ const StudentEvaluationsDetails = () => {
   const location = useLocation();
 
   const { user } = useAuthContext()
-  const { courses, studentEvalsDetailsDispatch } = useStudentEvalsDetailsContext()
+  const { courseDetails, studentEvalsDispatch } = useStudentEvalsContext()
   const [ name, setName ] = useState('');
 
   // TEST for Dropdown
@@ -47,7 +47,7 @@ const StudentEvaluationsDetails = () => {
 
       if (response.ok) {
         const data = await response.json()
-        studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: data})
+        studentEvalsDispatch({type: 'SET_COURSE_DETAILS', payload: data})
         // Extract available semester and year options for each course
         const years = new Set();
 
@@ -61,28 +61,27 @@ const StudentEvaluationsDetails = () => {
         console.log('error')
       }
     }
-    if (!courses || courses[0].course !== course_name) {
-      // studentEvalsDetailsDispatch({type: 'SET_COURSES', payload: null})
+    if (!courseDetails || courseDetails[0].course !== course_name) {
       fetchStudentEvalsDetails()
     } 
     else {
       // If context is already set but options are empty, fill them in
       if (yearOptions.length === 0) {
       const years = new Set();
-        courses.forEach(course => {
+        courseDetails.forEach(course => {
           years.add(course.year);
         });
         setYearOptions([...years]);
         setSelectedYear([...years][0])
       }
     }
-  }, [courses, studentEvalsDetailsDispatch])
+  }, [courseDetails, studentEvalsDispatch])
 
   // Always update the semester options when the year changes
   useEffect(() => {
-    if (courses && selectedYear) {
+    if (courseDetails && selectedYear) {
       const semesters = new Set();
-      courses.forEach(course => {
+      courseDetails.forEach(course => {
         if (course.year === selectedYear) {
           semesters.add(course.semester);
         }
@@ -90,13 +89,13 @@ const StudentEvaluationsDetails = () => {
       setSemesterOptions([...semesters]);
       setSelectedSemester([...semesters][0])
     }
-  }, [selectedYear, courses])
+  }, [selectedYear, courseDetails])
 
   // Always update the section options when the semester changes
   useEffect(() => {
-    if (courses && selectedSemester) {
+    if (courseDetails && selectedSemester) {
       const sections = new Set();
-      courses.forEach(course => {
+      courseDetails.forEach(course => {
         if (
           course.year === selectedYear &&
           course.semester === selectedSemester
@@ -107,12 +106,12 @@ const StudentEvaluationsDetails = () => {
       setSectionOptions([...sections]);
       setSelectedSection([...sections][0])
     }
-   }, [selectedYear, selectedSemester, courses])
+   }, [selectedYear, selectedSemester, courseDetails])
 
   // Always update the current course based on year, semester, and section
   useEffect(() => {
-    if (courses && selectedYear && selectedSemester && selectedSection) {
-      courses.forEach(course => {
+    if (courseDetails && selectedYear && selectedSemester && selectedSection) {
+      courseDetails.forEach(course => {
         if (
           course.year === selectedYear &&
           course.semester === selectedSemester &&

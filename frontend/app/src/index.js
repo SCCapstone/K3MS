@@ -5,7 +5,6 @@ import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
 import { ResearchInfoContextProvider } from './context/ResearchInfoContext';
 import { StudentEvalsContextProvider } from './context/StudentEvalsContext';
-import { StudentEvalsDetailsContextProvider } from './context/StudentEvalsDetailsContext';
 import { CourseAnalyticsContextProvider } from './context/CourseAnalyticsContext';
 import { TeamAssessmentsContextProvider } from './context/TeamAssessmentsContext';
 import { DashboardContextProvider } from './context/DashboardContext';
@@ -17,13 +16,11 @@ root.render(
       <AuthContextProvider>
         <ResearchInfoContextProvider>
           <StudentEvalsContextProvider>
-            <StudentEvalsDetailsContextProvider>
               <CourseAnalyticsContextProvider>
                 <TeamAssessmentsContextProvider>
                   <App />
                 </TeamAssessmentsContextProvider>
               </CourseAnalyticsContextProvider>
-            </StudentEvalsDetailsContextProvider>
           </StudentEvalsContextProvider>
         </ResearchInfoContextProvider>
       </AuthContextProvider>

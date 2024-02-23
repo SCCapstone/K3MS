@@ -43,11 +43,8 @@ const Dashboard = () => {
   }, [user, navigate]);
   
   const updatePlot = () => {
-    // setPlotWidth(plotRef?.current?.clientHeight)
-    // console.log('resize', plotRef?.current?.clientHeight,plotRef?.current?.clientWidth)
     console.log(plot)
     if (plot) {
-      console.log('resize', plotRef?.current?.clientHeight,plotRef?.current?.clientWidth)
       plot.layout.width = String(plotRef?.current?.clientWidth)
       plot.layout.height = null
       setPlot({...plot})
@@ -55,7 +52,6 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    console.log('useEffect')  
     window.addEventListener('resize', updatePlot);
     updatePlot();
     return () => window.removeEventListener('resize', updatePlot);
