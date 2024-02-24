@@ -10,7 +10,7 @@ import GrantUpload from './pages/GrantUpload/GrantUpload';
 import EvalUpload from './pages/EvalUpload/EvalUpload';
 import AccountSettings from './pages/AccountSettings/AccountSettings';
 import UserAdmin from './pages/UserAdmin/UserAdmin';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import './pages/main_pages.css'
 import PubUpload from './pages/PubUpload/PubUpload';
@@ -37,7 +37,7 @@ function App() {
 
   return (
     checkedStorage ? 
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={ defaultPage } />
         <Route path="/login" element={ <Login /> } />
@@ -54,7 +54,7 @@ function App() {
         <Route path="/useradmin" element={ getMainLayoutPage(<UserAdmin />) } />
         <Route path="*" element={ defaultPage } />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
     : <p>Loading...</p>
   );
 }
