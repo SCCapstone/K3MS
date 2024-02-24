@@ -45,7 +45,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## Start the Servers (Individually, for development)
 - In the `backend` directory, run `python3 run_debug_server.py` with the environment activated
-- In the `frontend/app` directory, run `npm start`
+- In the `frontend/app` directory, run `npm run dev`
 
 ## Start the Servers (Production)
 - Run the start script with `./run_app.sh` to start the gunicorn flask server and to serve the static react build.
@@ -56,6 +56,22 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 
 ## TODO:
 - Installation & setup process will be taken care of in a docker file.
+
+# Deploy to Heroku
+## Backend
+- Install Heroku CLI and login
+- in `/backend`, run `echo "web: gunicorn app:app" > Procfile`
+- in `/backend`, add heroku git repo as a remote: `git init && git remote add heroku <heroku git url>`
+- track `master` in heroku with current branch: `git branch -u heroku/master`
+- commit changes: `git commit -am ""`
+- push changes to heroku: `git push HEAD:master`
+- Optionally, remove `heroku` remote
+
+## Frontend
+- Same steps as backend, but:
+- init the git repo in `/frontend/app`
+- the Procfile is `web: npm start`
+- run `npm run build` before pushing changes to heroku remote
 
 
 # Testing
