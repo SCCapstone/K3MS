@@ -1,0 +1,15 @@
+{
+  "short_name": "Dashboard App",
+  "name": "Dashboard App for USC Faculty",
+  "icons": [
+    {
+      "src": "clipboard.svg",
+      "sizes": "16x16",
+      "type": "image/svg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
