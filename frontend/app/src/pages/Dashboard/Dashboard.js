@@ -103,7 +103,7 @@ const Dashboard = () => {
         <div className='dashboardCard'>
           <div className='dashboardCardHeader'>
             <h1>Grants</h1>
-            <button onClick={ (e) => navigate('/research-info') }>See All</button>
+            <button onClick={ (e) => navigate('/research-info?page=grants') }>See All</button>
           </div>
           <div className="dashboardCardContent">
             {grantsError && <p className='DashboardError'>{grantsError}</p>}
@@ -137,7 +137,7 @@ const Dashboard = () => {
         <div className='dashboardCard'>
           <div className='dashboardCardHeader'>
             <h1>Publications</h1>
-            <button onClick={ (e) => navigate('/research-info') }>See All</button>
+            <button onClick={ (e) => navigate('/research-info?page=publications') }>See All</button>
           </div>
           <div className="dashboardCardContent">
             {pubsError && <p className='DashboardError'>{pubsError}</p>}

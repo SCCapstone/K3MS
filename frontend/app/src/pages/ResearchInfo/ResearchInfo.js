@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { GRANTS_URL, PUBS_URL, EXPEN_URL } from '../../config';
-import { useNavigate } from "react-router-dom";
+import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
+import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import './research_info.css'
 
 const ResearchInfo = () => {
   const navigate = useNavigate()
+
+  const query = new URLSearchParams(useLocation().search)
+  const queryPage = query.get('page')?.toLowerCase()
+
   const { user } = useAuthContext()
   const { grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
+  
+  const [cardToShow, setCardToShow] = useState(queryPage ? queryPage : 'grants')
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -20,6 +26,7 @@ const ResearchInfo = () => {
     }
   }, [user, navigate]);
 
+  // Don't allow non-chairs or non-professors to access this page
   useEffect(() => {
     if (user && (user.position !== 'chair' && user.position !== 'professor')) {
       let redirect = user ? '/dashboard' : '/login'
@@ -95,104 +102,148 @@ const ResearchInfo = () => {
   return (
     <div className="researchInfo">
       <h1 className='pageHeader'>Research Info</h1>
-      <div className="researchInfoCard">
-        <h1>Grants</h1>
-        <div className="researchInfoCardContent">
-          <div className="researchInfoTable">
-            { grants ?
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Amount</th>
-                    <th>Grant Year</th>
-                  </tr>
-                </thead>
-                <tbody>
-                { grants.map((grant) => {
-                  return (
-                    <tr key={ grant.title }>
-                      <td>{ grant.title }</td>
-                      <td>{ grant.amount }</td>
-                      <td>{ grant.year }</td>
-                    </tr>
-                  )
-                })}
-                </tbody>
-              </table>
-              : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
-            }
+      <div className='researchInfoCard options'>
+        <h1>Options</h1>
+        <div className='researchInfobuttons'>
+          { user && user.position === 'chair' &&
+            <div className='dropdownBox'>
+              <h3>Choose Person</h3>
+              <select className='researchInfoDropdown'>
+                <option value="all">All</option>
+                <option value="faculty">Faculty</option>
+                <option value="students">Students</option>
+              </select>
+              {/* <select name="person" id="person" className="researchInfoDropdown" required onChange={ choosePerson } ref={ usersDropdownRef }>
+                { usersToChoose && usersToChoose.map((person, i) =>
+                  <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
+                )}
+              </select> */}
+            </div>
+          }
+          <div className="dropdownBox pageSelectorBox">
+            <h3>Choose Page</h3>
+            <div className="pageSelectors">
+              <button 
+                className={ cardToShow == 'grants' ? 'active' : ''}
+                onClick={ () => setCardToShow('grants')}
+              >Grants</button>
+              <button 
+                className={ cardToShow == 'publications' ? 'active' : ''}
+                onClick={ () => setCardToShow('publications')}
+              >Publications</button>
+              <button 
+                className={ cardToShow == 'expenditures' ? 'active' : ''}
+                onClick={ () => setCardToShow('expenditures')}
+              >Expenditures</button>
+            </div>
           </div>
         </div>
       </div>
+      
+      { cardToShow === 'grants' &&
+        <div className="researchInfoCard">
+          <h1>Grants</h1>
+          <div className="researchInfoCardContent">
+            <div className="researchInfoTable">
+              { grants ?
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Amount</th>
+                      <th>Grant Year</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  { grants.map((grant) => {
+                    return (
+                      <tr key={ grant.title }>
+                        <td>{ grant.title }</td>
+                        <td>{ grant.amount }</td>
+                        <td>{ grant.year }</td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+                : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
+              }
+            </div>
+          </div>
+        </div>
+      }
 
-      <div className="researchInfoCard">
-        <h1>Publications</h1>
-        <div className="researchInfoCardContent">
-          <div className="researchInfoTable">
-            { pubs ?
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Authors</th>
-                    <th>Publication Year</th>
-                    <th>ISBN</th>
-                  </tr>
-                </thead>
-                <tbody>
-                { pubs.map((pub) => {
-                  return (
-                    <tr key={ pub.title }>
-                      <td>{ pub.title }</td>
-                      <td>{ pub.authors }</td>
-                      <td>{ pub.publication_year }</td>
-                      <td>{ pub.isbn }</td>
+      { cardToShow === 'publications' &&
+        <div className="researchInfoCard">
+          <h1>Publications</h1>
+          <div className="researchInfoCardContent">
+            <div className="researchInfoTable">
+              { pubs ?
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Authors</th>
+                      <th>Publication Year</th>
+                      <th>ISBN</th>
                     </tr>
-                  )
-                })}
-                </tbody>
-              </table>
-              : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
-            }
+                  </thead>
+                  <tbody>
+                  { pubs.map((pub) => {
+                    return (
+                      <tr key={ pub.title }>
+                        <td>{ pub.title }</td>
+                        <td>{ pub.authors }</td>
+                        <td>{ pub.publication_year }</td>
+                        <td>{ pub.isbn }</td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+                : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
 
-      <div className="researchInfoCard">
-        <h1>Expenditures</h1>
-        <div className="researchInfoCardContent">
-          <div className="researchInfoTable">
-            { expen ?
-              <table>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Calendar Year</th>
-                    <th>Reporting Department</th>
-                    <th>P.I.</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                { expen.map((ex) => {
-                  return (
-                    <tr key={ ex.amount }>
-                      <td>{ ex.title }</td>
-                      <td>{ ex.calendar_year }</td>
-                      <td>{ ex.reporting_department }</td>
-                      <td>{ ex.pi_name }</td>
-                      <td>{ ex.amount }</td>
+      { cardToShow === 'expenditures' &&
+        <div className="researchInfoCard">
+          <h1>Expenditures</h1>
+          <div className="researchInfoCardContent">
+            <div className="researchInfoTable">
+              { expen ?
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Calendar Year</th>
+                      <th>Reporting Department</th>
+                      <th>P.I.</th>
+                      <th>Amount</th>
                     </tr>
-                  )
-                })}
-                </tbody>
-              </table>
-              : <p>Loading...</p>
-            }
+                  </thead>
+                  <tbody>
+                  { expen.map((ex) => {
+                    return (
+                      <tr key={ ex.amount }>
+                        <td>{ ex.title }</td>
+                        <td>{ ex.calendar_year }</td>
+                        <td>{ ex.reporting_department }</td>
+                        <td>{ ex.pi_name }</td>
+                        <td>{ ex.amount }</td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+                : <p>Loading...</p>
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   )
 }
