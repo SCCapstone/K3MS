@@ -20,13 +20,6 @@ const Navbar = () => {
 
   const logout = async (e) => {
     e.preventDefault()
-
-    studentEvalsDispatch({type: 'CLEAR_DATA'})
-    courseAnalyticsDispatch({type: 'CLEAR_DATA'})
-    dashboardDispatch({type: 'CLEAR_DATA'})
-    teamAssessmentsDispatch({type: 'CLEAR_DATA'})
-    researchInfoDispatch({type: 'CLEAR_DATA'})
-
     const response = await fetch(LOGOUT_URL, {
       credentials: 'include'
     })
@@ -34,6 +27,13 @@ const Navbar = () => {
     if (response.ok) {
       // update the auth context and remove from local storage
       userDispatch({type: 'LOGOUT'})
+
+      // Clear state data
+      studentEvalsDispatch({type: 'CLEAR_DATA'})
+      courseAnalyticsDispatch({type: 'CLEAR_DATA'})
+      dashboardDispatch({type: 'CLEAR_DATA'})
+      teamAssessmentsDispatch({type: 'CLEAR_DATA'})
+      researchInfoDispatch({type: 'CLEAR_DATA'})
 
       // Navigate to login
       navigate('/login', { state: { mssg: 'Logged Out', status: 'ok' }})
