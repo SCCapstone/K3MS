@@ -43,7 +43,6 @@ const Dashboard = () => {
   }, [user, navigate]);
   
   const updatePlot = () => {
-    console.log(plot)
     if (plot) {
       plot.layout.width = String(plotRef?.current?.clientWidth)
       plot.layout.height = null
