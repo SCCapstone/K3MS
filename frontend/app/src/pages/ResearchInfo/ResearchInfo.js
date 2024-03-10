@@ -12,12 +12,46 @@ const ResearchInfo = () => {
   const queryPage = query.get('page')?.toLowerCase()
 
   const { user } = useAuthContext()
-  const { grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
+  const { usersToChoose, grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
+  const [grantsToShow, setGrantsToShow] = useState(grants)
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
-  
   const [cardToShow, setCardToShow] = useState(queryPage ? queryPage : 'grants')
+  const [chosenPerson, setChosenPerson] = useState(null)
+  const [otherUserGrants, setOtherUserGrants] = useState(null)
+  const [otherUserPubs, setOtherUserPubs] = useState(null)
+  const [otherUserExpen, setOtherUserExpen] = useState(null)
+
+  // Fetch users to choose from
+  useEffect(() => {
+    if (user && user.position !== 'chair')
+      return
+    const fetchUsersToChoose = async () => {
+      const response = await fetch(`${COURSE_ANALYTICS_URLS.getUsersToChoose}`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        researchInfoDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
+          {
+            email: user.email, 
+            first_name: user.first_name,
+            last_name: user.last_name,
+          }, 
+          ...data
+        ]})
+      }
+      else {
+        console.log('error')
+      }
+    }
+    if (!usersToChoose)
+      fetchUsersToChoose()
+  }, [usersToChoose, researchInfoDispatch])
+
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -49,6 +83,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
+        setGrantsError(null)
         researchInfoDispatch({type: 'SET_GRANTS', payload: data})
       }
       else if (response.status === 404) {
@@ -64,6 +99,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
+        setPubsError(null)
         researchInfoDispatch({type: 'SET_PUBS', payload: data})
       }
       else if (response.status === 404) {
@@ -98,6 +134,36 @@ const ResearchInfo = () => {
     }
   }, [grants, expen, pubs, researchInfoDispatch])
 
+  const choosePerson = (e) => {
+    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+    if (chosenPersonTmp.email === user.email) {
+      setChosenPerson(null)
+      setOtherUserGrants(null)
+      setOtherUserPubs(null)
+      setOtherUserExpen(null)
+      return
+    }
+    setChosenPerson(chosenPersonTmp)
+    const fetchOtherUserInfo = async (url, setFunc, setErrorFunc) => {
+      const response = await fetch(`${url}/${chosenPersonTmp.email}`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+
+      const data = await response.json()
+      if (response.ok) {
+        setErrorFunc(null)
+        setFunc(data)
+      }
+      else if (response.status === 404) {
+        setFunc(null)
+        setErrorFunc(data?.error)
+      }
+    }
+    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError)
+    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError)
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {})
+  }
 
   return (
     <div className="researchInfo">
@@ -106,21 +172,16 @@ const ResearchInfo = () => {
         <h1>Options</h1>
         <div className='researchInfobuttons'>
           { user && user.position === 'chair' &&
-            <div className='dropdownBox'>
+            <div className='researchInfoDropdownBox'>
               <h3>Choose Person</h3>
-              <select className='researchInfoDropdown'>
-                <option value="all">All</option>
-                <option value="faculty">Faculty</option>
-                <option value="students">Students</option>
-              </select>
-              {/* <select name="person" id="person" className="researchInfoDropdown" required onChange={ choosePerson } ref={ usersDropdownRef }>
+              <select name="person" id="person" className="researchInfoDropdown" required  onChange={ choosePerson }>
                 { usersToChoose && usersToChoose.map((person, i) =>
                   <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
                 )}
-              </select> */}
+              </select>
             </div>
           }
-          <div className="dropdownBox pageSelectorBox">
+          <div className="researchInfoDropdownBox pageSelectorBox">
             <h3>Choose Page</h3>
             <div className="pageSelectors">
               <button 
@@ -145,7 +206,7 @@ const ResearchInfo = () => {
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
-              { grants ?
+              { (!chosenPerson && grants) || (chosenPerson && otherUserGrants) ?
                 <table>
                   <thead>
                     <tr>
@@ -155,15 +216,26 @@ const ResearchInfo = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  { grants.map((grant) => {
-                    return (
-                      <tr key={ grant.title }>
-                        <td>{ grant.title }</td>
-                        <td>{ grant.amount }</td>
-                        <td>{ grant.year }</td>
-                      </tr>
-                    )
-                  })}
+                  { chosenPerson ?
+                    otherUserGrants?.map((grant) => {
+                      return (
+                        <tr key={ grant.title }>
+                          <td>{ grant.title }</td>
+                          <td>{ grant.amount }</td>
+                          <td>{ grant.year }</td>
+                        </tr>
+                      )
+                    }) : 
+                    grants?.map((grant) => {
+                      return (
+                        <tr key={ grant.title }>
+                          <td>{ grant.title }</td>
+                          <td>{ grant.amount }</td>
+                          <td>{ grant.year }</td>
+                        </tr>
+                      )
+                    })
+                  }
                   </tbody>
                 </table>
                 : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
@@ -178,7 +250,7 @@ const ResearchInfo = () => {
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
-              { pubs ?
+              { (!chosenPerson && pubs) || (chosenPerson && otherUserPubs) ?
                 <table>
                   <thead>
                     <tr>
@@ -189,16 +261,27 @@ const ResearchInfo = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  { pubs.map((pub) => {
-                    return (
-                      <tr key={ pub.title }>
-                        <td>{ pub.title }</td>
-                        <td>{ pub.authors }</td>
-                        <td>{ pub.publication_year }</td>
-                        <td>{ pub.isbn }</td>
-                      </tr>
-                    )
-                  })}
+                  { chosenPerson ?
+                    otherUserPubs?.map((pub) => {
+                      return (
+                        <tr key={ pub.title }>
+                          <td>{ pub.title }</td>
+                          <td>{ pub.authors }</td>
+                          <td>{ pub.publication_year }</td>
+                          <td>{ pub.isbn }</td>
+                        </tr>
+                      )}) :
+                    pubs?.map((pub) => {
+                      return (
+                        <tr key={ pub.title }>
+                          <td>{ pub.title }</td>
+                          <td>{ pub.authors }</td>
+                          <td>{ pub.publication_year }</td>
+                          <td>{ pub.isbn }</td>
+                        </tr>
+                      )
+                    })
+                  }
                   </tbody>
                 </table>
                 : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
@@ -213,7 +296,7 @@ const ResearchInfo = () => {
           <h1>Expenditures</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
-              { expen ?
+              { (!chosenPerson && expen) || (chosenPerson && otherUserExpen) ?
                 <table>
                   <thead>
                     <tr>
@@ -225,17 +308,28 @@ const ResearchInfo = () => {
                     </tr>
                   </thead>
                   <tbody>
-                  { expen.map((ex) => {
-                    return (
-                      <tr key={ ex.amount }>
-                        <td>{ ex.title }</td>
-                        <td>{ ex.calendar_year }</td>
-                        <td>{ ex.reporting_department }</td>
-                        <td>{ ex.pi_name }</td>
-                        <td>{ ex.amount }</td>
-                      </tr>
-                    )
-                  })}
+                  { chosenPerson ? 
+                    otherUserExpen.map((ex) => {
+                      return (
+                        <tr key={ ex.amount }>
+                          <td>{ ex.title }</td>
+                          <td>{ ex.calendar_year }</td>
+                          <td>{ ex.reporting_department }</td>
+                          <td>{ ex.pi_name }</td>
+                          <td>{ ex.amount }</td>
+                        </tr>
+                      )}) :
+                    expen.map((ex) => {
+                      return (
+                        <tr key={ ex.amount }>
+                          <td>{ ex.title }</td>
+                          <td>{ ex.calendar_year }</td>
+                          <td>{ ex.reporting_department }</td>
+                          <td>{ ex.pi_name }</td>
+                          <td>{ ex.amount }</td>
+                        </tr>
+                      )})
+                    }
                   </tbody>
                 </table>
                 : <p>Loading...</p>

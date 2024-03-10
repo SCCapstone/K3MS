@@ -6,6 +6,11 @@ export const ResearchInfoContext = createContext()
 
 export const researchInfoReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_USERS_TO_CHOOSE':
+      return {
+        ...state,
+        usersToChoose: action.payload
+      }
     case 'SET_GRANTS':
       return { 
         ...state, 
@@ -51,7 +56,8 @@ export const ResearchInfoContextProvider = ({ children }) => {
   const [state, researchInfoDispatch] = useReducer(researchInfoReducer, { 
     grants: null,
     pubs: null,
-    expen: null
+    expen: null,
+    usersToChoose: null
   })
   
   // provide researchInfoContext context to all parts of app

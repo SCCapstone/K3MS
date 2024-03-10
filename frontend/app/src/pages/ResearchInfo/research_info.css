@@ -46,11 +46,11 @@
   justify-content: space-around;
   align-items: end;
 }
-.options .dropdownBox {
+.options .researchInfoDropdownBox {
   flex: 1 1 0px;
   padding: 10px;
 }
-.options .dropdownBox h3 {
+.options .researchInfoDropdownBox h3 {
   margin: 5px;
 }
 

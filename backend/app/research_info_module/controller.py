@@ -1,13 +1,24 @@
 from flask_login import current_user
 from app.models.grants import Grants
 from app.models.publications import Publications
+from app.models.user import User
 from flask import jsonify
+from http import HTTPStatus
 
 # Grants Controller
-def grants_controller():
+def grants_controller(user_email=None): 
     # Get Current User's Email
     email = current_user.email
 
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
     try:
         # Query Database for All Grants Associated With email
         grants = Grants.query.filter_by(email = email).all()
@@ -64,9 +75,19 @@ def limited_grants_controller():
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Publications Controller
-def publications_controller():
+def publications_controller(user_email=None):
     # Get Current User's Email
     email = current_user.email
+
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
 
     try:
         # Query Database for All Publications Associated With email
