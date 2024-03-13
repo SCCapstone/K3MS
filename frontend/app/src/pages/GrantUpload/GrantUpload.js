@@ -60,7 +60,7 @@ const GrantUpload = () => {
       researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
 
       // Navigate to grants page
-      navigate('/research-info', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
+      navigate('/research-info?page=grants', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
     }
   };
 

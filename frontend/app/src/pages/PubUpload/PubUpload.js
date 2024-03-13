@@ -57,7 +57,7 @@ function PubUpload() {
 
       researchInfoDispatch({type: 'UPDATE_PUBS', payload: json})
       // Navigate To Publications Page
-      navigate('/research-info', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
+      navigate('/research-info?page=publications', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
     }
   };
 
