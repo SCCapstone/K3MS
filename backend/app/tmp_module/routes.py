@@ -8,8 +8,9 @@ from app.models import User
 
 
 @blueprint.route('/tmp_get_expen', methods=['GET'])
+@blueprint.route('/tmp_get_expen/<user_email>', methods=['GET'])
 @login_required
-def tmp_get_expen():
+def tmp_get_expen(user_email=None):
     email = current_user.email
 
     # TODO query database for all expenditures with current users email save its columns as json
