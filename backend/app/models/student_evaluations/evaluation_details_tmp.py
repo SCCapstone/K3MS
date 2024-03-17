@@ -17,5 +17,3 @@ class EvaluationDetailsTmp(db.Model):
     std: float = db.Column(db.Float, nullable=False)
     median: float = db.Column(db.Float, nullable=False)
     returns: int = db.Column(db.Integer, nullable=False)
-
-    date_added: str = db.Column(db.DateTime, default=datetime.utcnow)

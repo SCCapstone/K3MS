@@ -20,6 +20,7 @@ function EvalUpload() {
 
   const [file, setFile] = useState()
   const [error, setError] = useState(null);
+  const [evalProcessing, setEvalProcessing] = useState(false)
   const [skippedRows, setSkippedRows] = useState(null)
   const [overwriteError, setOverwriteError] = useState(null)
 
@@ -61,6 +62,7 @@ function EvalUpload() {
     formData.append('fileName', file.name);
 
     try {
+      setEvalProcessing(true)
       const response = await fetch(EVAL_UPLOAD_URL, {
         method: 'POST',
         credentials: 'include',
@@ -77,12 +79,14 @@ function EvalUpload() {
 
       if (response.ok) {
         setError(null)
+        setEvalProcessing(false)
 
         // Clear all eval-related data
         studentEvalsDispatch({type: 'CLEAR_DATA'})
         courseAnalyticsDispatch({type: 'CLEAR_DATA'})
         dashboardDispatch({type: 'CLEAR_DATA'})
         teamAssessmentsDispatch({type: 'CLEAR_DATA'})
+        
         if (json.skipped_rows && json.skipped_rows.length > 0) {
           console.log(json.skipped_rows)
           setSkippedRows(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
@@ -137,6 +141,7 @@ function EvalUpload() {
             <button type="submit" className="evalupload-form-button">Upload</button>
           </form>
           {error && <div className="errorField">{ error }</div>}
+          {evalProcessing && <div>Processing...</div>}
         </section>
       </div>
       { skippedRows && 

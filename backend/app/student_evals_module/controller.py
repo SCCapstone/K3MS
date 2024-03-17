@@ -19,8 +19,7 @@ from io import BytesIO
 from collections import defaultdict
 
 def eval_upload_controller(request):
-    # try:
-    if True:
+    try:
         # Make sure current user is a chair
         if current_user.position != 'chair':
             return dict(error='You do not have authority to upload student evaluations'), HTTPStatus.UNAUTHORIZED
@@ -59,9 +58,39 @@ def eval_upload_controller(request):
             return dict(mssg='Eval File uploaded successfully - skipped rows', skipped_rows=skipped_rows), HTTPStatus.OK
         return dict(mssg='Eval File uploaded successfully'), HTTPStatus.OK
 
-    # except Exception as e:
-    #     print(e)
-    #     return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+    except Exception as e:
+        print(e)
+        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+def overwrite_evals_rows_controller(request):
+    try:
+        # Make sure current user is a chair
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to modify student evaluations'), HTTPStatus.UNAUTHORIZED
+        
+        # Get rows to overwrite from request
+        content_type = request.headers.get('Content-Type')
+        if content_type != 'application/json':
+            return dict(error='Content-Type not supported'), HTTPStatus.BAD_REQUEST
+        
+        rows = request.get_json().get('rows')
+        if not rows:
+            return dict(error='No rows to overwrite'), HTTPStatus.BAD_REQUEST
+        
+        # Get the rows from the temporary database
+        for row in rows:
+            evals = db.session.query(EvaluationsTmp).filter(
+                (EvaluationsTmp.email == row['email']) &
+                (EvaluationsTmp.year == row['year']) &
+                (EvaluationsTmp.semester == row['semester']) &
+                (EvaluationsTmp.course == row['course']) &
+                (EvaluationsTmp.section == row['section'])
+            ).all()
+
+    except Exception as e:
+            print(e)
+            return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 def get_student_evals_controller(limit=False):
     email = current_user.email
@@ -337,7 +366,7 @@ def parse_and_upload_excel(fbytes):
             )
             # If row already exists, add to tmp table. If not, add to list of details
             if row_exists:
-                existing_entries[1].append(eval_details)
+                existing_entries[1].append(EvaluationDetailsTmp(**eval_details.get_attr()))
             else:
                 details_rows.append(eval_details)
 
@@ -358,11 +387,11 @@ def parse_and_upload_excel(fbytes):
             course_rating_mean=course_rating_mean,
             instructor_rating_mean=instructor_rating_mean
         )
-        
+
         if row_exists:
             skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
             # Add the eval to the list of existing evals
-            existing_entries[0].append(eval)
+            existing_entries[0].append(EvaluationsTmp(**eval.get_attr()))
             continue
 
         # Add the eval to the list of evals
