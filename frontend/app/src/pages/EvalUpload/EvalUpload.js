@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EVAL_UPLOAD_URL } from '../../config';
+import { EVAL_UPLOAD_URL, EVAL_OVERWRITE_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
@@ -52,6 +52,15 @@ function EvalUpload() {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (evalProcessing) {
+      setError('Evaluation is currently being processed')
+      return
+    }
+    if (skippedRows) {
+      setError('Please confirm or ignore skipped rows')
+      return
+    }
+
     if (!file) {
       setError('No file selected')
       return
@@ -86,7 +95,7 @@ function EvalUpload() {
         courseAnalyticsDispatch({type: 'CLEAR_DATA'})
         dashboardDispatch({type: 'CLEAR_DATA'})
         teamAssessmentsDispatch({type: 'CLEAR_DATA'})
-        
+
         if (json.skipped_rows && json.skipped_rows.length > 0) {
           console.log(json.skipped_rows)
           setSkippedRows(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
@@ -114,8 +123,27 @@ function EvalUpload() {
   }
   const overwriteNone = () => {
     // send request with empty list
-    console.log('overwrite none')
-    navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - No Data Overwritten', status: 'ok' }})
+    setSkippedRows(null)
+    setError(null)
+    setOverwriteError(null)
+    const sendRequest = async () => {
+      const response = await fetch(EVAL_OVERWRITE_URL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ rows: [] })
+      });
+      if (!response.ok) {
+        const json = await response.json()
+        setOverwriteError(json?.error)
+      }
+      else {
+        navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - No Data Overwritten', status: 'ok' }})
+      }
+    }
+    sendRequest()
   }
   const confirmOverwrite = () => {
     // show button to confirm overwrite
@@ -126,7 +154,26 @@ function EvalUpload() {
     const response = window.confirm("Are you sure you want to overwrite the selected rows?");
     if (response) {
       // send request with list of rows to overwrite
-      navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
+      const sendRequest = async () => {
+        const postResponse = await fetch(EVAL_OVERWRITE_URL, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ rows: skippedRows.filter(row => row.checked) })
+        })
+        if (!postResponse.ok) {
+          const json = await postResponse.json()
+          setOverwriteError(json?.error)
+        }
+        else {
+          setSkippedRows(null)
+          setOverwriteError(null)
+          navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
+        }
+      }
+      sendRequest()
     }
   }
 

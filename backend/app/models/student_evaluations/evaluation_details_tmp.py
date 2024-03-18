@@ -17,3 +17,17 @@ class EvaluationDetailsTmp(db.Model):
     std: float = db.Column(db.Float, nullable=False)
     median: float = db.Column(db.Float, nullable=False)
     returns: int = db.Column(db.Integer, nullable=False)
+
+    def get_attr(self):
+        return {
+            "email": self.email,
+            "year": self.year,
+            "semester": self.semester,
+            "course": self.course,
+            "question_id": self.question_id,
+            "section": self.section,
+            "mean": self.mean,
+            "std": self.std,
+            "median": self.median,
+            "returns": self.returns,
+        }

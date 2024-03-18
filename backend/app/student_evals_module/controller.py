@@ -44,6 +44,10 @@ def eval_upload_controller(request):
         fbytes = BytesIO(file.stream.read())
         evals, eval_details, skipped_rows, existing_rows = parse_and_upload_excel(fbytes)
 
+        # Clear old rows from tmp tables
+        db.session.query(EvaluationsTmp).delete()
+        db.session.query(EvaluationDetailsTmp).delete()
+
         # Add existing rows to the temporary tables in database
         if skipped_rows:
             db.session.add_all(existing_rows[0]) # evals
@@ -74,19 +78,59 @@ def overwrite_evals_rows_controller(request):
             return dict(error='Content-Type not supported'), HTTPStatus.BAD_REQUEST
         
         rows = request.get_json().get('rows')
-        if not rows:
-            return dict(error='No rows to overwrite'), HTTPStatus.BAD_REQUEST
+        if rows is None:
+            return dict(error='rows field missing'), HTTPStatus.BAD_REQUEST
         
+        # If no rows provided, return no change
+        if not rows:
+            # Clear rows from tmp tables
+            db.session.query(EvaluationsTmp).delete()
+            db.session.query(EvaluationDetailsTmp).delete()
+            return dict(mssg='No rows overwritten'), HTTPStatus.OK
+
         # Get the rows from the temporary database
         for row in rows:
-            evals = db.session.query(EvaluationsTmp).filter(
-                (EvaluationsTmp.email == row['email']) &
-                (EvaluationsTmp.year == row['year']) &
-                (EvaluationsTmp.semester == row['semester']) &
-                (EvaluationsTmp.course == row['course']) &
-                (EvaluationsTmp.section == row['section'])
+            eval = EvaluationsTmp.query.filter_by(
+                email=row['email'],
+                year=row['year'],
+                semester=row['semester'],
+                course=row['course'],
+                section=row['section']
+            ).first()
+
+            eval_details = EvaluationDetailsTmp.query.filter_by(
+                email=row['email'],
+                year=row['year'],
+                semester=row['semester'],
+                course=row['course'],
+                section=row['section']
             ).all()
 
+            # Entries were found in tmp tables, update the main tables
+            if eval and eval_details:
+                # Update the main tables
+                Eval.query.filter_by(
+                    email=row['email'],
+                    year=row['year'],
+                    semester=row['semester'],
+                    course=row['course'],
+                    section=row['section']
+                ).update(eval.get_attr())
+
+                EvalDetails.query.filter_by(
+                    email=row['email'],
+                    year=row['year'],
+                    semester=row['semester'],
+                    course=row['course'],
+                    section=row['section']
+                ).delete()
+
+                db.session.add_all([EvaluationDetails(**d.get_attr()) for d in eval_details])
+            else:
+                return dict(error='Error Overwriting Evaluations. Please reupload file and try again'), HTTPStatus.BAD_REQUEST
+        
+        db.session.commit()
+        return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
     except Exception as e:
             print(e)
             return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -95,7 +139,6 @@ def overwrite_evals_rows_controller(request):
 def get_student_evals_controller(limit=False):
     email = current_user.email
 
-    # SELECT email, course, AVG(course_rating_mean) AS ave_course_rating_mean, AVG(instructor_rating_mean) AS avg_instructor_rating_mean FROM evaluations WHERE email = 'email' GROUP BY email, year;
     courses = db.session.query(
         Eval.email, 
         Eval.course, 
