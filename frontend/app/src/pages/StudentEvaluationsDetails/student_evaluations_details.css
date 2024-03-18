@@ -73,7 +73,7 @@
   color: var(--cardtext);
 }
 
-table {
+.introTable {
   border-collapse: collapse;
   width: 100%;
   margin-bottom: 25px;
@@ -85,10 +85,19 @@ table {
     padding: 8px;
 }
 
+.evaluationsTable {
+  border-collapse: collapse;
+  
+  margin-bottom: 25px;
+}
 
 .evaluationsTable td, .evaluationsTable th {
   border: 1px solid #dddddd;
   text-align: center;
-  width: 100%;
   padding: 8px;
+  width: 100%;
+}
+
+.evalQuestion {
+  text-align: left !important;
 }

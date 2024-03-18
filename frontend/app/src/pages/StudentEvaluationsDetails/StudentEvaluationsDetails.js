@@ -199,31 +199,26 @@ const StudentEvaluationsDetails = () => {
               
               <div className='questions'>
                 <table className="evaluationsTable">
-
-                <thead>
-                  <tr>
-                    <th>Evaluation Question</th>
-                    <th>Mean</th>
-                    <th>STD</th>
-                    <th>Median</th>
-                    <th>Returns</th>
-                  </tr>
-                </thead>
-
-                
-                  {selectedCourse.details.map((detail, j) => (
-                    <div key={j}>
-                      <tbody>
-                        <tr>
-                          <td>{detail.question_id}. {detail.question}</td>
-                          <td>{detail.mean}</td>
-                          <td>{detail.std}</td>
-                          <td>{detail.median}</td>
-                          <td>{detail.returns}</td>
-                        </tr>
-                      </tbody>
-                    </div>
-                  ))}
+                  <thead>
+                    <tr>
+                      <th>Evaluation Question</th>
+                      <th>Mean</th>
+                      <th>STD</th>
+                      <th>Median</th>
+                      <th>Returns</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedCourse.details.map((detail, j) => (
+                      <tr key={j}>
+                        <td className="evalQuestion">{detail.question_id}. {detail.question}</td>
+                        <td>{detail.mean}</td>
+                        <td>{detail.std}</td>
+                        <td>{detail.median}</td>
+                        <td>{detail.returns}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             </div>
