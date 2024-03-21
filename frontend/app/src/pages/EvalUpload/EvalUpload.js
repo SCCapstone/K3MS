@@ -80,6 +80,7 @@ function EvalUpload() {
       const json = await response.json();
 
       if(!response.ok) {
+        setEvalProcessing(false)
         if (json.error) {
           setError(`Error uploading file - ${json.error}`)
         }
