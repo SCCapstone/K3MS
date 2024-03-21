@@ -148,3 +148,7 @@
     text-decoration: none;
     margin: 10px 0;
   }
+
+  .evalupload_otherButton {
+    width: 20%;
+  }

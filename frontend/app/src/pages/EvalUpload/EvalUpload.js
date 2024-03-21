@@ -278,6 +278,11 @@ function EvalUpload() {
                     </tbody>
                   </table>
                 </div>
+                <div className='evalupload_skippedRowsButtons evalupload_otherButton'>
+                  <button onClick={ () => { 
+                    navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
+                  }}>Ok</button>
+                </div>
             </div>
           }
         </div>
