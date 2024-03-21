@@ -24,7 +24,6 @@ function EvalUpload() {
   const [skippedRows, setSkippedRows] = useState(null)
   const [overwriteError, setOverwriteError] = useState(null)
 
-
   // Don't allow non-logged in users or non-chairs to access this page
   useEffect(() => {
     if (!user) {
@@ -192,10 +191,10 @@ function EvalUpload() {
         </section>
       </div>
       { skippedRows && 
-        <div className="evalupload-skippedrows">
-            <h2>Skipped {skippedRows.length} rows</h2>
-            <p>Select rows to overwrite current data or ignore these rows</p>
-            <div classname='evalupload-SkippedRowsTable'>
+        <div className="evalupload_skippedRows">
+            <h2>{skippedRows.length} Rows Were Skipped</h2>
+            <p><b>Select rows to overwrite current data or ignore these rows</b></p>
+            <div className='evalupload_skippedRowsTable'>
               <table>
                 <thead>
                   <tr>
@@ -239,13 +238,13 @@ function EvalUpload() {
                 </tbody>
               </table>
             </div>
-            <div>
-              <div>
-                <label>Select All</label>
-                <input type='checkbox' onChange={ (e) => selectAllCheckboxes(e) } />
-              </div>
+            <div className='evalupload_skippedRowsButtonsSelect'>
+              <label>Select All</label>
+              <input type='checkbox' onChange={ (e) => selectAllCheckboxes(e) } />
+            </div>
+            <div className='evalupload_skippedRowsButtons'>
               { overwriteError && <div className="errorField">{ overwriteError }</div> }
-              <button onClick={ overwriteNone }>Overwrite None</button>
+              <button onClick={ overwriteNone }>Ignore All</button>
               <button onClick={ confirmOverwrite }>Overwrite Selected</button>
             </div>
         </div>
