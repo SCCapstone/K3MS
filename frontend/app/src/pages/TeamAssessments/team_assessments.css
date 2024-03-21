@@ -32,7 +32,7 @@
   justify-content: space-between;
 }
 
-.course_analytics {
+.course_analytics_button {
   height: 80%;
   background-color: var(--cardtext);
   border: none;
@@ -43,7 +43,42 @@
   padding: 10px;
   text-decoration: none;
   text-transform: uppercase;
-  border-radius: 5%;
+  border-radius: 3%;
   margin: auto 0;
 }
 
+
+.teamOptions {
+  width: 60%;
+}
+.teamOptions h1 {
+  text-align: center;
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+.teamAssessmentsbuttons {
+  display: flex;
+  padding: 5px;
+  justify-content: space-around;
+  align-items: end;
+}
+.teamOptions .teamAssessmentsDropdownBox {
+  flex: 1 1 0px;
+  padding: 10px;
+}
+.teamOptions .teamAssessmentsDropdownBox h3 {
+  margin: 5px;
+}
+
+.teamOptions .teamAssessmentsDropdown {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: thin solid var(--cardtext);
+  background: transparent;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+  margin-bottom: 10px;
+}
