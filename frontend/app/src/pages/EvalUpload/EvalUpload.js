@@ -21,7 +21,8 @@ function EvalUpload() {
   const [file, setFile] = useState()
   const [error, setError] = useState(null);
   const [evalProcessing, setEvalProcessing] = useState(false)
-  const [skippedRows, setSkippedRows] = useState(null)
+  const [skippedRowsOverwrite, setSkippedRowsOverwrite] = useState(null)
+  const [skippedRowsOther, setSkippedRowsOther] = useState(null)
   const [overwriteError, setOverwriteError] = useState(null)
 
   // Don't allow non-logged in users or non-chairs to access this page
@@ -55,7 +56,7 @@ function EvalUpload() {
       setError('Evaluation is currently being processed')
       return
     }
-    if (skippedRows) {
+    if (skippedRowsOverwrite) {
       setError('Please confirm or ignore skipped rows')
       return
     }
@@ -96,8 +97,9 @@ function EvalUpload() {
         teamAssessmentsDispatch({type: 'CLEAR_DATA'})
 
         if (json.skipped_rows && json.skipped_rows.length > 0) {
-          console.log(json.skipped_rows)
-          setSkippedRows(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
+          // setSkippedRowsOverwrite(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
+          setSkippedRowsOverwrite(json.skipped_rows.filter(row => row.reason === 'This entry already exists in the database'))
+          setSkippedRowsOther(json.skipped_rows.filter(row => row.reason !== 'This entry already exists in the database'))
         }
         else {
           navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
@@ -109,20 +111,21 @@ function EvalUpload() {
   }
 
   const toggleCheckbox = (index) => {
-    let newSkippedRows = [...skippedRows]
-    newSkippedRows[index].checked = !newSkippedRows[index].checked
-    setSkippedRows(newSkippedRows)
+    let newskippedRowsOverwrite = [...skippedRowsOverwrite]
+    newskippedRowsOverwrite[index].checked = !newskippedRowsOverwrite[index].checked
+    setSkippedRowsOverwrite(newskippedRowsOverwrite)
     setOverwriteError(null)
   }
   const selectAllCheckboxes = (e) => {
-    setSkippedRows((prevState) => (
-      prevState.map(row => ({...row, checked: row.enabled ? e.target.checked : false})
+    setSkippedRowsOverwrite((prevState) => (
+      // prevState.map(row => ({...row, checked: row.enabled ? e.target.checked : false})
+      prevState.map(row => ({...row, checked: e.target.checked})
     )))
     setOverwriteError(null)
   }
   const overwriteNone = () => {
     // send request with empty list
-    setSkippedRows(null)
+    setSkippedRowsOverwrite(null)
     setError(null)
     setOverwriteError(null)
     const sendRequest = async () => {
@@ -146,7 +149,7 @@ function EvalUpload() {
   }
   const confirmOverwrite = () => {
     // show button to confirm overwrite
-    if (skippedRows.filter(row => row.checked).length === 0) {
+    if (skippedRowsOverwrite.filter(row => row.checked).length === 0) {
       setOverwriteError('No rows selected to overwrite')
       return
     }
@@ -160,14 +163,14 @@ function EvalUpload() {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ rows: skippedRows.filter(row => row.checked) })
+          body: JSON.stringify({ rows: skippedRowsOverwrite.filter(row => row.checked) })
         })
         if (!postResponse.ok) {
           const json = await postResponse.json()
           setOverwriteError(json?.error)
         }
         else {
-          setSkippedRows(null)
+          setSkippedRowsOverwrite(null)
           setOverwriteError(null)
           navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
         }
@@ -190,63 +193,92 @@ function EvalUpload() {
           {evalProcessing && <div>Processing...</div>}
         </section>
       </div>
-      { skippedRows && 
-        <div className="evalupload_skippedRows">
-            <h2>{skippedRows.length} Rows Were Skipped</h2>
-            <p><b>Select rows to overwrite current data or ignore these rows</b></p>
-            <div className='evalupload_skippedRowsTable'>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Row</th>
-                    <th>Course</th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Section</th>
-                    <th>Reason</th>
-                    <th>Overwrite?</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {skippedRows.map((row, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{row?.row_index}</td>
-                        <td>{row?.course}</td>
-                        <td>{row?.email}</td>
-                        <td>{row?.first_name} {row?.last_name}</td>
-                        <td>{row?.semester} {row?.year} {row?.section}</td>
-                        <td>{row.reason}</td>
-                        <td>
-                          { row.enabled ?
-                            <input
-                              type="checkbox"
-                              checked={row.checked}
-                              onChange={ () => toggleCheckbox(index) }
-                            />
-                          : <input
-                              type="checkbox"
-                              checked={row.checked}
-                              onChange={ () => toggleCheckbox(index) }
-                              disabled
-                          />
-                          }
-                        </td>
+      { (skippedRowsOverwrite || skippedRowsOther) && 
+        <div className="evalupload_skippedRowsAll">
+          <h1>Some Rows Were Skipped</h1>
+          { (skippedRowsOverwrite?.length) > 0 &&
+            <div className="evalupload_skippedRows">
+                <h2>{skippedRowsOverwrite.length} Rows Already Exist</h2>
+                <p><b>Select rows to overwrite current data or ignore these rows</b></p>
+                <div className='evalupload_skippedRowsButtonsSelect'>
+                  <label>Select All</label>
+                  <input type='checkbox' onChange={ (e) => selectAllCheckboxes(e) } />
+                </div>
+                <div className='evalupload_skippedRowsTable'>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Row</th>
+                        <th>Course</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Section</th>
+                        <th>Overwrite?</th>
                       </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {skippedRowsOverwrite.map((row, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{row.row_index}</td>
+                            <td>{row.course}</td>
+                            <td>{row.email}</td>
+                            <td>{row.first_name} {row.last_name}</td>
+                            <td>{row.semester} {row.year} {row.section}</td>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={ row.checked }
+                                onChange={ () => toggleCheckbox(index) }
+                              />
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                { overwriteError && <div className="errorField">{ overwriteError }</div> }
+                <div className='evalupload_skippedRowsButtons'>
+                  <button onClick={ overwriteNone }>Ignore All</button>
+                  <button onClick={ confirmOverwrite }>Overwrite Selected</button>
+                </div>
             </div>
-            <div className='evalupload_skippedRowsButtonsSelect'>
-              <label>Select All</label>
-              <input type='checkbox' onChange={ (e) => selectAllCheckboxes(e) } />
+          }
+          { (skippedRowsOther?.length > 0) &&
+            <div className="evalupload_skippedRows">
+                <h2>{skippedRowsOther.length} Rows Were Skipped For Various Reasons</h2>
+                <p><b>Create users or fill in missing fields to resolve </b></p>
+                <div className='evalupload_skippedRowsTable'>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Row</th>
+                        <th>Course</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Section</th>
+                        <th>Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {skippedRowsOther.map((row, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{row.row_index}</td>
+                            <td>{row.course ? row.course : 'Unkown'}</td>
+                            <td>{row.email ? row.email : 'Unkown'}</td>
+                            <td>{(row.first_name && row.last_name) ? `${row.first_name} ${row.last_name}` : 'Unkown'}</td>
+                            <td>{(row.semester && row.year && row.section) ? `${row.semester} ${row.year} ${row.section}` : 'Unkown'}</td>
+                            <td>{row.reason}</td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
             </div>
-            <div className='evalupload_skippedRowsButtons'>
-              { overwriteError && <div className="errorField">{ overwriteError }</div> }
-              <button onClick={ overwriteNone }>Ignore All</button>
-              <button onClick={ confirmOverwrite }>Overwrite Selected</button>
-            </div>
+          }
         </div>
       }
     </div>

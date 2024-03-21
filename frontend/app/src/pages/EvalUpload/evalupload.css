@@ -64,11 +64,19 @@
 
 .evalupload-form-button:hover {
   background-color: var(--hover);
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.evalupload_skippedRowsAll h1 {
+  text-align: center;
+  color: var(--cardtext);
 }
 .evalupload_skippedRows {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 100px;
 }
 .evalupload_skippedRows h2 {
   padding: 10px;
@@ -100,10 +108,11 @@
 
     .evalupload_skippedRowsTable th, .evalupload_skippedRowsTable td {
       padding: 12px 15px;
+      text-align: left;
     }
 
     /* Center Align the overwrite checkboxes */
-    .evalupload_skippedRowsTable td:nth-child(7){
+    .evalupload_skippedRowsTable td:nth-child(6), .evalupload_skippedRowsTable th:nth-child(6){
       text-align: center;
     }
 
@@ -112,7 +121,7 @@
     }
 
     .evalupload_skippedRowsTable tbody tr:nth-of-type(even) {
-        background-color: #f3f3f3;
+      background-color: #f3f3f3;
     }
 
   .evalupload_skippedRowsButtons {
@@ -124,7 +133,7 @@
   }
 
   .evalupload_skippedRowsButtonsSelect {
-    margin: 10px;
+    margin-bottom: 15px;
   }
 
   .evalupload_skippedRowsButtons button {
@@ -137,6 +146,5 @@
     font-weight: 900;
     padding: 10px;
     text-decoration: none;
-    border-radius: 2%;
     margin: 10px 0;
   }
