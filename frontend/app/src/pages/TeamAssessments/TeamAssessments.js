@@ -153,6 +153,7 @@ const TeamAssessments = () => {
         const userQueried = userQuery ? (
           member.first_name.toLowerCase().includes(userQuery.toLowerCase()) || 
           member.last_name.toLowerCase().includes(userQuery.toLowerCase()) ||
+          `${member.first_name} ${member.last_name}`.toLowerCase().includes(userQuery.toLowerCase()) ||
           member.email.toLowerCase().includes(userQuery.toLowerCase())
         ) : true
         const courseTaught = chosenCourse ? (
@@ -166,14 +167,12 @@ const TeamAssessments = () => {
       }).map((member, i) => 
         <div className='teamAssessmentsCard' key={i}>
           <div className='teamAssessmentCardContent'>
-            <div>
-              <div className='teamAssessmentsCardStats'>
-                <h1>{ `${member.first_name} ${member.last_name} - ${member.position}` }</h1>
-                <p><b>Average Course Rating:</b> {member?.ave_all_course_rating_mean}</p>
-                <p><b>Average Instructor Rating:</b> {member?.ave_all_instructor_rating_mean}</p>
-                <p><b>Ave. Course Rating Percentile:</b> {member?.course_percentile}{member?.course_percentile % 10 == 1 ? 'st' : member?.course_percentile % 10 == 2 ? 'nd' : member?.course_percentile % 10 == 3 ? 'rd' : 'th'}</p>
-                <p><b>Ave. Instructor Rating Percentile:</b> {member?.instructor_percentile}{member?.instructor_percentile % 10 == 1 ? 'st' : member?.instructor_percentile % 10 == 2 ? 'nd' : member?.instructor_percentile % 10 == 3 ? 'rd' : 'th'}</p>
-              </div>
+            <div className='teamAssessmentsCardStats'>
+              <h1>{ `${member.first_name} ${member.last_name} - ${member.position}` }</h1>
+              <p><b>Average Course Rating:</b> {member?.ave_all_course_rating_mean}</p>
+              <p><b>Average Instructor Rating:</b> {member?.ave_all_instructor_rating_mean}</p>
+              <p><b>Ave. Course Rating Percentile:</b> {member?.course_percentile}{member?.course_percentile % 10 == 1 ? 'st' : member?.course_percentile % 10 == 2 ? 'nd' : member?.course_percentile % 10 == 3 ? 'rd' : 'th'}</p>
+              <p><b>Ave. Instructor Rating Percentile:</b> {member?.instructor_percentile}{member?.instructor_percentile % 10 == 1 ? 'st' : member?.instructor_percentile % 10 == 2 ? 'nd' : member?.instructor_percentile % 10 == 3 ? 'rd' : 'th'}</p>
             </div>
             <div className="teamAssessmentsButtons">
               <button onClick={ () => navigate(`/course-analytics?email=${member.email}`) }>

@@ -138,20 +138,20 @@ const StudentEvaluations = () => {
   return (
     <div className="studentEvalsBody">
       <h1 className="pageHeader">My Student Evaluations</h1>
-      <div className='studentEvalsCard studentEvalsOptions'>
-        <div className='studentEvalsButtons'>
-          { user && user.position === 'chair' &&
-            <div className='studentEvalsDropdownBox'>
-              <h3>Choose Person</h3>
-              <select name="person" id="person" className="studentEvalsDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
-                { usersToChoose && usersToChoose.map((person, i) =>
-                  <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                )}
-              </select>
-            </div>
-          }
+      { user && user.position === 'chair' &&
+        <div className='studentEvalsCard studentEvalsOptions'>
+          <div className='studentEvalsButtons'>
+              <div className='studentEvalsDropdownBox'>
+                <h3>Choose Person</h3>
+                <select name="person" id="person" className="studentEvalsDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
+                  { usersToChoose && usersToChoose.map((person, i) =>
+                    <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
+                  )}
+                </select>
+              </div>
+          </div>
         </div>
-      </div>
+      }
       { (!chosenPerson && courses) || (chosenPerson && otherUserEvals) ?
           <div className='courses'>
             { chosenPerson ? 
