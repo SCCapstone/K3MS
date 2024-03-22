@@ -193,7 +193,6 @@ const ResearchInfo = () => {
     <div className="researchInfo">
       <h1 className='pageHeader'>Research Info</h1>
       <div className='researchInfoCard options'>
-        <h1>Options</h1>
         <div className='researchInfobuttons'>
           { user && user.position === 'chair' &&
             <div className='researchInfoDropdownBox'>
