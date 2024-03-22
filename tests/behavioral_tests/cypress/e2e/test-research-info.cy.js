@@ -63,7 +63,7 @@ describe('Research Info Test: Chair', () => {
     cy.contains('button', 'Log in').click()
     cy.url().should('include', '/dashboard') // make sure logged in
   })
-  it("Professor Can Upload a Grant", () => {
+  it("Chair Can Upload a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(chairGrantTitle)
@@ -77,7 +77,7 @@ describe('Research Info Test: Chair', () => {
     cy.url().should('include', '/research-info')
     cy.contains(chairGrantTitle)
   })
-  it("Professor Can Upload a Publication", () => {
+  it("Chair Can Upload a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
     cy.contains('Publication Information')
