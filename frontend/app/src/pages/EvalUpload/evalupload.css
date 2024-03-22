@@ -64,4 +64,91 @@
 
 .evalupload-form-button:hover {
   background-color: var(--hover);
+  justify-content: space-between;
+  gap: 50px;
 }
+
+.evalupload_skippedRowsAll h1 {
+  text-align: center;
+  color: var(--cardtext);
+}
+.evalupload_skippedRows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 100px;
+}
+.evalupload_skippedRows h2 {
+  padding: 10px;
+  margin: 0;
+  color: var(--cardtext);
+}
+
+  .evalupload_skippedRowsTable {
+    max-height: 400px;
+    width: 80%;
+    overflow: scroll;
+    display: flex;
+    justify-content: center;
+  }
+
+    .evalupload_skippedRowsTable table {
+      border-collapse: collapse;
+      font-family: sans-serif;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      margin: auto;
+    }
+
+    .evalupload_skippedRowsTable thead tr {
+      background-color: var(--cardtext);
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .evalupload_skippedRowsTable th, .evalupload_skippedRowsTable td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    /* Center Align the overwrite checkboxes */
+    .evalupload_skippedRowsTable td:nth-child(6), .evalupload_skippedRowsTable th:nth-child(6){
+      text-align: center;
+    }
+
+    .evalupload_skippedRowsTable tbody tr {
+      border-bottom: 1px solid #dddddd;
+    }
+
+    .evalupload_skippedRowsTable tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+    }
+
+  .evalupload_skippedRowsButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 20px;
+    width: 80%;
+  }
+
+  .evalupload_skippedRowsButtonsSelect {
+    margin-bottom: 15px;
+  }
+
+  .evalupload_skippedRowsButtons button {
+    width: 100%;
+    background-color: var(--cardtext);
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 1em;
+    font-weight: 900;
+    padding: 10px;
+    text-decoration: none;
+    margin: 10px 0;
+  }
+
+  .evalupload_otherButton {
+    width: 20%;
+  }

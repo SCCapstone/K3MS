@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 @dataclass
-class Evaluations(db.Model):
+class EvaluationsTmp(db.Model):
     email: str = db.Column(db.String(100), nullable=False, primary_key=True)
     year: str = db.Column(db.String(100), nullable=False, primary_key=True)
     semester: str = db.Column(db.String(100), nullable=False, primary_key=True) # fall, spring, summer

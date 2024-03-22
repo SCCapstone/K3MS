@@ -33,6 +33,8 @@ module.exports = global.config = {
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
     EXPEN_UPLOAD_URL: BASE_URL + "expenupload",
 
+    EVAL_OVERWRITE_URL: BASE_URL + "overwrite_evals",
+
     UPDATE_PASSWORD_URL: BASE_URL + "update_password",
 
     USER_CREATION_URL: BASE_URL + "signup",

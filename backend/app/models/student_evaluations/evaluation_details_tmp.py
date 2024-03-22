@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 @dataclass
-class EvaluationDetails(db.Model):
+class EvaluationDetailsTmp(db.Model):
     # Primary keys
     email: str = db.Column(db.String(100), nullable=False, primary_key=True)
     year: str = db.Column(db.String(100), nullable=False, primary_key=True)
