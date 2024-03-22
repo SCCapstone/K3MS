@@ -164,7 +164,6 @@ const ResearchInfo = () => {
     fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError)
     fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError)
   }
-  console.log(otherUserGrants, otherUserPubs, otherUserExpen, expenError)
 
   return (
     <div className="researchInfo">
