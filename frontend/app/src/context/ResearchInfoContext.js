@@ -34,18 +34,18 @@ export const researchInfoReducer = (state, action) => {
     case 'SET_EXPEN':
         return { 
           ...state, 
-          expen: action.payload
+          expens: action.payload
         }
-    case 'UPDATE_EXPEN':
+    case 'UPDATE_EXPENS':
         return { 
           ...state, 
-          expen: state.expen.concat(action.payload)
+          expens: state.expens ? state.expens.concat(action.payload) : action.payload
         }
     case 'CLEAR_DATA':
       return {
         grants: null,
         pubs: null,
-        expen: null
+        expens: null
       }
     default:
       return state
@@ -56,7 +56,7 @@ export const ResearchInfoContextProvider = ({ children }) => {
   const [state, researchInfoDispatch] = useReducer(researchInfoReducer, { 
     grants: null,
     pubs: null,
-    expen: null,
+    expens: null,
     usersToChoose: null
   })
   

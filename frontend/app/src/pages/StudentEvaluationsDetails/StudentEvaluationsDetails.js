@@ -141,9 +141,8 @@ const StudentEvaluationsDetails = () => {
 
   return (
     <div className="studentEvalsDetailsBody">
-      <h1 className="pageHeader">{name} Evaluation Details</h1>
+      <h2 className="pageHeader">{name} Evaluation Details</h2>
       <div className="studentEvalsCard">
-        <h1>Filters</h1>
         <div className='dropdowns'>
           <div className='dropdownBox'>
             <h3>Year</h3>
@@ -171,28 +170,55 @@ const StudentEvaluationsDetails = () => {
           </div>
         </div>
       </div>
-      <div className="course_details">
+      <div>
         {selectedCourse &&
-          <div className="studentEvalsDetailsCard">
+          // <div className="studentEvalsDetailsCard">
+          <div className="course_details">
             <h1>{selectedCourse.semester} {selectedCourse.year} {selectedCourse.section}</h1>
-            <div className="studentEvalsDetailsCardContent">
-              <p>Instructor_type       :     {selectedCourse.instructor_type                  }</p>
-              <p>Participants_count    :     {selectedCourse.participants_count               }</p>
-              <p>Number_of_returns     :     {selectedCourse.number_of_returns                }</p>
-              <p>Course_rating_mean    :     {selectedCourse.course_rating_mean               }</p>
-              <p>Instructor_rating_mean:     {selectedCourse.instructor_rating_mean           }</p>
+              <table className="introTable">
+                <thead>
+                  <tr>
+                    <th>Instructor Type</th>
+                    <th>Participants Count</th>
+                    <th>Number of Returns</th>
+                    <th>Course Rating Mean</th>
+                    <th>Instructor Rating Mean</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{selectedCourse.instructor_type}</td>
+                    <td>{selectedCourse.participants_count}</td>
+                    <td>{selectedCourse.number_of_returns}</td>
+                    <td>{selectedCourse.course_rating_mean}</td>
+                    <td>{selectedCourse.instructor_rating_mean}</td>
+                  </tr>
+                </tbody>
+              </table>
+              
               <div className='questions'>
-                {selectedCourse.details.map((detail, j) => (
-                  <div key={j}>
-                    <div className="SPACER">_</div>
-                    <p>{detail.question_id}. {detail.question}</p>
-                    <p>Mean: {detail.mean}</p>
-                    <p>STD: {detail.std}</p>
-                    <p>Median: {detail.median}</p>
-                    <p>Returns: {detail.returns}</p>
-                  </div>
-                ))}
-              </div>
+                <table className="evaluationsTable">
+                  <thead>
+                    <tr>
+                      <th>Evaluation Question</th>
+                      <th>Mean</th>
+                      <th>STD</th>
+                      <th>Median</th>
+                      <th>Returns</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedCourse.details.map((detail, j) => (
+                      <tr key={j}>
+                        <td className="evalQuestion">{detail.question_id}. {detail.question}</td>
+                        <td>{detail.mean}</td>
+                        <td>{detail.std}</td>
+                        <td>{detail.median}</td>
+                        <td>{detail.returns}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
             </div>
           </div>
           }

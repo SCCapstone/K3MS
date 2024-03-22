@@ -12,11 +12,11 @@ const ResearchInfo = () => {
   const queryPage = query.get('page')?.toLowerCase()
 
   const { user } = useAuthContext()
-  const { usersToChoose, grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
-  const [grantsToShow, setGrantsToShow] = useState(grants)
+  const { usersToChoose, grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
+  const [expenError, setExpenError] = useState(null)
   const [cardToShow, setCardToShow] = useState(queryPage ? queryPage : 'grants')
   const [chosenPerson, setChosenPerson] = useState(null)
   const [otherUserGrants, setOtherUserGrants] = useState(null)
@@ -113,12 +113,12 @@ const ResearchInfo = () => {
         credentials: 'include'
       })
 
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         researchInfoDispatch({type: 'SET_EXPEN', payload: data})
       }
-      else if (response.status === 401) {
-        console.log('error')
+      else if (response.status === 404) {
+        setExpenError(data?.error)
       }
     }
 
@@ -129,10 +129,10 @@ const ResearchInfo = () => {
     if (!pubs) {
       fetchPubs()
     }
-    if (!expen) {
+    if (!expens) {
       fetchExpen()
     }
-  }, [grants, expen, pubs, researchInfoDispatch])
+  }, [grants, expens, pubs, researchInfoDispatch])
 
   const choosePerson = (e) => {
     const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
@@ -162,7 +162,7 @@ const ResearchInfo = () => {
     }
     fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError)
     fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError)
-    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {})
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError)
   }
 
   return (
@@ -296,11 +296,10 @@ const ResearchInfo = () => {
           <h1>Expenditures</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
-              { (!chosenPerson && expen) || (chosenPerson && otherUserExpen) ?
+              { (!chosenPerson && expens) || (chosenPerson && otherUserExpen) ?
                 <table>
                   <thead>
                     <tr>
-                      <th>Title</th>
                       <th>Calendar Year</th>
                       <th>Reporting Department</th>
                       <th>P.I.</th>
@@ -309,21 +308,19 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ? 
-                    otherUserExpen.map((ex) => {
+                    otherUserExpen.map((ex, i) => {
                       return (
-                        <tr key={ ex.amount }>
-                          <td>{ ex.title }</td>
-                          <td>{ ex.calendar_year }</td>
+                        <tr key={ i }>
+                          <td>{ ex.year }</td>
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
                         </tr>
                       )}) :
-                    expen.map((ex) => {
+                    expens.map((ex, i) => {
                       return (
-                        <tr key={ ex.amount }>
-                          <td>{ ex.title }</td>
-                          <td>{ ex.calendar_year }</td>
+                        <tr key={ i }>
+                          <td>{ ex.year }</td>
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
@@ -332,7 +329,7 @@ const ResearchInfo = () => {
                     }
                   </tbody>
                 </table>
-                : <p>Loading...</p>
+                : (expenError ? <p>{expenError}</p> : <p>Loading...</p>)
               }
             </div>
           </div>
