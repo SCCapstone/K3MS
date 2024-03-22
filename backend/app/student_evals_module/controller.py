@@ -136,8 +136,19 @@ def overwrite_evals_rows_controller(request):
             return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-def get_student_evals_controller(limit=False):
+def get_student_evals_controller(user_email=None, limit=False):
+    # Get Current User's Email
     email = current_user.email
+
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
 
     courses = db.session.query(
         Eval.email, 
@@ -162,8 +173,16 @@ def get_student_evals_controller(limit=False):
     } for course in courses], HTTPStatus.OK
 
 
-def get_student_evals_details_controller(course_name):
+def get_student_evals_details_controller(course_name, user_email=None):
     email = current_user.email
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
     
     course_evals = db.session.query(
         Eval.email, 
@@ -275,6 +294,7 @@ def get_student_evals_details_controller(course_name):
         return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND
     
     return [{
+        'email'                 : course.get('email'                , 'N/A'),
         'course'                : course.get('course'                , 'N/A'),
         'year'                  : course.get('year'                  , 'N/A'),
         'semester'              : course.get('semester'              , 'N/A'),

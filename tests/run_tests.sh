@@ -5,6 +5,7 @@ cd behavioral_tests && npm ci
 npx cypress run --spec "cypress/e2e/test-login.cy.js"
 npx cypress run --spec "cypress/e2e/test-user-admin.cy.js"
 npx cypress run --spec "cypress/e2e/test-parse-student-evals.cy.js"
+npx cypress run --spec "cypress/e2e/test-student-evals.cy.js"
 npx cypress run --spec "cypress/e2e/test-course-analytics.cy.js"
 npx cypress run --spec "cypress/e2e/test-grant-upload.cy.js"
 npx cypress run --spec "cypress/e2e/test-publications-details-upload.cy.js"

@@ -44,4 +44,33 @@
   border-radius: 5%;
   margin: 10px 0;
 }
+.studentEvalsOptions {
+  width: 60%;
+}
+.studentEvalsButtons {
+  display: flex;
+  padding: 5px;
+  justify-content: space-around;
+  align-items: end;
+}
 
+.studentEvalsOptions .studentEvalsDropdownBox {
+  flex: 1 1 0px;
+  padding: 10px;
+}
+.studentEvalsOptions .studentEvalsDropdownBox h3 {
+  margin: 5px;
+}
+
+.studentEvalsOptions .studentEvalsDropdown {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: thin solid var(--cardtext);
+  background: transparent;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+  margin-bottom: 10px;
+}

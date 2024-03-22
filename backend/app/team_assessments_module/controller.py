@@ -15,54 +15,76 @@ from werkzeug.utils import secure_filename
 import pandas as pd
 from io import BytesIO
 from collections import defaultdict
+import numpy as np
+from scipy import stats
 
 def get_team_assessments_controller():
-    if current_user.position != 'chair':
-        return dict(error='You do not have authority access info about other users'), HTTPStatus.UNAUTHORIZED
-    # SELECT email, course, AVG(course_rating_mean) AS ave_course_rating_mean, AVG(instructor_rating_mean) AS avg_instructor_rating_mean FROM evaluations GROUP BY email, year;
-    courses = db.session.query(
-        Eval.email, 
-        Eval.course, 
-        db.func.avg(Eval.course_rating_mean).label('ave_course_rating_mean'), 
-        db.func.avg(Eval.instructor_rating_mean).label('ave_instructor_rating_mean')
-    ).group_by(
-        Eval.email, 
-        Eval.course
-    ).all()
+    try:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority access info about other users'), HTTPStatus.UNAUTHORIZED
 
-    team = db.session.query(
-        User.email, 
-        User.first_name, 
-        User.last_name,
-        User.position
-    ).filter(
-        User.email != current_user.email
-    ).filter(
-        User.position != 'chair'
-    ).all()
+        # Get all course and intructor ratings to find percentile
+        all_course_ratings = db.session.query(Eval.course_rating_mean).all()
+        all_instructor_ratings = db.session.query(Eval.instructor_rating_mean).all()
 
-    team_assessments = []
+        all_course_ratings = np.array([rating[0] for rating in all_course_ratings])
+        all_instructor_ratings = np.array([rating[0] for rating in all_instructor_ratings])
 
-    for user in team:
-        user_assessment = {
-            'email': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'position': user.position,
-            'ave_all_course_rating_mean': None,
-            'ave_all_instructor_rating_mean': None,
-        }
+        # Get team members
+        team = db.session.query(
+            User.email, 
+            User.first_name, 
+            User.last_name,
+            User.position
+        ).filter(
+            User.email != current_user.email
+        ).filter(
+            User.position != 'chair'
+        ).all()
 
-        # Add courses
-        user_courses = [course for course in courses if course.email == user.email]
-        
-        if user_courses:
-            ave_all_course_rating_mean = round(sum(course.ave_course_rating_mean for course in user_courses) / len(user_courses), 2)
-            user_assessment['ave_all_course_rating_mean'] = ave_all_course_rating_mean
+        team_assessments = []
 
-            ave_all_instructor_rating_mean = round(sum(course.ave_instructor_rating_mean for course in user_courses) / len(user_courses), 2)
-            user_assessment['ave_all_instructor_rating_mean'] = ave_all_instructor_rating_mean
+        for user in team:
+            user_assessment = {
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'position': user.position,
+                'ave_all_course_rating_mean': None,
+                'ave_all_instructor_rating_mean': None,
+                'courses': []
+            }
 
-        team_assessments.append(user_assessment)
+            courses = db.session.query(
+                Eval.email, 
+                Eval.course, 
+                db.func.avg(Eval.course_rating_mean).label('ave_course_rating_mean'), 
+                db.func.avg(Eval.instructor_rating_mean).label('ave_instructor_rating_mean'),
+                db.func.max(Eval.year).label('latest_year')
+            ).filter(
+                Eval.email == user.email
+            ).group_by(
+                Eval.email,
+                Eval.course 
+            ).all()
 
-    return team_assessments, HTTPStatus.OK
+            # Add courses
+            if courses:
+                ave_all_course_rating_mean = round(np.mean([course.ave_course_rating_mean for course in courses]), 2)
+                ave_all_instructor_rating_mean = round(np.mean([course.ave_instructor_rating_mean for course in courses]), 2)
+                user_assessment['ave_all_course_rating_mean'] = ave_all_course_rating_mean
+                user_assessment['ave_all_instructor_rating_mean'] = ave_all_instructor_rating_mean
+                user_assessment['course_percentile'] = round(stats.percentileofscore(all_course_ratings, ave_all_course_rating_mean))
+                user_assessment['instructor_percentile'] = round(stats.percentileofscore(all_instructor_ratings, ave_all_instructor_rating_mean))
+                for course in courses:
+                    user_assessment['courses'].append({
+                        'course': course.course,
+                        'latest_year': course.latest_year
+                    })
+
+            team_assessments.append(user_assessment)
+
+        return team_assessments, HTTPStatus.OK
+    
+    except Exception as e:
+        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR

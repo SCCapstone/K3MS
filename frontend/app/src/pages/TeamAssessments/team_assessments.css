@@ -17,33 +17,92 @@
   width: 80%;
 }
 
-.teamAssessmentsCard h1 {
+.teamAssessmentCardContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.teamAssessmentsCardStats {
+  padding-left: 40px;
+  font-size: 1.5em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.teamAssessmentsCardStats h1 {
   color: black;
   text-align: left;
-  padding: 10px 40px;
-  margin-bottom: 0;
-  font-size: 1.5em;
+  font-size: 1.2em;
+  grid-column: span 2;
 }
 
-.teamAssessmentsCardContent {
-  padding: 0px 40px;
-  font-size: 1.5em;
+.teamAssessmentsButtons {
   display: flex;
-  justify-content: space-between;
+  padding: 5px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
 }
-
-.course_analytics {
-  height: 80%;
+.teamAssessmentsButtons button {
   background-color: var(--cardtext);
   border: none;
   cursor: pointer;
   color: white;
   font-size: 16px;
   font-weight: 900;
-  padding: 10px;
+  padding: 10px 10px;
   text-decoration: none;
   text-transform: uppercase;
-  border-radius: 5%;
-  margin: auto 0;
+  border-radius: 3%;
+  width: 100%;
 }
 
+
+.teamOptions {
+  width: 60%;
+}
+
+.teamAssessmentsFilters {
+  display: flex;
+  padding: 5px;
+  justify-content: space-around;
+  align-items: end;
+}
+.teamOptions .teamAssessmentsDropdownBox {
+  flex: 1 1 0px;
+  padding: 10px;
+}
+.teamOptions .teamAssessmentsDropdownBox h3 {
+  margin: 5px;
+}
+
+.teamOptions .teamAssessmentsDropdown {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: thin solid var(--cardtext);
+  background: transparent;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+}
+
+.teamAssessmentsSearchCourse {
+  position: relative;
+}
+.teamAssessmentSearchCourseDropdownContent {
+  z-index: 1;
+  position: absolute;
+  background-color: white;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-top:4px;
+}
+.teamAssessmentSearchCourseDropdownItem {
+  padding: 1px 5px;
+}
+.teamAssessmentSearchCourseDropdownItem:hover {
+  background-color: var(--cardbg);
+  cursor: pointer;
+}

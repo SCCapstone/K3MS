@@ -18,10 +18,20 @@ def eval_upload():
 def get_student_evals():
     return get_student_evals_controller()
 
+@blueprint.route('/student_evals/<user_email>', methods=['GET'])
+@login_required
+def get_student_evals_by_user(user_email):
+    return get_student_evals_controller(user_email=user_email)
+
 @blueprint.route('/student_evals_details/<course_name>', methods=['GET'])
 @login_required
 def get_student_evals_details(course_name):
     return get_student_evals_details_controller(course_name=course_name)
+
+@blueprint.route('/student_evals_details/<course_name>/<user_email>', methods=['GET'])
+@login_required
+def get_student_evals_details_by_user(course_name, user_email):
+    return get_student_evals_details_controller(course_name=course_name, user_email=user_email)
 
 @blueprint.route('/limited_student_evals', methods=['GET'])
 @login_required
