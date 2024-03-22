@@ -44,6 +44,11 @@ def limited_publications():
 def expenditures():
     return expenditures_controller()
 
+@blueprint.route('/expenditures/<user_email>', methods=['GET'])
+@login_required
+def expenditures_by_user(user_email):
+    return expenditures_controller(user_email)
+
 @blueprint.route('/limited_expenditures', methods=['GET'])
 @login_required
 def limited_expenditures():

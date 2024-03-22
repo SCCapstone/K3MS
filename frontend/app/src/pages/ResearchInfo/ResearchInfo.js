@@ -162,8 +162,9 @@ const ResearchInfo = () => {
     }
     fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError)
     fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError)
-    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {})
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError)
   }
+  console.log(otherUserGrants, otherUserPubs, otherUserExpen, expenError)
 
   return (
     <div className="researchInfo">
@@ -296,7 +297,7 @@ const ResearchInfo = () => {
           <h1>Expenditures</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
-              { (!chosenPerson && expen) || (chosenPerson && otherUserExpen) ?
+              { (!chosenPerson && expens) || (chosenPerson && otherUserExpen) ?
                 <table>
                   <thead>
                     <tr>
@@ -317,7 +318,7 @@ const ResearchInfo = () => {
                           <td>{ ex.amount }</td>
                         </tr>
                       )}) :
-                    expens.map((ex) => {
+                    expens.map((ex, i) => {
                       return (
                         <tr key={ i }>
                           <td>{ ex.year }</td>

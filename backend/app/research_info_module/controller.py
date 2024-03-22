@@ -148,9 +148,19 @@ def limited_publications_controller():
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Expenditures Controller
-def expenditures_controller():
+def expenditures_controller(user_email=None):
     # Get Current User's Email
     email = current_user.email
+
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
 
     try:
         # Query Database for All Grants Associated With email
