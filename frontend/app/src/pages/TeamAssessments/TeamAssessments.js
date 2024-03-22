@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import { TEAM_ASSESSMENTS_URL } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
@@ -20,6 +20,15 @@ const TeamAssessments = () => {
   const [ chosenCourse, setChosenCourse ] = useState('')
   const [ showCourseDropdown, setShowCourseDropdown ] = useState(false)
   const [ year, setYear ] = useState(1000)
+
+  // Ensure Dropdown width is set correctly
+  const chooseCourseDiv = useRef(null)
+  const [chooseCourseWidth, setChooseCourseWidth] = useState(0)
+  useEffect(() => {
+    window.addEventListener('resize', () => setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20));
+    setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth - 20);
+    return () => window.removeEventListener('resize', () => setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20));
+  }, []);
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -50,7 +59,6 @@ const TeamAssessments = () => {
 
       if (response.ok) {
         const data = await response.json()
-        console.log(data)
         courseAnalyticsDispatch({type: 'SET_ALL_COURSES', payload: data})
       }
       else if (response.status === 401) {
@@ -83,21 +91,6 @@ const TeamAssessments = () => {
     }
   }, [team, teamAssessmentsDispatch])
 
-  const handleAnalyticsButtonClick = (user) => {
-    // redirect to course-analytics page passing in user name as a query parameter
-    navigate(`/course-analytics?email=${user.email}`)
-  }
-
-  const updateUserQuery = (e) => {
-    e.preventDefault()
-    setUserQuery(e.target.value)
-  }
-
-  const handleCourseChange = (e) => {
-    e.preventDefault()
-    setCourseQuery(e.target.value)
-  }
-
   return (
     <div className="teamAssessmentsBody">
       <h1 className="pageHeader">My Team Assessments</h1>
@@ -105,63 +98,91 @@ const TeamAssessments = () => {
           <div className='teamAssessmentsbuttons'>
             <div className='teamAssessmentsDropdownBox'>
               <h3>Filter Users</h3>
-              <input type="text" id="course" className="teamAssessmentsDropdown" onChange={ (e) => updateUserQuery(e) } placeholder="Enter Name or Email" />
+              <input type="text" className="teamAssessmentsDropdown" onChange={ (e) => setUserQuery(e.target.value) } placeholder="Enter Name or Email" />
             </div>
-            <div className="teamAssessmentsSearchCourse teamAssessmentsDropdownBox">
+            <div className="teamAssessmentsSearchCourse teamAssessmentsDropdownBox" ref={chooseCourseDiv}>
               <h3>Has Taught Course</h3>
-              <input type="text" id="course" className="teamAssessmentsDropdown" 
+              <input 
+                type="text" 
+                className="teamAssessmentsDropdown teamAssessmentsSearchCourseDropdown"
+                value = { courseQuery }
                 onFocus={ () => setShowCourseDropdown(true)}
-                onFocusOut={ () => setShowCourseDropdown(false)}
-                onChange={ (e) => {handleCourseChange(e)}} 
-                placeholder="Search for a course" 
+                onBlur={ () => setShowCourseDropdown(false) }
+                onClick={ (e) => setCourseQuery('') }
+                onChange={ (e) => setCourseQuery(e.target.value) } 
+                placeholder={ "Search for a course" }
               />
-              { showCourseDropdown &&
-                <div class="teamAssessmentSearchCourseDropdownContent">
-                  { allCoursesInDb && allCoursesInDb.filter((course) => {
-                    if (!courseQuery)
-                      return true
-                    return course.toLowerCase().includes(courseQuery.toLowerCase())
-                    }).map((course, i) => 
-                      <div key={i} onClick={ (e) => setChosenCourse(e) }>{course}</div>
-                    )
-                  }
+              <div 
+                className="teamAssessmentSearchCourseDropdownContent" 
+                style={ {'width': chooseCourseWidth, 'display': showCourseDropdown ? '' : 'none'} }
+              >
+                <div 
+                  className="teamAssessmentSearchCourseDropdownItem" 
+                  onMouseDown={ () => { setChosenCourse(''); setCourseQuery('') } }
+                >
+                  None
                 </div>
-              }
+                { allCoursesInDb && allCoursesInDb.filter((course) => {
+                  if (!courseQuery)
+                    return true
+                  return course.toLowerCase().includes(courseQuery.toLowerCase())
+                  }).map((course, i) => 
+                    <div 
+                      className="teamAssessmentSearchCourseDropdownItem" 
+                      key={i} 
+                      onMouseDown={ () => { setChosenCourse(course); setCourseQuery(course) } }
+                    >{course}</div>
+                  )
+                }
+              </div>
             </div>
             <div className="choosePeriodDropdown teamAssessmentsDropdownBox">
               <h3>In the last</h3>
               <select name="course" id="course" className="teamAssessmentsDropdown" required onChange={ (e) => setYear(e.target.value) }>
+                <option value={1000}>All Time</option>
                 <option value={1}>Last Year</option>
                 <option value={5}>Last Five Years</option>
                 <option value={10}>Last Ten Years</option>
-                <option value={1000}>All Time</option>
               </select>
             </div>
           </div>
         </div>
       <div className='team'>  
       {team && team.filter((member) => {
-        if (!userQuery) {
-          return true
-        }
-        return (
+        // User Query
+        const userQueried = userQuery ? (
           member.first_name.toLowerCase().includes(userQuery.toLowerCase()) || 
           member.last_name.toLowerCase().includes(userQuery.toLowerCase()) ||
           member.email.toLowerCase().includes(userQuery.toLowerCase())
-        )
+        ) : true
+        const courseTaught = chosenCourse ? (
+          member.courses.some(course => course.course === chosenCourse)
+        ) : true
+        const yearFiltered = chosenCourse ? (
+          member.courses.some(course => course.course === chosenCourse && course.latest_year >= new Date().getFullYear() - year)
+        ) : true
+        console.log(yearFiltered, member.courses)
+        return userQueried && courseTaught && yearFiltered
       }).map((member, i) => 
         <div className='teamAssessmentsCard' key={i}>
-          <h1>{ member.first_name +' '+member.last_name }</h1>
-          <div className='teamAssessmentsCardContent'>
-            <p><b>Position:</b> {member.position}</p>
-            <p><b>Average Course Rating:</b> {member?.ave_all_course_rating_mean}</p>
-            <p><b>Average Instructor Rating:</b> {member?.ave_all_instructor_rating_mean}</p>
-            <button
-              className="course_analytics_button"
-              onClick={() => handleAnalyticsButtonClick(member)}
-            >
-              Course Analytics
-            </button>
+          <div className='teamAssessmentCardContent'>
+            <div>
+              <div className='teamAssessmentsCardStats'>
+                <h1>{ `${member.first_name} ${member.last_name} - ${member.position}` }</h1>
+                <p><b>Average Course Rating:</b> {member?.ave_all_course_rating_mean}</p>
+                <p><b>Average Instructor Rating:</b> {member?.ave_all_instructor_rating_mean}</p>
+                <p><b>Ave. Course Rating Percentile:</b> {member?.course_percentile}{member?.course_percentile % 10 == 1 ? 'st' : member?.course_percentile % 10 == 2 ? 'nd' : member?.course_percentile % 10 == 3 ? 'rd' : 'th'}</p>
+                <p><b>Ave. Instructor Rating Percentile:</b> {member?.instructor_percentile}{member?.instructor_percentile % 10 == 1 ? 'st' : member?.instructor_percentile % 10 == 2 ? 'nd' : member?.instructor_percentile % 10 == 3 ? 'rd' : 'th'}</p>
+              </div>
+            </div>
+            <div className="teamAssessmentsButtons">
+              <button onClick={ () => navigate(`/course-analytics?email=${member.email}`) }>
+                Course Analytics
+              </button>
+              <button onClick={ () => navigate(`/student-evals?email=${member.email}`) }>
+                Student Evaluations
+              </button>
+            </div>
           </div>
         </div>
       )}
