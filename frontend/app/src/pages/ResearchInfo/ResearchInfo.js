@@ -8,10 +8,12 @@ import './research_info.css'
 const ResearchInfo = () => {
   const navigate = useNavigate()
   const { user } = useAuthContext()
-  const { grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
+  const { grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
+  const [expenError, setExpenError] = useState(null)
+  console.log(expens)
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -70,12 +72,12 @@ const ResearchInfo = () => {
         credentials: 'include'
       })
 
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         researchInfoDispatch({type: 'SET_EXPEN', payload: data})
       }
-      else if (response.status === 401) {
-        console.log('error')
+      else if (response.status === 404) {
+        setExpenError(data?.error)
       }
     }
 
@@ -86,10 +88,10 @@ const ResearchInfo = () => {
     if (!pubs) {
       fetchPubs()
     }
-    if (!expen) {
+    if (!expens) {
       fetchExpen()
     }
-  }, [grants, expen, pubs, researchInfoDispatch])
+  }, [grants, expens, pubs, researchInfoDispatch])
 
 
   return (
@@ -163,11 +165,10 @@ const ResearchInfo = () => {
         <h1>Expenditures</h1>
         <div className="researchInfoCardContent">
           <div className="researchInfoTable">
-            { expen ?
+            { expens ?
               <table>
                 <thead>
                   <tr>
-                    <th>Title</th>
                     <th>Calendar Year</th>
                     <th>Reporting Department</th>
                     <th>P.I.</th>
@@ -175,11 +176,10 @@ const ResearchInfo = () => {
                   </tr>
                 </thead>
                 <tbody>
-                { expen.map((ex) => {
+                { expens.map((ex, i) => {
                   return (
-                    <tr key={ ex.amount }>
-                      <td>{ ex.title }</td>
-                      <td>{ ex.calendar_year }</td>
+                    <tr key={ i }>
+                      <td>{ ex.year }</td>
                       <td>{ ex.reporting_department }</td>
                       <td>{ ex.pi_name }</td>
                       <td>{ ex.amount }</td>
@@ -188,7 +188,7 @@ const ResearchInfo = () => {
                 })}
                 </tbody>
               </table>
-              : <p>Loading...</p>
+              : (expenError ? <p>{expenError}</p> : <p>Loading...</p>)
             }
           </div>
         </div>

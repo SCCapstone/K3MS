@@ -1,6 +1,8 @@
 from flask_login import current_user
 from app.models.grants import Grants
 from app.models.publications import Publications
+from app.models.expenditures import Expenditures as Expens
+
 from flask import jsonify
 
 # Grants Controller
@@ -143,7 +145,6 @@ def expenditures_controller():
 
         for expen in expens:
             expen_dict = {
-                'title': expen.title,
                 'year': expen.year,
                 'amount': expen.amount,
                 'reporting_department': expen.reporting_department,
@@ -155,7 +156,7 @@ def expenditures_controller():
     
     except Exception as e:
         print("Error retrieving grants: {e}")
-        return jsonify({'error': 'Internal Server Error'}), 500
+        return jsonify({'error': f'Internal Server Error = {e}'}), 500
     
 # Limited Expenditures Controller
 def limited_expens_controller():
@@ -175,7 +176,6 @@ def limited_expens_controller():
 
         for expen in expens:
             expen_dict = {
-                'title': expen.title,
                 'year': expen.year,
                 'amount': expen.amount,
                 'reporting_department': expen.reporting_department,
@@ -187,17 +187,4 @@ def limited_expens_controller():
     
     except Exception as e:
         print("Error retrieving grants: {e}")
-        return jsonify({'error': 'Internal Server Error'}), 500
-
-
-
-
-        
-
-        
-
-
-
-
-
-
+        return jsonify({'error': f'Internal Server Error - {e}'}), 500

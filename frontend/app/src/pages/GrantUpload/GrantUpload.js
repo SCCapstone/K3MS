@@ -56,7 +56,6 @@ const GrantUpload = () => {
       setYear('')
 
       // Update grants
-      console.log(json)
       researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
 
       // Navigate to grants page

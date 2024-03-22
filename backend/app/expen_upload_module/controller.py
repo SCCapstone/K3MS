@@ -1,11 +1,10 @@
 from http import HTTPStatus
-from app.models import Expens
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
 from flask_login import current_user
+from app.models.expenditures import Expenditures as Expens
 
 form_fields = [  
-    'title',
     'amount',
     'year',
     'reporting_department',
@@ -22,20 +21,18 @@ def expen_upload_controller(req):
     json_data = ret
 
     # Get Expenditure fields
-    title = json_data.get(form_fields[0])
-    amount = json_data.get(form_fields[1])
-    year = json_data.get(form_fields[2])
-    reporting_department = json_data.get(form_fields[3])
-    pi_name = json_data.get(form_fields[4])
+    amount = json_data.get(form_fields[0])
+    year = json_data.get(form_fields[1])
+    reporting_department = json_data.get(form_fields[2])
+    pi_name = json_data.get(form_fields[3])
 
     # Make sure expen with title doesn't already exist for this user
-    expen = Expens.query.filter_by(email=current_user.email, title=title).first()
+    expen = Expens.query.filter_by(email=current_user.email, year=year).first()
     if expen:
         return dict(error='Expenditure already exists'), HTTPStatus.BAD_REQUEST
 
     new_expen = Expens(
         email=current_user.email, 
-        title=title, 
         year=year,
         amount=amount,
         reporting_department=reporting_department,

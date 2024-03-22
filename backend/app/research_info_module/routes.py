@@ -5,7 +5,7 @@ from app.research_info_module.controller import (
     publications_controller,
     limited_publications_controller,
     expenditures_controller,
-    limited_expenditures_controller
+    limited_expens_controller
 )
 from flask_login import login_required
 
@@ -32,12 +32,11 @@ def limited_publications():
 @blueprint.route('/expenditures', methods=['GET'])
 @login_required
 def expenditures():
-    return expenditures()
+    return expenditures_controller()
 
 @blueprint.route('/limited_expenditures', methods=['GET'])
 @login_required
 def limited_expenditures():
-    return limited_expenditures()
-
+    return limited_expens_controller()
 
 
