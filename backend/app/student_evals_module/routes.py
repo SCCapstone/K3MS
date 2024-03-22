@@ -28,6 +28,11 @@ def get_student_evals_by_user(user_email):
 def get_student_evals_details(course_name):
     return get_student_evals_details_controller(course_name=course_name)
 
+@blueprint.route('/student_evals_details/<course_name>/<user_email>', methods=['GET'])
+@login_required
+def get_student_evals_details_by_user(course_name, user_email):
+    return get_student_evals_details_controller(course_name=course_name, user_email=user_email)
+
 @blueprint.route('/limited_student_evals', methods=['GET'])
 @login_required
 def get_limited_student_evals():

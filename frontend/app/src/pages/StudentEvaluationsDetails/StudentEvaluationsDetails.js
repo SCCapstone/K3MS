@@ -8,11 +8,15 @@ import './student_evaluations_details.css'
 
 const StudentEvaluationsDetails = () => {
   const navigate = useNavigate()
-  const location = useLocation();
+
+  const query = new URLSearchParams(useLocation().search)
+  const queryEmail = query.get('email')
+  const courseQueryParam = query.get('course');
+  const course_name = JSON.parse(decodeURIComponent(courseQueryParam));
 
   const { user } = useAuthContext()
   const { courseDetails, studentEvalsDispatch } = useStudentEvalsContext()
-  const [ name, setName ] = useState('');
+  const [ name, setName ] = useState(course_name);
 
   // TEST for Dropdown
   const [selectedSemester, setSelectedSemester] = useState('');
@@ -33,20 +37,19 @@ const StudentEvaluationsDetails = () => {
   
   // Fetch student evals details
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const courseQueryParam = queryParams.get('course');
-
-    const course_name = JSON.parse(decodeURIComponent(courseQueryParam));
-    setName(course_name);
-
     const fetchStudentEvalsDetails = async () => {
-      const response = await fetch(`${STUDENT_EVALS_DETAILS_URL}/${course_name}`, {
+      let url = `${STUDENT_EVALS_DETAILS_URL}/${course_name}`
+      if (queryEmail && queryEmail !== user.email) {
+        url = `${STUDENT_EVALS_DETAILS_URL}/${course_name}/${queryEmail}`
+      }
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include'
       })
 
       if (response.ok) {
         const data = await response.json()
+        console.log(data)
         studentEvalsDispatch({type: 'SET_COURSE_DETAILS', payload: data})
         // Extract available semester and year options for each course
         const years = new Set();
@@ -61,7 +64,12 @@ const StudentEvaluationsDetails = () => {
         console.log('error')
       }
     }
-    if (!courseDetails || courseDetails[0].course !== course_name) {
+    if (
+      !courseDetails || 
+      courseDetails[0].course !== course_name || 
+      (queryEmail && courseDetails[0].email !== queryEmail) ||
+      (!queryEmail && courseDetails[0].email !== user.email)
+    ) {
       fetchStudentEvalsDetails()
     } 
     else {

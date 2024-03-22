@@ -129,7 +129,10 @@ const StudentEvaluations = () => {
     // Encode course object into a query parameter
     const courseQueryParam = encodeURIComponent(JSON.stringify(course));
     // Navigate to the desired page with data
-    navigate(`/student-evals-details?course=${courseQueryParam}`);
+    if (chosenPerson)
+      navigate(`/student-evals-details?course=${courseQueryParam}&email=${chosenPerson.email}`);
+    else
+      navigate(`/student-evals-details?course=${courseQueryParam}`);
   }
 
   return (
@@ -149,9 +152,8 @@ const StudentEvaluations = () => {
           }
         </div>
       </div>
-      <div className='courses'>
       { (!chosenPerson && courses) || (chosenPerson && otherUserEvals) ?
-          <div>
+          <div className='courses'>
             { chosenPerson ? 
               otherUserEvals?.map((course, i) => 
                 <div className='studentEvalsCard' key={i}>
@@ -176,7 +178,6 @@ const StudentEvaluations = () => {
             }
           </div> : <p>Loading...</p>
         }
-      </div>
     </div>
   )
 }
