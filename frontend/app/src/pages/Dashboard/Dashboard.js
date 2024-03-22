@@ -109,7 +109,7 @@ const Dashboard = () => {
             {grantsError && <p className='DashboardError'>{grantsError}</p>}
             <div className="dashboardTable">
               { grants ?
-                <table>
+                <table classsName="grantTable">
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -143,7 +143,7 @@ const Dashboard = () => {
             {pubsError && <p className='DashboardError'>{pubsError}</p>}
             <div className="dashboardTable">
               { pubs ?
-                <table>
+                <table className="publicationTable">
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -179,7 +179,7 @@ const Dashboard = () => {
             {coursesError && <p className='DashboardError'>{coursesError}</p>}
             <div className="dashboardTable">
               { courses ?
-                <table>
+                <table className="studentEvalsTable">
                   <thead>
                     <tr>
                       <th>Course</th>

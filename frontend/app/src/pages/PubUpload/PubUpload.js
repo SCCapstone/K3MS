@@ -95,7 +95,7 @@ function PubUpload() {
               placeholder="ISBN (Optional)"
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
-            <button>Upload</button>
+            <button>Add</button>
             {error && <div className="errorField">{ error }</div>}
         </form>
       </section>
