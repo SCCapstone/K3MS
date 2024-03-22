@@ -14,6 +14,11 @@ from flask_login import login_required
 def grants():
     return grants_controller()
 
+@blueprint.route('/grants/<user_email>', methods=['GET'])
+@login_required
+def grants_by_user(user_email):
+    return grants_controller(user_email)
+
 @blueprint.route('/limited_grants', methods=['GET'])
 @login_required
 def limited_grants():
@@ -23,6 +28,11 @@ def limited_grants():
 @login_required
 def publications():
     return publications_controller()
+
+@blueprint.route('/publications/<user_email>', methods=['GET'])
+@login_required
+def publications_by_user(user_email):
+    return publications_controller(user_email)
 
 @blueprint.route('/limited_publications', methods=['GET'])
 @login_required

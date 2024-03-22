@@ -8,10 +8,11 @@ npx cypress run --spec "cypress/e2e/test-parse-student-evals.cy.js"
 npx cypress run --spec "cypress/e2e/test-course-analytics.cy.js"
 npx cypress run --spec "cypress/e2e/test-publications-details-upload.cy.js"
 npx cypress run --spec "cypress/e2e/test-team-assessments.cy.js"
+npx cypress run --spec "cypress/e2e/test-research-info.cy.js"
 
 # Run Unit Tests
 cd ../unit_tests && npm ci
-npx cypress run --spec "cypress/e2e/test-get-grants-route.cy.js"
 npx cypress run --spec "cypress/e2e/test-create-and-delete-user.cy.js"
+npx cypress run --spec "cypress/e2e/test-student-eval-details-route.cy.js"
 # do this last bc it changes password
 npx cypress run --spec "cypress/e2e/test-update-password-route.cy.js"
