@@ -136,8 +136,19 @@ def overwrite_evals_rows_controller(request):
             return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-def get_student_evals_controller(limit=False):
+def get_student_evals_controller(user_email=None, limit=False):
+    # Get Current User's Email
     email = current_user.email
+
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
 
     courses = db.session.query(
         Eval.email, 

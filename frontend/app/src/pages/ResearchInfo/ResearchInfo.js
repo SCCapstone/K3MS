@@ -14,7 +14,6 @@ const ResearchInfo = () => {
 
   const { user } = useAuthContext()
   const { usersToChoose, grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
-  const [grantsToShow, setGrantsToShow] = useState(grants)
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
