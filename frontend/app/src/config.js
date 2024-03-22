@@ -30,6 +30,7 @@ module.exports = global.config = {
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
+    EXPEN_UPLOAD_URL: BASE_URL + "expenupload",
 
     UPDATE_PASSWORD_URL: BASE_URL + "update_password",
 

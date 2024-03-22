@@ -125,7 +125,69 @@ def limited_publications_controller():
         print("Error retrieving publications: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
     
+# Expenditures Controller
+def expenditures_controller():
+    # Get Current User's Email
+    email = current_user.email
 
+    try:
+        # Query Database for All Grants Associated With email
+        expens = Expens.query.filter_by(email = email).all()
+
+        # If No Expens Exist for email
+        if not expens:
+            return jsonify({'error': 'No expenditures found for this user.'}), 404
+
+        # Add Each expenditures's Information to a Dict (exclude email and date_added)
+        expens_data = []
+
+        for expen in expens:
+            expen_dict = {
+                'title': expen.title,
+                'year': expen.year,
+                'amount': expen.amount,
+                'reporting_department': expen.reporting_department,
+                'pi_name': expen.pi_name
+            }
+            expens_data.append(expen_dict)
+
+        return jsonify(expens_data), 200
+    
+    except Exception as e:
+        print("Error retrieving grants: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
+    
+# Limited Expenditures Controller
+def limited_expens_controller():
+    # Get Current User's Email
+    email = current_user.email
+
+    try:
+        # Query Database for First Four Expenditures Associated With email
+        expens = Expens.query.filter_by(email = email).limit(4).all()
+
+        # If No Expenditures Exist for email
+        if not expens:
+            return jsonify({'error': 'No expenditures found for this user.'}), 404
+
+        # Add Each Expenditure's Information to a Dict (exclude email and date_added)
+        expens_data = []
+
+        for expen in expens:
+            expen_dict = {
+                'title': expen.title,
+                'year': expen.year,
+                'amount': expen.amount,
+                'reporting_department': expen.reporting_department,
+                'pi_name': expen.pi_name
+            }
+            expens_data.append(expen_dict)
+
+        return jsonify(expens_data), 200
+    
+    except Exception as e:
+        print("Error retrieving grants: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 
 
