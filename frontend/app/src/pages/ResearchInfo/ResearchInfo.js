@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
@@ -10,6 +10,7 @@ const ResearchInfo = () => {
 
   const query = new URLSearchParams(useLocation().search)
   const queryPage = query.get('page')?.toLowerCase()
+  const queryEmail = query.get('email')
 
   const { user } = useAuthContext()
   const { usersToChoose, grants, pubs, expen, researchInfoDispatch } = useResearchInfoContext()
@@ -22,6 +23,45 @@ const ResearchInfo = () => {
   const [otherUserGrants, setOtherUserGrants] = useState(null)
   const [otherUserPubs, setOtherUserPubs] = useState(null)
   const [otherUserExpen, setOtherUserExpen] = useState(null)
+
+  const usersDropdownRef = useRef(null)
+
+  const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email) => {
+    const response = await fetch(`${url}/${email}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+
+    const data = await response.json()
+    if (response.ok) {
+      setErrorFunc(null)
+      setFunc(data)
+    }
+    else if (response.status === 404) {
+      setFunc(null)
+      setErrorFunc(data?.error)
+    }
+  }
+
+  // On first render or when usersToChoose is set, set chosenPerson from url query and fetch data
+  useEffect(() => {
+    if (!chosenPerson && queryEmail && usersToChoose) {
+      const chosenPersonTmp = usersToChoose.find(person => person.email === queryEmail)
+      if (!chosenPersonTmp) {
+        navigate('/dashboard', { state: { mssg: 'You cannot view data for this user. This incident will be reported!', status: 'error'}})
+        return
+      }
+      if (chosenPersonTmp.email !== user.email) {
+        setChosenPerson(chosenPersonTmp)
+        if (usersDropdownRef?.current) {
+          usersDropdownRef.current.value = chosenPersonTmp.email
+        }
+        fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email)
+        fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email)
+        fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {}, chosenPersonTmp.email)
+      }
+    }
+  }, [user, usersToChoose])
 
   // Fetch users to choose from
   useEffect(() => {
@@ -144,25 +184,9 @@ const ResearchInfo = () => {
       return
     }
     setChosenPerson(chosenPersonTmp)
-    const fetchOtherUserInfo = async (url, setFunc, setErrorFunc) => {
-      const response = await fetch(`${url}/${chosenPersonTmp.email}`, {
-        method: 'GET',
-        credentials: 'include'
-      })
-
-      const data = await response.json()
-      if (response.ok) {
-        setErrorFunc(null)
-        setFunc(data)
-      }
-      else if (response.status === 404) {
-        setFunc(null)
-        setErrorFunc(data?.error)
-      }
-    }
-    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError)
-    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError)
-    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {})
+    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email)
+    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email)
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, () => {}, chosenPersonTmp.email)
   }
 
   return (
@@ -174,7 +198,7 @@ const ResearchInfo = () => {
           { user && user.position === 'chair' &&
             <div className='researchInfoDropdownBox'>
               <h3>Choose Person</h3>
-              <select name="person" id="person" className="researchInfoDropdown" required  onChange={ choosePerson }>
+              <select name="person" id="person" className="researchInfoDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
                 { usersToChoose && usersToChoose.map((person, i) =>
                   <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
                 )}

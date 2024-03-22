@@ -95,7 +95,7 @@ const TeamAssessments = () => {
     <div className="teamAssessmentsBody">
       <h1 className="pageHeader">My Team Assessments</h1>
         <div className='teamAssessmentsCard teamOptions'>
-          <div className='teamAssessmentsbuttons'>
+          <div className='teamAssessmentsFilters'>
             <div className='teamAssessmentsDropdownBox'>
               <h3>Filter Users</h3>
               <input type="text" className="teamAssessmentsDropdown" onChange={ (e) => setUserQuery(e.target.value) } placeholder="Enter Name or Email" />
@@ -181,6 +181,9 @@ const TeamAssessments = () => {
               </button>
               <button onClick={ () => navigate(`/student-evals?email=${member.email}`) }>
                 Student Evaluations
+              </button>
+              <button onClick={ () => navigate(`/research-info?email=${member.email}`) }>
+                Research Info
               </button>
             </div>
           </div>
