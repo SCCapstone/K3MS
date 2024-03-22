@@ -64,6 +64,7 @@ const Navbar = () => {
           <p>Enter & Upload Data</p>
           <button onClick={ (e) => navigate('/grantupload') }>Add Grant</button>
           <button onClick={ (e) => navigate('/pubupload') }>Add Publication</button>
+          <button onClick={ (e) => navigate('/expenupload') }>Add Expenditure</button>
           { user && user.position === 'chair' ? <>
             <button onClick={ (e) => navigate('/evalupload') }>Upload Evaluations</button>
             </> : ''

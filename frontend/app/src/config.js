@@ -7,6 +7,7 @@ module.exports = global.config = {
     LIMITED_GRANTS_URL: BASE_URL + "limited_grants",
     LIMITED_PUBS_URL: BASE_URL + "limited_publications",
     LIMITED_EVALS_URL: BASE_URL + "limited_student_evals",
+    LIMITED_EXPEN_URL: BASE_URL + "limited_expenditures",
 
     LOGIN_URL: BASE_URL + "login",
     LOGOUT_URL: BASE_URL + "logout",
@@ -14,7 +15,7 @@ module.exports = global.config = {
 
     GRANTS_URL: BASE_URL + "grants",
     PUBS_URL: BASE_URL + "publications",
-    EXPEN_URL: BASE_URL + "tmp_get_expen",
+    EXPEN_URL: BASE_URL + "expenditures",
 
     STUDENT_EVALS_URL: BASE_URL + "student_evals",
     STUDENT_EVALS_DETAILS_URL: BASE_URL + "student_evals_details",
@@ -30,6 +31,7 @@ module.exports = global.config = {
     GRANT_UPLOAD_URL: BASE_URL + "grantupload",
     PUB_UPLOAD_URL: BASE_URL + "pubupload",
     EVAL_UPLOAD_URL: BASE_URL + "evalupload",
+    EXPEN_UPLOAD_URL: BASE_URL + "expenupload",
 
     UPDATE_PASSWORD_URL: BASE_URL + "update_password",
 
