@@ -1,10 +1,11 @@
 
-/* display currentCourses in a 2 column grid */
-
 .course_details {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center; /* Move the dropdown to the right */
+  gap: 40px;
+  margin-top: 100px;
 }
 
 .studentEvalsDetailsCard {
@@ -17,8 +18,8 @@
   width: 80%;
 }
 
-.studentEvalsDetailsCard h1 {
-  color: black;
+.course_details h1 {
+  color: var(--cardtext);
   text-align: center;
   padding: 10px 40px;
   font-size: 2em;
@@ -74,35 +75,38 @@
   color: var(--cardtext);
 }
 
-.introTable {
+.introTable, .evaluationsTable {
   border-collapse: collapse;
-  width: 100%;
-  margin-bottom: 25px;
+  width: 80%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  margin: auto;
 }
 
-.introTable td, .introTable th {
-    border: 2px solid #dddddd;
+  .introTable td, .introTable th,
+  .evaluationsTable td, .evaluationsTable th {
     text-align: center;
     padding: 8px;
-}
+  }
 
-.evaluationsTable {
-  border-collapse: collapse;
-  width: 100%;
-  margin-bottom: 25px;
-}
+  .evaluationsTable th:first-child,
+  .evaluationsTable td:first-child {
+    /* Set a fixed width for the first column */
+    width: 448px; /* Adjust the width to your preference */
+  }
 
-.evaluationsTable td, .evaluationsTable th {
-  border: 2px solid #dddddd;
-  text-align: center;
-  padding: 8px;
-}
+  .evaluationsTable thead tr , .introTable thead tr {
+    background-color: var(--cardtext);
+    color: #ffffff;
+    text-align: center;
+  }
 
-.evaluationsTable th:first-child,
-.evaluationsTable td:first-child {
-  /* Set a fixed width for the first column */
-  width: 448px; /* Adjust the width to your preference */
-}
+  .evaluationsTable tbody tr, .introTable tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .evaluationsTable tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
 
 .evalQuestion {
   text-align: left !important;

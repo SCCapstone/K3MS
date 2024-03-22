@@ -170,12 +170,11 @@ const StudentEvaluationsDetails = () => {
           </div>
         </div>
       </div>
-      <div className="course_details">
+      <div>
         {selectedCourse &&
-          <div className="studentEvalsDetailsCard">
+          // <div className="studentEvalsDetailsCard">
+          <div className="course_details">
             <h1>{selectedCourse.semester} {selectedCourse.year} {selectedCourse.section}</h1>
-            <div className="studentEvalsDetailsCardContent">
-
               <table className="introTable">
                 <thead>
                   <tr>
@@ -220,7 +219,6 @@ const StudentEvaluationsDetails = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
             </div>
           </div>
           }
