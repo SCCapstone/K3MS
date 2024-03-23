@@ -18,6 +18,7 @@ async function getDashboardData(route, dispatch, action, setError) {
   }
   else {
     setError(json.error ? json.error : 'Error')
+    return json
   }
 }
 
@@ -62,14 +63,16 @@ const Dashboard = () => {
           'SET_ANON_DATA', 
           setAnalyticsError
         )
-        if (data.plots.error) {
-          setPlottingError(data.plots.error)
-        }
-        else {
-          const {data: plotData, layout: plotLayout} = JSON.parse(data.plots.course_rating_plot)
-          
-          dashboardDispatch({type: 'SET_PLOT', payload: {data: plotData, layout: plotLayout}})
-          setPlottingError('')
+        if (data.plots) {
+          if (data.plots.error) {
+            setPlottingError(data.plots.error)
+          }
+          else {
+            const {data: plotData, layout: plotLayout} = JSON.parse(data.plots.course_rating_plot)
+            
+            dashboardDispatch({type: 'SET_PLOT', payload: {data: plotData, layout: plotLayout}})
+            setPlottingError('')
+          }
         }
       }
     }
@@ -84,118 +87,124 @@ const Dashboard = () => {
       setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean))
     }
   }, [plot, user, courses])
-
+  console.log(anonData, analyticsError, plot, plottingError)
   return (
     <div>
       <h1 className='pageHeader'>Dashboard</h1>
       <div className='dashboardBody'>
-        <div className='dashboardCard'>
-          <div className='dashboardCardHeader'>
-            <h1>Grants</h1>
-            <button onClick={ (e) => navigate('/research-info?page=grants') }>See All</button>
-          </div>
-          <div className="dashboardCardContent">
-            {grantsError && <p className='DashboardError'>{grantsError}</p>}
-            <div className="dashboardTable">
-              { grants ?
-                <table className="grantTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Amount</th>
-                      <th>Grant Year</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  { grants.map((grant) => {
-                    return (
-                      <tr key={ grant.title }>
-                        <td>{ grant.title }</td>
-                        <td>{ grant.amount }</td>
-                        <td>{ grant.year }</td>
-                      </tr>
-                    )
-                  })}
-                  </tbody>
-                </table>
-                : grantsError ? '' : <p>Loading...</p>
-              }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Grants</h1>
+              <button onClick={ (e) => navigate('/research-info?page=grants') }>See All</button>
             </div>
-          </div>
-        </div>
-        <div className='dashboardCard'>
-          <div className='dashboardCardHeader'>
-            <h1>Publications</h1>
-            <button onClick={ (e) => navigate('/research-info?page=publications') }>See All</button>
-          </div>
-          <div className="dashboardCardContent">
-            {pubsError && <p className='DashboardError'>{pubsError}</p>}
-            <div className="dashboardTable">
-              { pubs ?
-                <table className="publicationTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Authors</th>
-                      <th>Year</th>
-                      <th>ISBN</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  { pubs.map((pub) => {
-                    return (
-                      <tr key={ pub.title }>
-                        <td>{ pub.title }</td>
-                        <td>{ pub.authors }</td>
-                        <td>{ pub.publication_year }</td>
-                        <td>{ pub.isbn }</td>
+            <div className="dashboardCardContent">
+              {grantsError && <p className='DashboardError'>{grantsError}</p>}
+              <div className="dashboardTable">
+                { grants ?
+                  <table className="grantTable">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Grant Year</th>
                       </tr>
-                    )
-                  })}
-                  </tbody>
-                </table>
-                : pubsError ? '' : <p>Loading...</p>
-              }
+                    </thead>
+                    <tbody>
+                    { grants.map((grant) => {
+                      return (
+                        <tr key={ grant.title }>
+                          <td>{ grant.title }</td>
+                          <td>{ grant.amount }</td>
+                          <td>{ grant.year }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : grantsError ? '' : <p>Loading...</p>
+                }
+              </div>
             </div>
-          </div>
-        </div>
-        <div className='dashboardCard'>
-          <div className='dashboardCardHeader'>
-            <h1>Expenditures</h1>
-            <button onClick={ (e) => navigate('/research-info?page=expenditures') }>See All</button>
-          </div>
-          <div className="dashboardCardContent">
-            {expensError && <p className='DashboardError'>{expensError}</p>}
-            <div className="dashboardTable">
-              { expens ?
-                <table className="expensTable">
-                  <thead>
-                    <tr>
-                      <th>Calendar Year</th>
-                      <th>Reporting Department</th>
-                      <th>P.I.</th>
-                      <th>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  { expens.map((ex,i) => {
-                    return (
-                      <tr key={ i }>
-                          <td>{ ex.year }</td>
-                          <td>{ ex.reporting_department }</td>
-                          <td>{ ex.pi_name }</td>
-                          <td>{ ex.amount }</td>
+          </div> : ''
+        }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Publications</h1>
+              <button onClick={ (e) => navigate('/research-info?page=publications') }>See All</button>
+            </div>
+            <div className="dashboardCardContent">
+              {pubsError && <p className='DashboardError'>{pubsError}</p>}
+              <div className="dashboardTable">
+                { pubs ?
+                  <table className="publicationTable">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Authors</th>
+                        <th>Year</th>
+                        <th>ISBN</th>
                       </tr>
-                    )
-                  })}
-                  </tbody>
-                </table>
-                : expensError ? expensError : <p>Loading...</p>
-              }
+                    </thead>
+                    <tbody>
+                    { pubs.map((pub) => {
+                      return (
+                        <tr key={ pub.title }>
+                          <td>{ pub.title }</td>
+                          <td>{ pub.authors }</td>
+                          <td>{ pub.publication_year }</td>
+                          <td>{ pub.isbn }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : pubsError ? '' : <p>Loading...</p>
+                }
+              </div>
             </div>
-          </div>
-        </div>
-        <div className='dashboardCard'>
+          </div> : ''
+        }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Expenditures</h1>
+              <button onClick={ (e) => navigate('/research-info?page=expenditures') }>See All</button>
+            </div>
+            <div className="dashboardCardContent">
+              {expensError && <p className='DashboardError'>{expensError}</p>}
+              <div className="dashboardTable">
+                { expens ?
+                  <table className="expensTable">
+                    <thead>
+                      <tr>
+                        <th>Calendar Year</th>
+                        <th>Reporting Department</th>
+                        <th>P.I.</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    { expens.map((ex,i) => {
+                      return (
+                        <tr key={ i }>
+                            <td>{ ex.year }</td>
+                            <td>{ ex.reporting_department }</td>
+                            <td>{ ex.pi_name }</td>
+                            <td>{ ex.amount }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : expensError ? '' : <p>Loading...</p>
+                }
+              </div>
+            </div>
+          </div> : ''
+        }
+        <div className={ `dashboardCard ${user.position === 'instructor' ? 'instructorCard' : ''}` }>
           <div className='dashboardCardHeader'>
             <h1>Student Evals</h1>
             <button onClick={ (e) => navigate('/student-evals') }>See All</button>
@@ -236,14 +245,14 @@ const Dashboard = () => {
           </div>
           <div className="dashboardCardContent">
             <h2>{ courses?.[0]?.course }</h2>
-            { coursesError && <p className='DashboardError'>{coursesError}</p> }
-            { anonData ?
-                plot ? 
-                  <div className="dashboardPlot">
-                    { courseRatingsPlot }
-                  </div>
-                  : plottingError ? <p className='DashboardError'>{ plottingError }</p> : ''
-                : analyticsError ? '' : <p>Loading...</p>
+            { coursesError ? <p className='DashboardError'>{coursesError}</p> :
+              anonData ?
+                  plot ? 
+                    <div className="dashboardPlot">
+                      { courseRatingsPlot }
+                    </div>
+                    : plottingError ? <p className='DashboardError'>{ plottingError }</p> : ''
+                  : analyticsError ? <p className='DashboardError'>{ analyticsError }</p> : <p>Loading...</p>
             }
           </div>
         </div>

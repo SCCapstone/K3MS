@@ -47,7 +47,7 @@ describe('Research Info Test: Professor', () => {
   })
   it('Professor Can\'t choose other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
-    cy.contains('Options').find('select').should('not.exist')
+    cy.contains('Choose Person').find('select').should('not.exist')
   })
 })
 
@@ -96,13 +96,13 @@ describe('Research Info Test: Chair', () => {
   it('Chair can choose other people and sees their info', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.wait(100)
-    cy.contains('div', 'Options').find('select').select(Cypress.env('nonChairUserName'))
+    cy.contains('div', 'Choose Person').find('select').select(Cypress.env('nonChairUserName'))
 
     // Check grants
     cy.contains(professsorGrantTitle)
 
     // Check publications
-    cy.contains('div', 'Options').contains('Publications').click()
+    cy.contains('div', 'Choose Page').contains('Publications').click()
     cy.contains(professorPubTitle)
   })
 })

@@ -208,15 +208,15 @@ const ResearchInfo = () => {
             <h3>Choose Page</h3>
             <div className="pageSelectors">
               <button 
-                className={ cardToShow == 'grants' ? 'active' : ''}
+                className={ cardToShow === 'grants' ? 'active' : ''}
                 onClick={ () => setCardToShow('grants')}
               >Grants</button>
               <button 
-                className={ cardToShow == 'publications' ? 'active' : ''}
+                className={ cardToShow === 'publications' ? 'active' : ''}
                 onClick={ () => setCardToShow('publications')}
               >Publications</button>
               <button 
-                className={ cardToShow == 'expenditures' ? 'active' : ''}
+                className={ cardToShow === 'expenditures' ? 'active' : ''}
                 onClick={ () => setCardToShow('expenditures')}
               >Expenditures</button>
             </div>

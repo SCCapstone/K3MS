@@ -73,7 +73,10 @@
 .dashboardBody button:hover {
   background-color: var(--hover);
 }
-
+.instructorCard {
+  grid-column: span 2;
+  width: 95%;
+}
 .dashboardPlotCard {
   grid-column: span 2;
   width: 95%;

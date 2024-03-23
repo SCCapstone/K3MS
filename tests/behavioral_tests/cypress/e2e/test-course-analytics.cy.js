@@ -20,14 +20,14 @@ describe('Test Course Analytics Page', () => {
       .select(Cypress.env('coursesInStudentEvalSampleForTestUser')[0])
 
     // Check mean is as expected for default time period (1 year)
-    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanOneYear'))
+    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanAllTime'))
 
     // Select a new time period
     cy.get('.choosePeriodDropdown').find('select')
-      .select('All Time')
+      .select('Last Year')
 
     // Check mean is as expected for all time
-    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanAllTime'))
+    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanOneYear'))
   })
   it("Chair can see data for other users", () => {
     cy.visit(Cypress.env('baseUrl'))
