@@ -47,7 +47,7 @@ describe('Research Info Test: Professor', () => {
   })
   it('Professor Can\'t choose other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
-    cy.contains('Choose Person').find('select').should('not.exist')
+    cy.contains('Choose Person').should('not.exist')
   })
 })
 
