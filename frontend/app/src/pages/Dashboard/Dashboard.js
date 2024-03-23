@@ -3,9 +3,7 @@ import { LIMITED_GRANTS_URL, LIMITED_PUBS_URL, LIMITED_EXPEN_URL, LIMITED_EVALS_
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
-import Plot from 'react-plotly.js';
-import createPlotlyComponent from 'react-plotly.js/factory';
-import Plotly from 'plotly.js-basic-dist';
+import plot_kde from '../../utils/plot_kde'
 import './dashboard.css';
 
 async function getDashboardData(route, dispatch, action, setError) {
@@ -64,7 +62,6 @@ const Dashboard = () => {
           'SET_ANON_DATA', 
           setAnalyticsError
         )
-        console.log(JSON.parse(data.plots.course_rating_plot).data)
         if (data.plots.error) {
           setPlottingError(data.plots.error)
         }
@@ -79,25 +76,14 @@ const Dashboard = () => {
     getData()
   }, [grants, pubs, courses, anonData, dashboardDispatch])
 
-  const Plot = createPlotlyComponent(Plotly);
+  // const Plot = createPlotlyComponent(Plotly);
   const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
   
   useEffect(() => {
-    if (plot) {
-      setCourseRatingsPlot(React.createElement(Plot, {
-        data: plot.data,
-        layout: {
-          ...plot.layout,
-          width: undefined,
-          height: undefined,
-          autosize: true,
-          responsive: true,
-        },
-        useResizeHandler: true,
-        style: {width: '100%', height: '100%'}
-      }))
+    if (plot && user && courses) {
+      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean))
     }
-  }, [plot])
+  }, [plot, user, courses])
 
   return (
     <div>

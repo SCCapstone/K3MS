@@ -41,6 +41,11 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
     }
   }
 
+  const toggleNavbar = () => {
+    window.dispatchEvent(new Event('resize')); 
+    setNavbarVisible((prev) => !prev)
+  }
+
   return (
     <div className="navbarWrapper">
       <div className={`navbar ${navbarVisible ? '' : 'navBarCollapsed'}`}>
@@ -84,13 +89,13 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
         </div>
         <button 
           className="navbarHide" 
-          onClick={() => setNavbarVisible((prev) => !prev)}
+          onClick={toggleNavbar}
         ></button>
       </div>
       { !navbarVisible && 
         <button 
             className="navbarShow" 
-            onClick={() => setNavbarVisible((prev) => !prev)}
+            onClick={toggleNavbar}
         ></button>
       }
     </div>

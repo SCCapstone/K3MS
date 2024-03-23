@@ -3,9 +3,7 @@ import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
-import Plot from 'react-plotly.js';
-import createPlotlyComponent from 'react-plotly.js/factory';
-import Plotly from 'plotly.js-basic-dist';
+import plot_kde from '../../utils/plot_kde'
 import { useLocation } from 'react-router-dom'
 
 import './course_analytics.css'
@@ -22,7 +20,7 @@ const CourseAnalytics = () => {
   const [ chosenPerson, setChosenPerson ] = useState(null)
   const [ chosenPersonName, setChosenPersonName ] = useState('')
   const [ chosenCourse, setChosenCourse ] = useState(null)
-  const [ chosenPeriod, setChosenPeriod ] = useState(1)
+  const [ chosenPeriod, setChosenPeriod ] = useState(1000)
 
   const [ anonDataKey, setAnonDataKey ] = useState('')
   const [ anonDataError, setAnonDataError ] = useState('')
@@ -230,38 +228,13 @@ const CourseAnalytics = () => {
   const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
   const [instrRatingsPlot, setInstrRatingsPlot] = useState(null)
   useEffect(() => {
-    const coursePlot = createPlotlyComponent(Plotly);
-    const instrPlot = createPlotlyComponent(Plotly);
-    if (anonData?.[anonDataKey]?.plots?.course_rating_plot) {
-      console.log(JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data)
+    if (anonData?.[anonDataKey]?.plots?.course_rating_plot && chosenCourse && chosenPersonName) {
       const { data: courseData, layout: courseLayout } = JSON.parse(anonData[anonDataKey].plots.course_rating_plot)
       const { data: instructorData, layout: instructorLayout } = JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot)
-      setCourseRatingsPlot(React.createElement(coursePlot, {
-        data: courseData,
-        layout: {
-          ...courseLayout,
-          width: undefined,
-          height: undefined,
-          autosize: true,
-          responsive: true,
-        },
-        useResizeHandler: true,
-        style: {width: '100%', height: '100%'}
-      }))
-      setInstrRatingsPlot(React.createElement(instrPlot, {
-        data: instructorData,
-        layout: {
-          ...instructorLayout,
-          width: undefined,
-          height: undefined,
-          autosize: true,
-          responsive: true,
-        },
-        useResizeHandler: true,
-        style: {width: '100%', height: '100%'}
-      }))
+      setCourseRatingsPlot(plot_kde(courseData, courseLayout, chosenPersonName, chosenCourse.ave_course_rating_mean))
+      setInstrRatingsPlot(plot_kde(instructorData, instructorLayout, chosenPersonName, chosenCourse.ave_instructor_rating_mean))
     }
-  }, [anonData, anonDataKey])
+  }, [anonData, anonDataKey, chosenCourse, chosenPersonName])
 
   return (
     <div className="courseAnalytics">
@@ -299,10 +272,10 @@ const CourseAnalytics = () => {
             <div className="choosePeriodDropdown dropdownBox">
               <h3>Showing Data From</h3>
               <select name="course" id="course" className="dropdown" required onChange={ handleChangeYear }>
+                <option value={1000}>All Time</option>
                 <option value={1}>Last Year</option>
                 <option value={5}>Last Five Years</option>
                 <option value={10}>Last Ten Years</option>
-                <option value={1000}>All Time</option>
               </select>
             </div>
           </div>

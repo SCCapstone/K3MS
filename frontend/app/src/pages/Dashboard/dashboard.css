@@ -77,11 +77,9 @@
 .dashboardPlotCard {
   grid-column: span 2;
   width: 95%;
-  height: 70vh;
 }
 
 .dashboardPlot {
-  justify-content: center;
   border: black solid thin;
 }
 

@@ -25,9 +25,14 @@ const TeamAssessments = () => {
   const chooseCourseDiv = useRef(null)
   const [chooseCourseWidth, setChooseCourseWidth] = useState(0)
   useEffect(() => {
-    window.addEventListener('resize', () => setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20));
-    setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth - 20);
-    return () => window.removeEventListener('resize', () => setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20));
+    const onResize = () => {
+      setTimeout(() => {
+        setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20);
+      }, 500)
+    }
+    window.addEventListener('resize', onResize);
+    setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth - 20); // Initial width
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   // Don't allow non-logged in users to access this page
