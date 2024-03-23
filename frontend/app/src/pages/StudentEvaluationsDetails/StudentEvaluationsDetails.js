@@ -51,11 +51,12 @@ const StudentEvaluationsDetails = () => {
         const data = await response.json()
         studentEvalsDispatch({type: 'SET_COURSE_DETAILS', payload: data})
         // Extract available semester and year options for each course
-        const years = new Set();
+        let years = new Set();
 
         data.forEach(course => {
           years.add(course.year);
         });
+        years = [...years].sort((a, b) => parseInt(b) - parseInt(a))
         setYearOptions([...years]);
         setSelectedYear([...years][0])
       }
@@ -74,10 +75,11 @@ const StudentEvaluationsDetails = () => {
     else {
       // If context is already set but options are empty, fill them in
       if (yearOptions.length === 0) {
-      const years = new Set();
+      let years = new Set();
         courseDetails.forEach(course => {
           years.add(course.year);
         });
+        years = [...years].sort((a, b) => parseInt(b) - parseInt(a))
         setYearOptions([...years]);
         setSelectedYear([...years][0])
       }
@@ -145,7 +147,6 @@ const StudentEvaluationsDetails = () => {
   const handleSectionChange = (event) => {
     setSelectedSection(event.target.value);
   };
-
   return (
     <div className="studentEvalsDetailsBody">
       <h2 className="pageHeader">{name} Evaluation Details</h2>
