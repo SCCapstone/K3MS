@@ -26,7 +26,7 @@ const ResearchInfo = () => {
 
   const usersDropdownRef = useRef(null)
 
-  const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email) => {
+  const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email, sortFunc) => {
     const response = await fetch(`${url}/${email}`, {
       method: 'GET',
       credentials: 'include'
@@ -35,7 +35,7 @@ const ResearchInfo = () => {
     const data = await response.json()
     if (response.ok) {
       setErrorFunc(null)
-      setFunc(data)
+      setFunc(data.sort(sortFunc))
     }
     else if (response.status === 404) {
       setFunc(null)
@@ -124,7 +124,7 @@ const ResearchInfo = () => {
       const data = await response.json()
       if (response.ok) {
         setGrantsError(null)
-        researchInfoDispatch({type: 'SET_GRANTS', payload: data})
+        researchInfoDispatch({type: 'SET_GRANTS', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setGrantsError(data?.error)
@@ -140,7 +140,7 @@ const ResearchInfo = () => {
       const data = await response.json()
       if (response.ok) {
         setPubsError(null)
-        researchInfoDispatch({type: 'SET_PUBS', payload: data})
+        researchInfoDispatch({type: 'SET_PUBS', payload: data.sort((a,b) => parseInt(b.publication_year) - parseInt(a.publication_year))})
       }
       else if (response.status === 404) {
         setPubsError(data?.error)
@@ -155,7 +155,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
-        researchInfoDispatch({type: 'SET_EXPEN', payload: data})
+        researchInfoDispatch({type: 'SET_EXPEN', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setExpenError(data?.error)
@@ -184,9 +184,9 @@ const ResearchInfo = () => {
       return
     }
     setChosenPerson(chosenPersonTmp)
-    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email)
-    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email)
-    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email)
+    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
+    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email, (a,b) => parseInt(b.publication_year) - parseInt(a.publication_year))
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
   }
 
   return (

@@ -5,6 +5,7 @@ from app.models.expenditures import Expenditures as Expens
 from app.models.user import User
 from flask import jsonify
 from http import HTTPStatus
+from sqlalchemy import desc
 
 # Grants Controller
 def grants_controller(user_email=None): 
@@ -52,7 +53,9 @@ def limited_grants_controller():
 
     try:
         # Query Database for First Four Grants Associated With email
-        grants = Grants.query.filter_by(email = email).limit(4).all()
+        grants = Grants.query.filter_by(
+            email = email
+        ).order_by(desc(Grants.year)).limit(4).all()
 
         # If No Grants Exist for email
         if not grants:
@@ -123,7 +126,9 @@ def limited_publications_controller():
 
     try:
         # Query Database for All Publications Associated With email
-        publications = Publications.query.filter_by(email = email).limit(4).all()
+        publications = Publications.query.filter_by(
+            email = email
+        ).order_by(desc(Publications.publication_year)).limit(4).all()
 
         # If No Publications Exist for email
         if not publications:
@@ -164,7 +169,9 @@ def expenditures_controller(user_email=None):
 
     try:
         # Query Database for All Grants Associated With email
-        expens = Expens.query.filter_by(email = email).all()
+        expens = Expens.query.filter_by(
+            email = email
+        ).order_by(desc(Expens.year)).all()
 
         # If No Expens Exist for email
         if not expens:
