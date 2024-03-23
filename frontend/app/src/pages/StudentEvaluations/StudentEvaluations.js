@@ -19,6 +19,8 @@ const StudentEvaluations = () => {
   const [chosenPerson, setChosenPerson] = useState(null)
   const [otherUserEvals, setOtherUserEvals] = useState(null)
 
+  const [error, setError] = useState(null)
+
   const usersDropdownRef = useRef(null)
 
   const fetchOtherUserEvals = async (email) => {
@@ -71,12 +73,13 @@ const StudentEvaluations = () => {
         credentials: 'include'
       })
 
+      const data = await response.json()
       if (response.ok) {
-        const data = await response.json()
         studentEvalsDispatch({type: 'SET_COURSES', payload: data})
       }
-      else if (response.status === 401) {
-        console.log('error')
+      else if (!response.ok) {
+        console.log(data?.error)
+        setError(data?.error)
       }
     }
     if (!courses) {
@@ -176,7 +179,7 @@ const StudentEvaluations = () => {
                 </div>
               )
             }
-          </div> : <p>Loading...</p>
+          </div> :  error ? <p className='studentEvalError'>{ error }</p> : <p>Loading...</p>
         }
     </div>
   )

@@ -6,9 +6,10 @@
     position: fixed; 
     margin: 0;
     overflow: auto;
+    transition: 0.05s;
 }
 
-.navbar button {
+.navbar .buttons button {
     width: 80%;
     background-color: var(--cardtext);
     border: none;
@@ -25,8 +26,8 @@
     margin: 10px auto;
   }
 
-  .navbar button:hover{
-    background-color: #b00000;  /* #800000;*/
+  .navbar .buttons button:hover{
+    background-color: var(--bright-hover);
     color: white;
 }
   .navbar .user {
@@ -53,3 +54,57 @@
     text-align: center;
     font-size: 1.2em;
   }
+
+.navbarHide {
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  transform: translateY(-50%);
+  background-color: var(--cardtext);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 1.5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
+.navbarHide::after {
+  content: '\203A'; /* Unicode arrow character pointing right */
+  content: '\2039'; /* Unicode arrow character pointing left */
+  font-size: 3em;
+}
+
+.navbarHide:hover {
+  background-color: var(--bright-hover);
+  cursor: pointer;
+}
+
+.navBarCollapsed {
+  width: 0px;
+}
+
+.navbarShow {
+  position: fixed;
+  top: 50%;
+  left: 0px;
+  transform: translateY(-50%);
+  background-color: var(--cardtext);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 1px;
+  padding-bottom: 4px;
+  border-radius: 5px;
+  height: 20%;
+}
+
+.navbarShow::after {
+  content: '\203A'; /* Unicode arrow character pointing right */
+  font-size: 3em;
+}
+
+.navbarShow:hover {
+  background-color: var(--bright-hover);
+  cursor: pointer;
+}

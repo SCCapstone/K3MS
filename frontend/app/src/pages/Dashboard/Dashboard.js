@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LIMITED_GRANTS_URL, LIMITED_PUBS_URL, LIMITED_EVALS_URL, COURSE_ANALYTICS_URLS } from '../../config';
+import { LIMITED_GRANTS_URL, LIMITED_PUBS_URL, LIMITED_EXPEN_URL, LIMITED_EVALS_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
-import Plot from 'react-plotly.js';
+import plot_kde from '../../utils/plot_kde'
 import './dashboard.css';
 
 async function getDashboardData(route, dispatch, action, setError) {
@@ -18,6 +18,7 @@ async function getDashboardData(route, dispatch, action, setError) {
   }
   else {
     setError(json.error ? json.error : 'Error')
+    return json
   }
 }
 
@@ -25,13 +26,11 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   const { user } = useAuthContext()
-  const { grants, pubs, courses, anonData, dashboardDispatch } = useDashboardContext()
+  const { grants, pubs, expens, courses, anonData, plot, dashboardDispatch } = useDashboardContext()
 
-  const plotRef = useRef(null)
-
-  const [plot, setPlot] = useState(null)
   const [grantsError, setGrantsError] = useState('');
   const [pubsError, setPubsError] = useState('');
+  const [expensError, setExpensError] = useState('');
   const [coursesError, setCoursesError] = useState('');
   const [analyticsError, setAnalyticsError] = useState('');
   const [plottingError, setPlottingError] = useState('');
@@ -41,20 +40,6 @@ const Dashboard = () => {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
     }
   }, [user, navigate]);
-  
-  const updatePlot = () => {
-    if (plot) {
-      plot.layout.width = String(plotRef?.current?.clientWidth)
-      plot.layout.height = null
-      setPlot({...plot})
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', updatePlot);
-    updatePlot();
-    return () => window.removeEventListener('resize', updatePlot);
-  }, [window]);
 
   useEffect(() => {
     const getData = async () => {
@@ -65,112 +50,161 @@ const Dashboard = () => {
       if (!grants) {
         getDashboardData(LIMITED_GRANTS_URL, dashboardDispatch, 'SET_GRANTS', setGrantsError)
       }
+      if (!expens) {
+        getDashboardData(LIMITED_EXPEN_URL, dashboardDispatch, 'SET_EXPENS', setExpensError)
+      }
       if (!courses) {
         getDashboardData(LIMITED_EVALS_URL, dashboardDispatch, 'SET_COURSES', setCoursesError)
       }
       if (courses && !anonData) {
         const data = await getDashboardData(
-          COURSE_ANALYTICS_URLS.getAnonData + `/${courses[0].course}/1`, 
+          COURSE_ANALYTICS_URLS.getAnonData + `/${courses[0].course}/1000`, 
           dashboardDispatch, 
           'SET_ANON_DATA', 
           setAnalyticsError
         )
-        if (!analyticsError && data.plots) {
+        if (data.plots) {
           if (data.plots.error) {
             setPlottingError(data.plots.error)
           }
           else {
-            const plotData = JSON.parse(data.plots.course_rating_plot).data
-            const plotLayout = JSON.parse(data.plots.course_rating_plot).layout
+            const {data: plotData, layout: plotLayout} = JSON.parse(data.plots.course_rating_plot)
             
-            plotLayout.width = window.innerWidth * 0.25
-            plotLayout.height = window.innerWidth * 0.25
-            plotLayout.responsive = true
-
-            setPlot({data: plotData, layout: plotLayout})  
+            dashboardDispatch({type: 'SET_PLOT', payload: {data: plotData, layout: plotLayout}})
             setPlottingError('')
           }
         }
-        }
+      }
     }
     getData()
-  }, [grants, pubs, courses, dashboardDispatch])
+  }, [grants, pubs, courses, anonData, dashboardDispatch])
 
+  // const Plot = createPlotlyComponent(Plotly);
+  const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
+  
+  useEffect(() => {
+    if (plot && user && courses) {
+      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean))
+    }
+  }, [plot, user, courses])
+  console.log(anonData, analyticsError, plot, plottingError)
   return (
     <div>
       <h1 className='pageHeader'>Dashboard</h1>
       <div className='dashboardBody'>
-        <div className='dashboardCard'>
-          <div className='dashboardCardHeader'>
-            <h1>Grants</h1>
-            <button onClick={ (e) => navigate('/research-info?page=grants') }>See All</button>
-          </div>
-          <div className="dashboardCardContent">
-            {grantsError && <p className='DashboardError'>{grantsError}</p>}
-            <div className="dashboardTable">
-              { grants ?
-                <table classsName="grantTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Amount</th>
-                      <th>Grant Year</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  { grants.map((grant) => {
-                    return (
-                      <tr key={ grant.title }>
-                        <td>{ grant.title }</td>
-                        <td>{ grant.amount }</td>
-                        <td>{ grant.year }</td>
-                      </tr>
-                    )
-                  })}
-                  </tbody>
-                </table>
-                : grantsError ? '' : <p>Loading...</p>
-              }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Grants</h1>
+              <button onClick={ (e) => navigate('/research-info?page=grants') }>See All</button>
             </div>
-          </div>
-        </div>
-        <div className='dashboardCard'>
-          <div className='dashboardCardHeader'>
-            <h1>Publications</h1>
-            <button onClick={ (e) => navigate('/research-info?page=publications') }>See All</button>
-          </div>
-          <div className="dashboardCardContent">
-            {pubsError && <p className='DashboardError'>{pubsError}</p>}
-            <div className="dashboardTable">
-              { pubs ?
-                <table className="publicationTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Authors</th>
-                      <th>Publication Year</th>
-                      <th>ISBN</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  { pubs.map((pub) => {
-                    return (
-                      <tr key={ pub.title }>
-                        <td>{ pub.title }</td>
-                        <td>{ pub.authors }</td>
-                        <td>{ pub.publication_year }</td>
-                        <td>{ pub.isbn }</td>
+            <div className="dashboardCardContent">
+              {grantsError && <p className='DashboardError'>{grantsError}</p>}
+              <div className="dashboardTable">
+                { grants ?
+                  <table className="grantTable">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Grant Year</th>
                       </tr>
-                    )
-                  })}
-                  </tbody>
-                </table>
-                : pubsError ? '' : <p>Loading...</p>
-              }
+                    </thead>
+                    <tbody>
+                    { grants.map((grant) => {
+                      return (
+                        <tr key={ grant.title }>
+                          <td>{ grant.title }</td>
+                          <td>{ grant.amount }</td>
+                          <td>{ grant.year }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : grantsError ? '' : <p>Loading...</p>
+                }
+              </div>
             </div>
-          </div>
-        </div>
-        <div className='dashboardCard'>
+          </div> : ''
+        }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Publications</h1>
+              <button onClick={ (e) => navigate('/research-info?page=publications') }>See All</button>
+            </div>
+            <div className="dashboardCardContent">
+              {pubsError && <p className='DashboardError'>{pubsError}</p>}
+              <div className="dashboardTable">
+                { pubs ?
+                  <table className="publicationTable">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Authors</th>
+                        <th>Year</th>
+                        <th>ISBN</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    { pubs.map((pub) => {
+                      return (
+                        <tr key={ pub.title }>
+                          <td>{ pub.title }</td>
+                          <td>{ pub.authors }</td>
+                          <td>{ pub.publication_year }</td>
+                          <td>{ pub.isbn }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : pubsError ? '' : <p>Loading...</p>
+                }
+              </div>
+            </div>
+          </div> : ''
+        }
+        { user && (user.position === 'chair' || user.position === 'professor') ?
+          <div className='dashboardCard'>
+            <div className='dashboardCardHeader'>
+              <h1>Expenditures</h1>
+              <button onClick={ (e) => navigate('/research-info?page=expenditures') }>See All</button>
+            </div>
+            <div className="dashboardCardContent">
+              {expensError && <p className='DashboardError'>{expensError}</p>}
+              <div className="dashboardTable">
+                { expens ?
+                  <table className="expensTable">
+                    <thead>
+                      <tr>
+                        <th>Calendar Year</th>
+                        <th>Reporting Department</th>
+                        <th>P.I.</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    { expens.map((ex,i) => {
+                      return (
+                        <tr key={ i }>
+                            <td>{ ex.year }</td>
+                            <td>{ ex.reporting_department }</td>
+                            <td>{ ex.pi_name }</td>
+                            <td>{ ex.amount }</td>
+                        </tr>
+                      )
+                    })}
+                    </tbody>
+                  </table>
+                  : expensError ? '' : <p>Loading...</p>
+                }
+              </div>
+            </div>
+          </div> : ''
+        }
+        <div className={ `dashboardCard ${user.position === 'instructor' ? 'instructorCard' : ''}` }>
           <div className='dashboardCardHeader'>
             <h1>Student Evals</h1>
             <button onClick={ (e) => navigate('/student-evals') }>See All</button>
@@ -204,26 +238,21 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className='dashboardCard'>
+        <div className='dashboardCard dashboardPlotCard'>
           <div className='dashboardCardHeader'>
             <h1>Course Analytics</h1>
             <button onClick={ (e) => navigate('/course-analytics') }>See All</button>
           </div>
-          <div className="dashboardCardContent" ref={ plotRef }>
+          <div className="dashboardCardContent">
             <h2>{ courses?.[0]?.course }</h2>
-            {coursesError && <p className='DashboardError'>{coursesError}</p>}
-            { anonData ?
-                plot ? 
-                  <div>
+            { coursesError ? <p className='DashboardError'>{coursesError}</p> :
+              anonData ?
+                  plot ? 
                     <div className="dashboardPlot">
-                      <Plot
-                        data={ plot.data } 
-                        layout={ plot.layout }
-                      />
+                      { courseRatingsPlot }
                     </div>
-                  </div> 
-                  : plottingError ? <p className='DashboardError'>{ plottingError }</p> : ''
-                : analyticsError ? '' : <p>Loading...</p>
+                    : plottingError ? <p className='DashboardError'>{ plottingError }</p> : ''
+                  : analyticsError ? <p className='DashboardError'>{ analyticsError }</p> : <p>Loading...</p>
             }
           </div>
         </div>

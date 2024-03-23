@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EXPEN_UPLOAD_URL } from '../../config';
+import { EXPEN_UPLOAD_URL, EXPEN_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ const ExpenUpload = () => {
   const navigate = useNavigate()
 
   const { user, userDispatch } = useAuthContext()
-  const { researchInfoDispatch } = useResearchInfoContext()
+  const { expens, researchInfoDispatch } = useResearchInfoContext()
 
 
   useEffect(() => {
@@ -56,10 +56,28 @@ const ExpenUpload = () => {
       setAmount('')
       setYear('')
 
-      // Update Expenditures
-      researchInfoDispatch({ type: 'UPDATE_EXPENS', payload: json })
+      // Fetch expens if not already fetched
+      if (!expens) {
+        const fetchExpens = async () => {
+          const response = await fetch(EXPEN_URL, {
+            method: 'GET',
+            credentials: 'include'
+          })
+    
+          const data = await response.json()
+          console.log(data)
+          if (response.ok) {
+            researchInfoDispatch({type: 'SET_EXPENS', payload: data})
+          }
+        }
+        fetchExpens()
+      }
+      else {
+        // Update expens
+        researchInfoDispatch({ type: 'UPDATE_EXPENS', payload: json })
+      }
 
-      // Navigate to grants page
+      // Navigate to expens page
       navigate('/research-info?page=expenditures', { state: { mssg: 'Expenditure Uploaded', status: 'ok' }})
     }
   };
@@ -73,17 +91,17 @@ const ExpenUpload = () => {
         <form className="expenupload" onSubmit={ expenupload }>
             <input 
               type="number" 
-              onChange={(e) => setAmount(e.target.value)} 
-              value={ amount } 
-              placeholder="Amount"
-              className={ emptyFields.includes('number') ? 'errorField' : '' }
-            />
-            <input 
-              type="text" 
               onChange={(e) => setYear(e.target.value)} 
               value={ year } 
               placeholder="Year"
               className={ emptyFields.includes('text') ? 'errorField' : '' }
+            />
+            <input 
+              type="number" 
+              onChange={(e) => setAmount(e.target.value)} 
+              value={ amount } 
+              placeholder="Amount"
+              className={ emptyFields.includes('number') ? 'errorField' : '' }
             />
             <input 
               type="text" 

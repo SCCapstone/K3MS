@@ -193,7 +193,6 @@ const ResearchInfo = () => {
     <div className="researchInfo">
       <h1 className='pageHeader'>Research Info</h1>
       <div className='researchInfoCard options'>
-        <h1>Options</h1>
         <div className='researchInfobuttons'>
           { user && user.position === 'chair' &&
             <div className='researchInfoDropdownBox'>
@@ -209,15 +208,15 @@ const ResearchInfo = () => {
             <h3>Choose Page</h3>
             <div className="pageSelectors">
               <button 
-                className={ cardToShow == 'grants' ? 'active' : ''}
+                className={ cardToShow === 'grants' ? 'active' : ''}
                 onClick={ () => setCardToShow('grants')}
               >Grants</button>
               <button 
-                className={ cardToShow == 'publications' ? 'active' : ''}
+                className={ cardToShow === 'publications' ? 'active' : ''}
                 onClick={ () => setCardToShow('publications')}
               >Publications</button>
               <button 
-                className={ cardToShow == 'expenditures' ? 'active' : ''}
+                className={ cardToShow === 'expenditures' ? 'active' : ''}
                 onClick={ () => setCardToShow('expenditures')}
               >Expenditures</button>
             </div>
@@ -226,7 +225,7 @@ const ResearchInfo = () => {
       </div>
       
       { cardToShow === 'grants' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
@@ -270,7 +269,7 @@ const ResearchInfo = () => {
       }
 
       { cardToShow === 'publications' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
@@ -316,7 +315,7 @@ const ResearchInfo = () => {
       }
 
       { cardToShow === 'expenditures' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Expenditures</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">

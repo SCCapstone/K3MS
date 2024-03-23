@@ -1,12 +1,4 @@
 
-/* display currentCourses in a 2 column grid */
-.courses {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0px;
-  padding: 20px;
-}
-
 .teamAssessmentsCard {
   margin: 50px auto;
   padding: 5px;
@@ -55,6 +47,10 @@
   text-transform: uppercase;
   border-radius: 3%;
   width: 100%;
+}
+
+.teamAssessmentsButtons button:hover {
+  background-color: var(--hover);
 }
 
 

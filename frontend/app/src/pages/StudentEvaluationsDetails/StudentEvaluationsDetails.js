@@ -49,7 +49,6 @@ const StudentEvaluationsDetails = () => {
 
       if (response.ok) {
         const data = await response.json()
-        console.log(data)
         studentEvalsDispatch({type: 'SET_COURSE_DETAILS', payload: data})
         // Extract available semester and year options for each course
         const years = new Set();
