@@ -6,7 +6,7 @@
     position: fixed; 
     margin: 0;
     overflow: auto;
-    transition: 0.5s;
+    transition: 0.05s;
 }
 
 .navbar .buttons button {
@@ -26,8 +26,8 @@
     margin: 10px auto;
   }
 
-  .navbar button:hover{
-    background-color: #b00000;  /* #800000;*/
+  .navbar .buttons button:hover{
+    background-color: var(--bright-hover);
     color: white;
 }
   .navbar .user {
@@ -64,8 +64,8 @@
   color: #fff;
   border: none;
   cursor: pointer;
-  padding: 5px;
-  padding-bottom: 8px;
+  padding: 1.5px;
+  padding-bottom: 5px;
   border-radius: 5px;
 }
 
@@ -76,16 +76,16 @@
 }
 
 .navbarHide:hover {
-  background-color: var(--hover);
+  background-color: var(--bright-hover);
   cursor: pointer;
 }
 
-.collapsed {
-  display: none;
+.navBarCollapsed {
+  width: 0px;
 }
 
 .navbarShow {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 0px;
   transform: translateY(-50%);
@@ -93,9 +93,10 @@
   color: #fff;
   border: none;
   cursor: pointer;
-  padding: 5px;
-  padding-bottom: 8px;
+  padding: 1px;
+  padding-bottom: 4px;
   border-radius: 5px;
+  height: 20%;
 }
 
 .navbarShow::after {
@@ -104,6 +105,6 @@
 }
 
 .navbarShow:hover {
-  background-color: var(--hover);
+  background-color: var(--bright-hover);
   cursor: pointer;
 }

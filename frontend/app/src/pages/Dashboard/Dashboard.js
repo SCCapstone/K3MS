@@ -109,7 +109,7 @@ const Dashboard = () => {
             {grantsError && <p className='DashboardError'>{grantsError}</p>}
             <div className="dashboardTable">
               { grants ?
-                <table classsName="grantTable">
+                <table className="grantTable">
                   <thead>
                     <tr>
                       <th>Title</th>

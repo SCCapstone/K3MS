@@ -10,7 +10,7 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 
-const Navbar = () => {
+const Navbar = ({ navbarVisible, setNavbarVisible }) => {
   const navigate = useNavigate()
   const { user, userDispatch } = useAuthContext()
   const { studentEvalsDispatch } = useStudentEvalsContext()
@@ -18,8 +18,6 @@ const Navbar = () => {
   const { dashboardDispatch } = useDashboardContext()
   const { teamAssessmentsDispatch } = useTeamAssessmentsContext()
   const { researchInfoDispatch } = useResearchInfoContext()
-
-  const [navbarVisible, setNavbarVisible] = useState(false)
 
   const logout = async (e) => {
     e.preventDefault()
@@ -43,10 +41,9 @@ const Navbar = () => {
     }
   }
 
-console.log(navbarVisible)
   return (
     <div className="navbarWrapper">
-      <div className={`navbar ${navbarVisible ? 'collapsed' : ''}`}>
+      <div className={`navbar ${navbarVisible ? '' : 'navBarCollapsed'}`}>
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
         <p className="user">{ user ? user.email : '' }</p>
@@ -90,7 +87,7 @@ console.log(navbarVisible)
           onClick={() => setNavbarVisible((prev) => !prev)}
         ></button>
       </div>
-      { navbarVisible && 
+      { !navbarVisible && 
         <button 
             className="navbarShow" 
             onClick={() => setNavbarVisible((prev) => !prev)}

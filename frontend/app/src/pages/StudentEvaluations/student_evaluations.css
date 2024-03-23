@@ -2,7 +2,6 @@
 /* display currentCourses in a 2 column grid */
 .courses {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-gap: 0px;
   padding: 20px;
 }
@@ -73,4 +72,14 @@
   height: 45px;
   color: var(--cardtext);
   margin-bottom: 10px;
+}
+
+/* Display One Column On Small Screen Sizes */ 
+@media (max-width: 1300px) {
+  .courses { grid-template-columns: 1fr; }
+}
+
+/* Display Two Columns On Large Screen Sizes */
+@media (min-width: 1300px) {
+  .courses { grid-template-columns: 1fr 1fr; }
 }

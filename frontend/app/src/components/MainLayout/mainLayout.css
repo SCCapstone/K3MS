@@ -1,3 +1,7 @@
 .mainLayout {
     margin-left: var(--nav-width);
 }
+
+.mainLayoutCollapsed {
+    margin-left: 30px;
+}
