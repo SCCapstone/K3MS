@@ -20,6 +20,9 @@
   font-size: 1.5em;
 }
 
+.researchInfoBodyCard .researchInfoCardContent {
+  overflow-x: scroll;
+}
 
 .researchInfoTable table {
   border-collapse: collapse;

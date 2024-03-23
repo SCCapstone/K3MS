@@ -10,6 +10,7 @@
   box-shadow: 1px 0px 4px black;
   border-radius: 20px;
   width: 90%;
+  overflow: hidden;
 }
 
 .dashboardCard h1 {
@@ -47,10 +48,10 @@
     padding: 8px;
     text-align: center;
 }
-
+/* 
 .publicationTable {
   font-size: 0.75em;
-}
+} */
 
 .dashboardBody button {
   width: 30%;
@@ -69,20 +70,24 @@
   border-radius: 6px;
 }
 
+.dashboardBody button:hover {
+  background-color: var(--hover);
+}
+
+.dashboardPlotCard {
+  grid-column: span 2;
+  width: 95%;
+  height: 70vh;
+}
+
 .dashboardPlot {
   justify-content: center;
-  /* border: black solid thin; */
+  border: black solid thin;
 }
 
 /* Display One Column On Small Screen Sizes */ 
 @media (max-width: 1300px) {
   .dashboardBody { grid-template-columns: repeat(1, 1fr); }
-  .publicationTable {font-size: 1em;}
-}
-
-/* Make Font of Publications Smaller Without Changing Column Layout to Keep Symmetrical Padding Within Card */ 
-@media (max-width: 1425px) {
-  .publicationTable {font-size: 0.65em;}
 }
 
 /* Display Two Columns On Medium to Large Screen Sizes */ 

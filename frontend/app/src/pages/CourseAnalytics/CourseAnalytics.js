@@ -4,6 +4,8 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import Plot from 'react-plotly.js';
+import createPlotlyComponent from 'react-plotly.js/factory';
+import Plotly from 'plotly.js-basic-dist';
 import { useLocation } from 'react-router-dom'
 
 import './course_analytics.css'
@@ -177,7 +179,7 @@ const CourseAnalytics = () => {
           setPlottingError(data.plots.error)
         }
         else {
-          setPlottingError(data.plots.error)
+          setPlottingError('')
         }
       }
       else {
@@ -223,6 +225,44 @@ const CourseAnalytics = () => {
   const handleChangeCourse = (e) => {
     setChosenCourse(courses[e.target.value])
   }
+
+
+  const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
+  const [instrRatingsPlot, setInstrRatingsPlot] = useState(null)
+  useEffect(() => {
+    const coursePlot = createPlotlyComponent(Plotly);
+    const instrPlot = createPlotlyComponent(Plotly);
+    if (anonData?.[anonDataKey]?.plots?.course_rating_plot) {
+      console.log(JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data)
+      const { data: courseData, layout: courseLayout } = JSON.parse(anonData[anonDataKey].plots.course_rating_plot)
+      const { data: instructorData, layout: instructorLayout } = JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot)
+      setCourseRatingsPlot(React.createElement(coursePlot, {
+        data: courseData,
+        layout: {
+          ...courseLayout,
+          width: undefined,
+          height: undefined,
+          autosize: true,
+          responsive: true,
+        },
+        useResizeHandler: true,
+        style: {width: '100%', height: '100%'}
+      }))
+      setInstrRatingsPlot(React.createElement(instrPlot, {
+        data: instructorData,
+        layout: {
+          ...instructorLayout,
+          width: undefined,
+          height: undefined,
+          autosize: true,
+          responsive: true,
+        },
+        useResizeHandler: true,
+        style: {width: '100%', height: '100%'}
+      }))
+    }
+  }, [anonData, anonDataKey])
+
   return (
     <div className="courseAnalytics">
       <h1 className="pageHeader">Course Analytics</h1>
@@ -312,19 +352,13 @@ const CourseAnalytics = () => {
                   <div>
                     <h1>Course Rating Distribution</h1>
                     <div className="plot">
-                      <Plot
-                        data={ JSON.parse(anonData[anonDataKey].plots.course_rating_plot).data } 
-                        layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-                      />
+                      { courseRatingsPlot }
                     </div>
                   </div>
                   <div>
                     <h1>Instructor Rating Distribution</h1>
                     <div className="plot">
-                      <Plot 
-                        data={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).data } 
-                        layout={ JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot).layout }
-                      />
+                      { instrRatingsPlot }
                     </div>
                   </div>
                 </>

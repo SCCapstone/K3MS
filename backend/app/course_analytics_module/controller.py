@@ -91,11 +91,6 @@ def get_course_analytics_controller(course_name, period):
         median_of_all_instructor_ratings=median_of_all_instructor_ratings,
         course_ratings_75th_percentile=course_ratings_75th_percentile,
         instructor_ratings_75th_percentile=instructor_ratings_75th_percentile,
-        # all_data=[dict(
-        #     year=course.year,
-        #     course_rating=course.course_rating_mean,
-        #     instructor_rating=course.instructor_rating_mean
-        # ) for course in evals],
         plots={
             'course_rating_plot': plot(course_ratings, current_user_mean[0], 'Course'),
             'instructor_rating_plot': plot(instructor_ratings, current_user_mean[1], 'Instructor')
@@ -145,7 +140,6 @@ def plot(data, current_user_mean, metric):
     
     mean = np.mean(data)
     std_dev = np.std(data)
-    import plotly.graph_objects as go
     fig = ff.create_distplot([data], group_labels=[f'Mean {metric} Ratings'], bin_size=0.05, show_hist=False)
     fig.add_vline(x=mean, line_dash="dash", line_color="red", name="Mean", showlegend=True)
     fig.add_vline(x=mean + 1 * std_dev, line_dash="dash", line_color="green", name="+1 Std Dev", showlegend=True)
@@ -155,8 +149,6 @@ def plot(data, current_user_mean, metric):
         title=f"Distribution Plot of Mean {metric} Ratings for each Section Taught",
         xaxis_title=f'Mean {metric} Rating',
         yaxis_title="Density",
-        height=600,
-        width=800,
         legend=dict(
             yanchor="top",
             y=-0.35,

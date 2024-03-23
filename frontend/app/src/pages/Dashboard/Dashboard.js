@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LIMITED_GRANTS_URL, LIMITED_PUBS_URL, LIMITED_EVALS_URL, COURSE_ANALYTICS_URLS } from '../../config';
+import { LIMITED_GRANTS_URL, LIMITED_PUBS_URL, LIMITED_EXPEN_URL, LIMITED_EVALS_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
 import Plot from 'react-plotly.js';
+import createPlotlyComponent from 'react-plotly.js/factory';
+import Plotly from 'plotly.js-basic-dist';
 import './dashboard.css';
 
 async function getDashboardData(route, dispatch, action, setError) {
@@ -25,13 +27,11 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   const { user } = useAuthContext()
-  const { grants, pubs, courses, anonData, dashboardDispatch } = useDashboardContext()
+  const { grants, pubs, expens, courses, anonData, plot, dashboardDispatch } = useDashboardContext()
 
-  const plotRef = useRef(null)
-
-  const [plot, setPlot] = useState(null)
   const [grantsError, setGrantsError] = useState('');
   const [pubsError, setPubsError] = useState('');
+  const [expensError, setExpensError] = useState('');
   const [coursesError, setCoursesError] = useState('');
   const [analyticsError, setAnalyticsError] = useState('');
   const [plottingError, setPlottingError] = useState('');
@@ -41,20 +41,6 @@ const Dashboard = () => {
       navigate('/login', { state: { mssg: 'Must be Logged In', status: 'error'}})
     }
   }, [user, navigate]);
-  
-  const updatePlot = () => {
-    if (plot) {
-      plot.layout.width = String(plotRef?.current?.clientWidth)
-      plot.layout.height = null
-      setPlot({...plot})
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', updatePlot);
-    updatePlot();
-    return () => window.removeEventListener('resize', updatePlot);
-  }, [window]);
 
   useEffect(() => {
     const getData = async () => {
@@ -65,36 +51,53 @@ const Dashboard = () => {
       if (!grants) {
         getDashboardData(LIMITED_GRANTS_URL, dashboardDispatch, 'SET_GRANTS', setGrantsError)
       }
+      if (!expens) {
+        getDashboardData(LIMITED_EXPEN_URL, dashboardDispatch, 'SET_EXPENS', setExpensError)
+      }
       if (!courses) {
         getDashboardData(LIMITED_EVALS_URL, dashboardDispatch, 'SET_COURSES', setCoursesError)
       }
       if (courses && !anonData) {
         const data = await getDashboardData(
-          COURSE_ANALYTICS_URLS.getAnonData + `/${courses[0].course}/1`, 
+          COURSE_ANALYTICS_URLS.getAnonData + `/${courses[0].course}/1000`, 
           dashboardDispatch, 
           'SET_ANON_DATA', 
           setAnalyticsError
         )
-        if (!analyticsError && data.plots) {
-          if (data.plots.error) {
-            setPlottingError(data.plots.error)
-          }
-          else {
-            const plotData = JSON.parse(data.plots.course_rating_plot).data
-            const plotLayout = JSON.parse(data.plots.course_rating_plot).layout
-            
-            plotLayout.width = window.innerWidth * 0.25
-            plotLayout.height = window.innerWidth * 0.25
-            plotLayout.responsive = true
-
-            setPlot({data: plotData, layout: plotLayout})  
-            setPlottingError('')
-          }
+        console.log(JSON.parse(data.plots.course_rating_plot).data)
+        if (data.plots.error) {
+          setPlottingError(data.plots.error)
         }
+        else {
+          const {data: plotData, layout: plotLayout} = JSON.parse(data.plots.course_rating_plot)
+          
+          dashboardDispatch({type: 'SET_PLOT', payload: {data: plotData, layout: plotLayout}})
+          setPlottingError('')
         }
+      }
     }
     getData()
-  }, [grants, pubs, courses, dashboardDispatch])
+  }, [grants, pubs, courses, anonData, dashboardDispatch])
+
+  const Plot = createPlotlyComponent(Plotly);
+  const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
+  
+  useEffect(() => {
+    if (plot) {
+      setCourseRatingsPlot(React.createElement(Plot, {
+        data: plot.data,
+        layout: {
+          ...plot.layout,
+          width: undefined,
+          height: undefined,
+          autosize: true,
+          responsive: true,
+        },
+        useResizeHandler: true,
+        style: {width: '100%', height: '100%'}
+      }))
+    }
+  }, [plot])
 
   return (
     <div>
@@ -148,7 +151,7 @@ const Dashboard = () => {
                     <tr>
                       <th>Title</th>
                       <th>Authors</th>
-                      <th>Publication Year</th>
+                      <th>Year</th>
                       <th>ISBN</th>
                     </tr>
                   </thead>
@@ -166,6 +169,42 @@ const Dashboard = () => {
                   </tbody>
                 </table>
                 : pubsError ? '' : <p>Loading...</p>
+              }
+            </div>
+          </div>
+        </div>
+        <div className='dashboardCard'>
+          <div className='dashboardCardHeader'>
+            <h1>Expenditures</h1>
+            <button onClick={ (e) => navigate('/research-info?page=expenditures') }>See All</button>
+          </div>
+          <div className="dashboardCardContent">
+            {expensError && <p className='DashboardError'>{expensError}</p>}
+            <div className="dashboardTable">
+              { expens ?
+                <table className="expensTable">
+                  <thead>
+                    <tr>
+                      <th>Calendar Year</th>
+                      <th>Reporting Department</th>
+                      <th>P.I.</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  { expens.map((ex,i) => {
+                    return (
+                      <tr key={ i }>
+                          <td>{ ex.year }</td>
+                          <td>{ ex.reporting_department }</td>
+                          <td>{ ex.pi_name }</td>
+                          <td>{ ex.amount }</td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+                : expensError ? expensError : <p>Loading...</p>
               }
             </div>
           </div>
@@ -204,24 +243,19 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className='dashboardCard'>
+        <div className='dashboardCard dashboardPlotCard'>
           <div className='dashboardCardHeader'>
             <h1>Course Analytics</h1>
             <button onClick={ (e) => navigate('/course-analytics') }>See All</button>
           </div>
-          <div className="dashboardCardContent" ref={ plotRef }>
+          <div className="dashboardCardContent">
             <h2>{ courses?.[0]?.course }</h2>
-            {coursesError && <p className='DashboardError'>{coursesError}</p>}
+            { coursesError && <p className='DashboardError'>{coursesError}</p> }
             { anonData ?
                 plot ? 
-                  <div>
-                    <div className="dashboardPlot">
-                      <Plot
-                        data={ plot.data } 
-                        layout={ plot.layout }
-                      />
-                    </div>
-                  </div> 
+                  <div className="dashboardPlot">
+                    { courseRatingsPlot }
+                  </div>
                   : plottingError ? <p className='DashboardError'>{ plottingError }</p> : ''
                 : analyticsError ? '' : <p>Loading...</p>
             }

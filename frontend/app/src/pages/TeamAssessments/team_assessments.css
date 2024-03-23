@@ -49,6 +49,10 @@
   width: 100%;
 }
 
+.teamAssessmentsButtons button:hover {
+  background-color: var(--hover);
+}
+
 
 .teamOptions {
   width: 60%;

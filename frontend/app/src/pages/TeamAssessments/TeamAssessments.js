@@ -169,10 +169,11 @@ const TeamAssessments = () => {
           <div className='teamAssessmentCardContent'>
             <div className='teamAssessmentsCardStats'>
               <h1>{ `${member.first_name} ${member.last_name} - ${member.position}` }</h1>
-              <p><b>Average Course Rating:</b> {member?.ave_all_course_rating_mean}</p>
-              <p><b>Average Instructor Rating:</b> {member?.ave_all_instructor_rating_mean}</p>
-              <p><b>Ave. Course Rating Percentile:</b> {member?.course_percentile}{member?.course_percentile % 10 == 1 ? 'st' : member?.course_percentile % 10 == 2 ? 'nd' : member?.course_percentile % 10 == 3 ? 'rd' : 'th'}</p>
-              <p><b>Ave. Instructor Rating Percentile:</b> {member?.instructor_percentile}{member?.instructor_percentile % 10 == 1 ? 'st' : member?.instructor_percentile % 10 == 2 ? 'nd' : member?.instructor_percentile % 10 == 3 ? 'rd' : 'th'}</p>
+              { member.ave_all_course_rating_mean && <p><b>Average Course Rating:</b> { member.ave_all_course_rating_mean }</p> }
+              { member.ave_all_instructor_rating_mean && <p><b>Average Instructor Rating:</b> { member.ave_all_instructor_rating_mean }</p> }
+              { member.course_percentile && <p><b>Ave. Course Rating Percentile:</b> {member.course_percentile}{member.course_percentile % 10 == 1 ? 'st' : member.course_percentile % 10 == 2 ? 'nd' : member.course_percentile % 10 == 3 ? 'rd' : 'th'}</p> }
+              { member.instructor_percentile && <p><b>Ave. Instructor Rating Percentile:</b> {member.instructor_percentile}{member.instructor_percentile % 10 == 1 ? 'st' : member.instructor_percentile % 10 == 2 ? 'nd' : member.instructor_percentile % 10 == 3 ? 'rd' : 'th'}</p> }
+              { member.courses?.length == 0 && <p>No Courses</p> }
             </div>
             <div className="teamAssessmentsButtons">
               <button onClick={ () => navigate(`/course-analytics?email=${member.email}`) }>

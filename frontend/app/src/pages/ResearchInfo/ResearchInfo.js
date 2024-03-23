@@ -225,7 +225,7 @@ const ResearchInfo = () => {
       </div>
       
       { cardToShow === 'grants' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
@@ -269,7 +269,7 @@ const ResearchInfo = () => {
       }
 
       { cardToShow === 'publications' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
@@ -315,7 +315,7 @@ const ResearchInfo = () => {
       }
 
       { cardToShow === 'expenditures' &&
-        <div className="researchInfoCard">
+        <div className="researchInfoCard researchInfoBodyCard">
           <h1>Expenditures</h1>
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">

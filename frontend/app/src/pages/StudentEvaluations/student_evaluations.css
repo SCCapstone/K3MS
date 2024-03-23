@@ -5,7 +5,10 @@
   grid-gap: 0px;
   padding: 20px;
 }
-
+.studentEvalError {
+  color: var(--error);
+  text-align: center;
+}
 .studentEvalsCard {
   margin: 50px auto;
   padding: 5px;
