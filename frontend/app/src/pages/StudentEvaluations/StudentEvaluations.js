@@ -23,6 +23,8 @@ const StudentEvaluations = () => {
 
   const usersDropdownRef = useRef(null)
 
+  const [courseQuery, setCourseQuery] = useState('')
+
   const fetchOtherUserEvals = async (email) => {
     const response = await fetch(`${STUDENT_EVALS_URL}/${email}`, {
       method: 'GET',
@@ -141,24 +143,30 @@ const StudentEvaluations = () => {
   return (
     <div className="studentEvalsBody">
       <h1 className="pageHeader">My Student Evaluations</h1>
-      { user && user.position === 'chair' &&
         <div className='studentEvalsCard studentEvalsOptions'>
           <div className='studentEvalsButtons'>
-              <div className='studentEvalsDropdownBox'>
-                <h3>Choose Person</h3>
-                <select name="person" id="person" className="studentEvalsDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
-                  { usersToChoose && usersToChoose.map((person, i) =>
-                    <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                  )}
-                </select>
-              </div>
+            { user && user.position === 'chair' &&
+                <div className='studentEvalsDropdownBox'>
+                  <h3>Choose Person</h3>
+                  <select name="person" id="person" className="studentEvalsDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
+                    { usersToChoose && usersToChoose.map((person, i) =>
+                      <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
+                    )}
+                  </select>
+                </div>
+            }
+            <div className='studentEvalsDropdownBox'>
+              <h3>Filter Courses</h3>
+              <input type="text" className="studentEvalsDropdown" onChange={ (e) => setCourseQuery(e.target.value) } placeholder="Enter Course Name" />
+            </div>
           </div>
         </div>
-      }
       { (!chosenPerson && courses) || (chosenPerson && otherUserEvals) ?
           <div className='courses'>
             { chosenPerson ? 
-              otherUserEvals?.map((course, i) => 
+              otherUserEvals?.filter(
+                (course) => course.course.toLowerCase().includes(courseQuery.toLowerCase())
+              ).map((course, i) => 
                 <div className='studentEvalsCard' key={i}>
                   <h1>{ course.course }</h1>
                   <div className='studentEvalsCardContent'>
@@ -168,7 +176,9 @@ const StudentEvaluations = () => {
                   </div>
                 </div>
               ) : 
-              courses?.map((course, i) => 
+              courses?.filter(
+                (course) => course.course.toLowerCase().includes(courseQuery.toLowerCase())
+              ).map((course, i) => 
                 <div className='studentEvalsCard' key={i}>
                   <h1>{ course.course }</h1>
                   <div className='studentEvalsCardContent'>

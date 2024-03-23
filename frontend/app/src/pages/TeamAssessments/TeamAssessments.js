@@ -167,7 +167,6 @@ const TeamAssessments = () => {
         const yearFiltered = chosenCourse ? (
           member.courses.some(course => course.course === chosenCourse && course.latest_year >= new Date().getFullYear() - year)
         ) : true
-        console.log(yearFiltered, member.courses)
         return userQueried && courseTaught && yearFiltered
       }).map((member, i) => 
         <div className='teamAssessmentsCard' key={i}>

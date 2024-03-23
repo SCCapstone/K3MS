@@ -37,6 +37,7 @@
 
 .options {
   width: 60%;
+  overflow: hidden;
 }
 .options h1 {
   text-align: center;
@@ -87,7 +88,7 @@
   display: block;
   cursor: pointer;
   color: var(--cardtext);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
   padding: 8px 18px;
   text-decoration: none;
@@ -102,4 +103,17 @@
 
 .options .active {
   background-color: var(--cardbghover);
+}
+
+@media screen and (max-width: 1350px) {
+  .options button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+@media screen and (max-width: 1050px) {
+  .options button {
+    font-size: 10px;
+    padding: 8px 6px;
+  }
 }
