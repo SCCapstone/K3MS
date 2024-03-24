@@ -24,6 +24,11 @@ def grant_upload_controller(req):
     amount = json_data.get(form_fields[1])
     year = json_data.get(form_fields[2])
 
+    if year.isnumeric() == False:
+        return dict(error='Year must be a number'), HTTPStatus.BAD_REQUEST
+    if amount.isnumeric() == False:
+        return dict(error='Amount must be a number'), HTTPStatus.BAD_REQUEST
+
     # Make sure grant with title doesn't already exist for this user
     grant = Grants.query.filter_by(email=current_user.email, title=title).first()
     if grant:

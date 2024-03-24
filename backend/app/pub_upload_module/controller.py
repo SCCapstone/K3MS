@@ -24,6 +24,9 @@ def pub_upload_controller(req):
     publication_year = json_data.get(form_fields[2])
     isbn = json_data.get(form_fields[3])
 
+    if publication_year.isnumeric() == False:
+        return dict(error='Publication Year must be a number'), HTTPStatus.BAD_REQUEST
+
     # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
     publication = Publications.query.filter_by(email=current_user.email, title=title).first()
     if publication:

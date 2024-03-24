@@ -204,7 +204,7 @@ const Dashboard = () => {
             </div>
           </div> : ''
         }
-        <div className={ `dashboardCard ${user.position === 'instructor' ? 'instructorCard' : ''}` }>
+        <div className={ `dashboardCard ${user?.position === 'instructor' ? 'instructorCard' : ''}` }>
           <div className='dashboardCardHeader'>
             <h1>Student Evals</h1>
             <button onClick={ (e) => navigate('/student-evals') }>See All</button>

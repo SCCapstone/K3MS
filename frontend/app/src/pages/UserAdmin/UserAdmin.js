@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL } from '../../config'
+import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+
 import './useradmin.css'
 
 const UserAdmin = () => {
   const navigate = useNavigate()
 
   const { user } = useAuthContext()
+  const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
   // Create
   const [firstNameCreate, setfirstNameCreate] = useState('')
@@ -89,6 +92,8 @@ const UserAdmin = () => {
       setPassword('')
       setConfirmPassword('')
 
+      // Clear users to choose and data that may contain info from them
+      courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
       navigate('/dashboard', { state: { mssg: 'User Created', status: 'ok' }})
     }
   }
@@ -96,27 +101,33 @@ const UserAdmin = () => {
   const deleteUser = async (e) => {
     e.preventDefault()
 
-    const response = await fetch(USER_DELETION_URL, {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: emailDelete
+    const alertResponse = window.confirm("Are you sure you delete this user and all associated data?");
+    if (alertResponse) {
+      const response = await fetch(USER_DELETION_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: emailDelete
+        })
       })
-    })
 
-    const json = await response.json()
-    if (!response.ok) {
-      setDeleteError(json.error)
-      if (json.empty_fields)
-        setDeleteEmptyFields(json.empty_fields)
-    }
-    if (response.ok) {
-      setDeleteError(null)
-      setDeleteEmptyFields([])
-      setEmailDelete('')
+      const json = await response.json()
+      if (!response.ok) {
+        setDeleteError(json.error)
+        if (json.empty_fields)
+          setDeleteEmptyFields(json.empty_fields)
+      }
+      if (response.ok) {
+        setDeleteError(null)
+        setDeleteEmptyFields([])
+        setEmailDelete('')
+        
+        // Clear users to choose and data that may contain info from them
+        courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
 
-      navigate('/dashboard', { state: { mssg: 'User Deleted', status: 'ok' }})
+        navigate('/dashboard', { state: { mssg: 'User Deleted', status: 'ok' }})
+      }
     }
   }
 
@@ -148,6 +159,9 @@ const UserAdmin = () => {
       setLastNameUpdate('')
       setEmailUpdate('')
       setPositionUpdate('')
+
+      // Clear users to choose and data that may contain info from them
+      courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
 
       navigate('/dashboard', { state: { mssg: json.mssg, status: 'ok' }})
     }

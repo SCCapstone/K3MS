@@ -3,6 +3,7 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
 
@@ -14,7 +15,8 @@ const ResearchInfo = () => {
   const queryEmail = query.get('email')
 
   const { user } = useAuthContext()
-  const { usersToChoose, grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
+  const { grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
+  const { usersToChoose, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
@@ -78,7 +80,7 @@ const ResearchInfo = () => {
 
       if (response.ok) {
         const data = await response.json()
-        researchInfoDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
+        courseAnalyticsDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
           {
             email: user.email, 
             first_name: user.first_name,
@@ -93,7 +95,7 @@ const ResearchInfo = () => {
     }
     if (!usersToChoose)
       fetchUsersToChoose()
-  }, [usersToChoose, researchInfoDispatch])
+  }, [usersToChoose, courseAnalyticsDispatch])
 
 
   // Don't allow non-logged in users to access this page

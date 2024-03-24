@@ -103,7 +103,7 @@ const GrantUpload = () => {
               className={ emptyFields.includes('number') ? 'errorField' : '' }
             />
             <input 
-              type="text" 
+              type="number" 
               onChange={(e) => setYear(e.target.value)} 
               value={ year } 
               placeholder="Year"
