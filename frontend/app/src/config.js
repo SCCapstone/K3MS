@@ -41,5 +41,7 @@ module.exports = global.config = {
     USER_DELETION_URL: BASE_URL + "delete_user",
     USER_UPDATE_URL: BASE_URL + "update_user",
 
+    DELETE_EVALS_URL: BASE_URL + "delete_evals",
+
     DEC_PLACES: 2
 }

@@ -101,7 +101,7 @@ const UserAdmin = () => {
   const deleteUser = async (e) => {
     e.preventDefault()
 
-    const alertResponse = window.confirm("Are you sure you delete this user and all associated data?");
+    const alertResponse = window.confirm("Are you sure you want to delete this user and all associated data?");
     if (alertResponse) {
       const response = await fetch(USER_DELETION_URL, {
         method: 'DELETE',
