@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { COURSE_ANALYTICS_URLS } from '../../config'
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown'
 import './team_assessments.css'
 
 const TeamAssessments = () => {
@@ -105,7 +106,7 @@ const TeamAssessments = () => {
               <h3>Filter Users</h3>
               <input type="text" className="teamAssessmentsDropdown" onChange={ (e) => setUserQuery(e.target.value) } placeholder="Enter Name or Email" />
             </div>
-            <div className="teamAssessmentsSearchCourse teamAssessmentsDropdownBox" ref={chooseCourseDiv}>
+            {/* <div className="teamAssessmentsSearchCourse teamAssessmentsDropdownBox" ref={chooseCourseDiv}>
               <h3>Has Taught Course</h3>
               <input 
                 type="text" 
@@ -140,7 +141,18 @@ const TeamAssessments = () => {
                   )
                 }
               </div>
-            </div>
+            </div> */}
+            { allCoursesInDb &&
+              <div className="teamAssessmentsDropdownBox">
+                <SearchDropdown 
+                  label="Has Taught Course" 
+                  placeholder="Search for a course" 
+                  options={ allCoursesInDb } 
+                  setChosenOption={ setChosenCourse }
+                  dropdownClassName="teamAssessmentsDropdown"
+                />
+              </div>
+            }
             <div className="choosePeriodDropdown teamAssessmentsDropdownBox">
               <h3>In the last</h3>
               <select name="course" id="course" className="teamAssessmentsDropdown" required onChange={ (e) => setYear(e.target.value) }>

@@ -106,12 +106,18 @@
 }
 
 @media screen and (max-width: 1350px) {
+  .options {
+    width: 70%;
+  }
   .options button {
     font-size: 12px;
     padding: 8px 10px;
   }
 }
 @media screen and (max-width: 1050px) {
+  .options {
+    width: 80%;
+  }
   .options button {
     font-size: 10px;
     padding: 8px 6px;

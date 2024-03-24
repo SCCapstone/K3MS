@@ -84,7 +84,7 @@
   color: var(--cardtext);
 }
 
-.teamAssessmentsSearchCourse {
+/* .teamAssessmentsSearchCourse {
   position: relative;
 }
 .teamAssessmentSearchCourseDropdownContent {
@@ -101,4 +101,4 @@
 .teamAssessmentSearchCourseDropdownItem:hover {
   background-color: var(--cardbg);
   cursor: pointer;
-}
+} */

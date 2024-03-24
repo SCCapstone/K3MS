@@ -1,0 +1,18 @@
+.searchDropdownWrapper {
+  position: relative;
+}
+.searchDropdownContent {
+  z-index: 1;
+  position: absolute;
+  background-color: white;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-top:4px;
+}
+.searchDropdownItem {
+  padding: 1px 5px;
+}
+.searchDropdownItem:hover {
+  background-color: var(--cardbg);
+  cursor: pointer;
+}
