@@ -280,7 +280,12 @@ function EvalUpload() {
                 </div>
                 <div className='evalupload_skippedRowsButtons evalupload_otherButton'>
                   <button onClick={ () => { 
-                    navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
+                    if (skippedRowsOverwrite) {
+                      setOverwriteError('Please confirm or ignore skipped rows')
+                    }
+                    else{
+                      navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
+                    }
                   }}>Ok</button>
                 </div>
             </div>

@@ -132,8 +132,10 @@ def overwrite_evals_rows_controller(request):
         db.session.commit()
         return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
     except Exception as e:
-            print(e)
-            return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+        print(e)
+        if e == 'Error reading excel file':
+            return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
+        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def get_student_evals_controller(user_email=None, limit=False):
@@ -317,13 +319,18 @@ def get_student_evals_details_controller(course_name, user_email=None):
 
 
 def parse_and_upload_excel(fbytes):
-    df = pd.read_excel(fbytes)
+    try:
+        df = pd.read_excel(fbytes)
+    except Exception:
+        raise Exception('Error reading excel file')
+        
     df.columns = [c.lower() for c in df.columns]
 
     evals = []
     details_rows = []
     skipped_entries = []
     existing_entries = ([],[])
+    seen_sections = set()
 
     questions = current_app.config['QUESTIONS']
 
@@ -387,7 +394,11 @@ def parse_and_upload_excel(fbytes):
             continue
 
         email = row_user.email
-        row_info['email'] = email    
+        row_info['email'] = email
+
+        if f"{email}{year}{semester}{course}{section}" in seen_sections:
+            skipped_entries.append(dict(**row_info, reason='This row is a duplicate (based on name, year, semester, course, and section)'))
+            continue
 
         # Check if entry exists in database already
         row_exists = Eval.query.filter_by(
@@ -436,6 +447,9 @@ def parse_and_upload_excel(fbytes):
         if skipped:
             skipped_entries.append(dict(**row_info, reason='Fields are missing'))
             continue
+
+        # Add this section to list of seen sections
+        seen_sections.add(f"{email}{year}{semester}{course}{section}")
 
         # Create Evaluation Table Row
         eval = Eval(
