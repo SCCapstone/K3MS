@@ -26,6 +26,8 @@ const ResearchInfo = () => {
 
   const usersDropdownRef = useRef(null)
 
+  const [searchQuery, setSearchQuery] = useState('')
+
   const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email, sortFunc) => {
     const response = await fetch(`${url}/${email}`, {
       method: 'GET',
@@ -204,6 +206,10 @@ const ResearchInfo = () => {
               </select>
             </div>
           }
+          <div className="researchInfoDropdownBox">
+            <h3>Filter Items</h3>
+            <input type="text" className="researchInfoDropdown" onChange={ (e) => setSearchQuery(e.target.value) } placeholder="Enter Item Name or Year" />
+          </div>
           <div className="researchInfoDropdownBox pageSelectorBox">
             <h3>Choose Page</h3>
             <div className="pageSelectors">
@@ -240,7 +246,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ?
-                    otherUserGrants?.map((grant) => {
+                    otherUserGrants?.filter((grant) => {
+                      return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
+                    })?.map((grant) => {
                       return (
                         <tr key={ grant.title }>
                           <td>{ grant.title }</td>
@@ -249,7 +257,9 @@ const ResearchInfo = () => {
                         </tr>
                       )
                     }) : 
-                    grants?.map((grant) => {
+                    grants?.filter((grant) => {
+                      return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
+                    })?.map((grant) => {
                       return (
                         <tr key={ grant.title }>
                           <td>{ grant.title }</td>
@@ -285,7 +295,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ?
-                    otherUserPubs?.map((pub) => {
+                    otherUserPubs?.filter((pub) => {
+                      return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
+                    })?.map((pub) => {
                       return (
                         <tr key={ pub.title }>
                           <td>{ pub.title }</td>
@@ -294,7 +306,9 @@ const ResearchInfo = () => {
                           <td>{ pub.isbn }</td>
                         </tr>
                       )}) :
-                    pubs?.map((pub) => {
+                    pubs?.filter((pub) => {
+                      return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
+                    })?.map((pub) => {
                       return (
                         <tr key={ pub.title }>
                           <td>{ pub.title }</td>
@@ -331,7 +345,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ? 
-                    otherUserExpen.map((ex, i) => {
+                    otherUserExpen?.filter((expen) => {
+                      return expen.year.includes(searchQuery)
+                    })?.map((ex, i) => {
                       return (
                         <tr key={ i }>
                           <td>{ ex.year }</td>
@@ -340,7 +356,9 @@ const ResearchInfo = () => {
                           <td>{ ex.amount }</td>
                         </tr>
                       )}) :
-                    expens.map((ex, i) => {
+                    expens?.filter((expen) => {
+                      return expen.year.includes(searchQuery)
+                    })?.map((ex, i) => {
                       return (
                         <tr key={ i }>
                           <td>{ ex.year }</td>
