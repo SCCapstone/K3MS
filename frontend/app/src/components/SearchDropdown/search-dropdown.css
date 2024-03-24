@@ -8,6 +8,7 @@
   max-height: 150px;
   overflow-y: auto;
   padding-top:4px;
+  border: 0.5px solid black;
 }
 .searchDropdownItem {
   padding: 1px 5px;

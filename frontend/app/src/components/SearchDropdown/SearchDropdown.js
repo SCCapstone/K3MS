@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import './search-dropdown.css';
 
 
-const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdownClassName }) => {
+const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdownClassName, includeNone }) => {
   // options must be array of strings - must not be null
 
   const [ searchQuery, setSearchQuery ] = useState('')
@@ -39,12 +39,14 @@ const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdown
         className="searchDropdownContent" 
         style={ {'width': searchWidth, 'display': showDropdown ? '' : 'none'} }
       >
-        <div 
+        { includeNone &&
+          <div 
           className="searchDropdownItem" 
           onMouseDown={ () => { setChosenOption(''); setSearchQuery('') } }
-        >
-          None
-        </div>
+          >
+            All
+          </div>
+        }
         { options?.filter((option) => {
           if (!searchQuery)
             return true

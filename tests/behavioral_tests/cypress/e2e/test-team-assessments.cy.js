@@ -99,8 +99,7 @@ describe('Test Team Assessments Page - Chair', () => {
 
         // Check that the filter works
         cy.contains('Has Taught Course').get('input').eq(1).type('CSCE240')
-        // cy.contains('Timothy Tests').should('not.exist')
-        cy.get('.teamAssessmentSearchCourseDropdownItem').eq(1).click()
+        cy.get('.searchDropdownItem').eq(1).click()
         cy.contains('Quincy Quizzes')
         cy.contains('Preston Presents')
         cy.contains('Timothy Tests').should('not.exist')

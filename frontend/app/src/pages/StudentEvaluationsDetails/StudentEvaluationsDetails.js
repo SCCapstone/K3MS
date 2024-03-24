@@ -151,26 +151,26 @@ const StudentEvaluationsDetails = () => {
     <div className="studentEvalsDetailsBody">
       <h2 className="pageHeader">{name} Evaluation Details</h2>
       <div className="studentEvalsCard">
-        <div className='dropdowns'>
-          <div className='dropdownBox'>
+        <div className='studentEvalsDetailsDropdowns'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Year</h3>
-            <select className='dropdown' value={selectedYear} onChange={handleYearChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedYear} onChange={handleYearChange}>
               {yearOptions.map((year) => (
                 <option key={ year } value={ year }>{ year }</option>
               ))}
             </select>
           </div>
-          <div className='dropdownBox'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Semester</h3>
-            <select className='dropdown' value={selectedSemester} onChange={handleSemesterChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedSemester} onChange={handleSemesterChange}>
               {semesterOptions.map((semester) => (
                 <option key={ semester } value={ semester }>{ semester }</option>
               ))}
             </select>
           </div>
-          <div className='dropdownBox'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Section</h3>
-            <select className='dropdown' value={selectedSection} onChange={handleSectionChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedSection} onChange={handleSectionChange}>
               {sectionOptions.map((section) => (
                 <option key={ section } value={ section }>{ section }</option>
               ))}
@@ -180,7 +180,6 @@ const StudentEvaluationsDetails = () => {
       </div>
       <div>
         {selectedCourse &&
-          // <div className="studentEvalsDetailsCard">
           <div className="course_details">
             <h1>{selectedCourse.semester} {selectedCourse.year} {selectedCourse.section}</h1>
               <table className="introTable">

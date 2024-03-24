@@ -21,7 +21,7 @@
 }
 
 .researchInfoBodyCard .researchInfoCardContent {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .researchInfoTable table {
@@ -37,7 +37,6 @@
 
 .options {
   width: 60%;
-  overflow: hidden;
 }
 .options h1 {
   text-align: center;
@@ -49,6 +48,7 @@
   padding: 5px;
   justify-content: space-around;
   align-items: end;
+  flex-wrap: wrap;
 }
 .options .researchInfoDropdownBox {
   flex: 1 1 0px;
@@ -68,14 +68,12 @@
   font: 16px Arial, Helvetica, sans-serif;
   height: 45px;
   color: var(--cardtext);
-  margin-bottom: 10px;
 }
 
 .options .pageSelectors {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .options .pageSelectorBox {

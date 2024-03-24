@@ -4,6 +4,7 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './student_evaluations.css'
 
 const StudentEvaluations = () => {
@@ -118,8 +119,8 @@ const StudentEvaluations = () => {
       fetchUsersToChoose()
   }, [usersToChoose, courseAnalyticsDispatch])
 
-  const choosePerson = (e) => {
-    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+  const choosePerson = (option) => {
+    const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
     if (chosenPersonTmp.email === user.email) {
       setChosenPerson(null)
       setOtherUserEvals(null)
@@ -135,10 +136,10 @@ const StudentEvaluations = () => {
     const courseQueryParam = encodeURIComponent(JSON.stringify(course));
     // Navigate to the desired page with data
     if (chosenPerson)
-      navigate(`/student-evals-details?course=${courseQueryParam}&email=${chosenPerson.email}`);
-    else
-      navigate(`/student-evals-details?course=${courseQueryParam}`);
-  }
+    navigate(`/student-evals-details?course=${courseQueryParam}&email=${chosenPerson.email}`);
+  else
+  navigate(`/student-evals-details?course=${courseQueryParam}`);
+}
 
   return (
     <div className="studentEvalsBody">
@@ -147,12 +148,16 @@ const StudentEvaluations = () => {
           <div className='studentEvalsButtons'>
             { user && user.position === 'chair' &&
                 <div className='studentEvalsDropdownBox'>
-                  <h3>Choose Person</h3>
-                  <select name="person" id="person" className="studentEvalsDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
-                    { usersToChoose && usersToChoose.map((person, i) =>
-                      <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                    )}
-                  </select>
+                  { usersToChoose &&
+                    <SearchDropdown
+                      label='Choose Person'
+                      placeholder='Enter Name'
+                      options={ usersToChoose.map((person) => `${person.first_name} ${person.last_name}`) }
+                      setChosenOption={ choosePerson }
+                      dropdownClassName='studentEvalsDropdown'
+                      includeNone={ false }
+                    />
+                  }
                 </div>
             }
             <div className='studentEvalsDropdownBox'>

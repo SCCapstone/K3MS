@@ -37,14 +37,17 @@ describe('Test Student Evals Page - Chair', () => {
   })
   it('Can Choose Other Users', () => {
     cy.visit(Cypress.env('baseUrl') + '/student-evals')
-    cy.contains('Choose Person').parent().find('select').select('Timothy Exams')
+
+    cy.contains('Choose Person').get('input').eq(0).type('Timothy Exams')
+    cy.get('.searchDropdownItem').eq(0).click()
 
     cy.contains('CSCE350').parent().contains(3.40)
     cy.contains('CSCE587').parent().contains(6.50)
   })
   it('Can click button to see details', () => {
     cy.visit(Cypress.env('baseUrl') + '/student-evals')
-    cy.contains('Choose Person').parent().find('select').select('Timothy Exams')
+    cy.contains('Choose Person').get('input').eq(0).type('Timothy Exams')
+    cy.get('.searchDropdownItem').eq(0).click()
     cy.contains('CSCE350').parent().find('button').click()
     cy.contains('CSCE350')
     cy.contains('Spring 2023 001')

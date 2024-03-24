@@ -52,17 +52,17 @@
   border-radius: 5%;
   margin: 10px 0;
 }
-.dropdowns {
+.studentEvalsDetailsDropdowns {
   display: flex;
   padding: 20px;
   justify-content: space-around;
   align-items: end;
 }
-.dropdownBox {
+.studentEvalsDetailsDropdownBox {
   flex: 1 1 0px;
   padding: 10px;
 }
-.dropdown {
+.studentEvalsDetailsDropdown {
   width: 100%;
   box-sizing: border-box;
   outline: none;

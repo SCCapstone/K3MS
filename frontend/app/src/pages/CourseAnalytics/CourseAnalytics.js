@@ -3,6 +3,7 @@ import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import plot_kde from '../../utils/plot_kde'
 import { useLocation } from 'react-router-dom'
 
@@ -208,8 +209,8 @@ const CourseAnalytics = () => {
     }
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, anonData])
 
-  const choosePerson = (e) => {
-    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+  const choosePerson = (option) => {
+    const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
     courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
     setChosenPerson(chosenPersonTmp)
     setChosenPersonName(`${chosenPersonTmp.first_name} ${chosenPersonTmp.last_name}`)
@@ -245,12 +246,14 @@ const CourseAnalytics = () => {
           <div className='dropdowns'>
             { user && user.position === 'chair' &&
               <div className='choosePersonDropdown dropdownBox'>
-                <h3>Choose Person</h3>
-                <select name="person" id="person" className="dropdown" required onChange={ choosePerson } ref={ usersDropdownRef }>
-                  { usersToChoose && usersToChoose.map((person, i) =>
-                    <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                  )}
-                </select>
+                <SearchDropdown
+                  label='Choose Person'
+                  placeholder='Search for users'
+                  options={ usersToChoose?.map(person => `${person.first_name} ${person.last_name}`) }
+                  setChosenOption={ choosePerson }
+                  dropdownClassName='dropdown'
+                  includeNone={false}
+                />
               </div>
             }
             { coursesError ? <p className='dropDownError'>{ coursesError }</p> :

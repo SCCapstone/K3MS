@@ -3,6 +3,7 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
 
 const ResearchInfo = () => {
@@ -176,8 +177,8 @@ const ResearchInfo = () => {
     }
   }, [grants, expens, pubs, researchInfoDispatch])
 
-  const choosePerson = (e) => {
-    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+  const choosePerson = (option) => {
+    const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
     if (chosenPersonTmp.email === user.email) {
       setChosenPerson(null)
       setOtherUserGrants(null)
@@ -198,12 +199,16 @@ const ResearchInfo = () => {
         <div className='researchInfobuttons'>
           { user && user.position === 'chair' &&
             <div className='researchInfoDropdownBox'>
-              <h3>Choose Person</h3>
-              <select name="person" id="person" className="researchInfoDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
-                { usersToChoose && usersToChoose.map((person, i) =>
-                  <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                )}
-              </select>
+              { usersToChoose &&
+                <SearchDropdown
+                  label='Choose Person'
+                  placeholder='Enter Name'
+                  options={ usersToChoose.map((person) => `${person.first_name} ${person.last_name}`) }
+                  setChosenOption={ choosePerson }
+                  dropdownClassName="researchInfoDropdown"
+                  includeNone={ false }
+                />
+              }
             </div>
           }
           <div className="researchInfoDropdownBox">

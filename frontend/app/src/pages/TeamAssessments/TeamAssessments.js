@@ -17,24 +17,8 @@ const TeamAssessments = () => {
   const { allCoursesInDb, courseAnalyticsDispatch } = useCourseAnalyticsContext()
   const [ userQuery, setUserQuery ] = useState('')
 
-  const [ courseQuery, setCourseQuery ] = useState('')
   const [ chosenCourse, setChosenCourse ] = useState('')
-  const [ showCourseDropdown, setShowCourseDropdown ] = useState(false)
   const [ year, setYear ] = useState(1000)
-
-  // Ensure Dropdown width is set correctly
-  const chooseCourseDiv = useRef(null)
-  const [chooseCourseWidth, setChooseCourseWidth] = useState(0)
-  useEffect(() => {
-    const onResize = () => {
-      setTimeout(() => {
-        setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth-20);
-      }, 500)
-    }
-    window.addEventListener('resize', onResize);
-    setChooseCourseWidth(chooseCourseDiv.current?.offsetWidth - 20); // Initial width
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   // Don't allow non-logged in users to access this page
   useEffect(() => {
@@ -106,42 +90,6 @@ const TeamAssessments = () => {
               <h3>Filter Users</h3>
               <input type="text" className="teamAssessmentsDropdown" onChange={ (e) => setUserQuery(e.target.value) } placeholder="Enter Name or Email" />
             </div>
-            {/* <div className="teamAssessmentsSearchCourse teamAssessmentsDropdownBox" ref={chooseCourseDiv}>
-              <h3>Has Taught Course</h3>
-              <input 
-                type="text" 
-                className="teamAssessmentsDropdown teamAssessmentsSearchCourseDropdown"
-                value = { courseQuery }
-                onFocus={ () => setShowCourseDropdown(true)}
-                onBlur={ () => setShowCourseDropdown(false) }
-                onClick={ (e) => setCourseQuery('') }
-                onChange={ (e) => setCourseQuery(e.target.value) } 
-                placeholder={ "Search for a course" }
-              />
-              <div 
-                className="teamAssessmentSearchCourseDropdownContent" 
-                style={ {'width': chooseCourseWidth, 'display': showCourseDropdown ? '' : 'none'} }
-              >
-                <div 
-                  className="teamAssessmentSearchCourseDropdownItem" 
-                  onMouseDown={ () => { setChosenCourse(''); setCourseQuery('') } }
-                >
-                  None
-                </div>
-                { allCoursesInDb && allCoursesInDb.filter((course) => {
-                  if (!courseQuery)
-                    return true
-                  return course.toLowerCase().includes(courseQuery.toLowerCase())
-                  }).map((course, i) => 
-                    <div 
-                      className="teamAssessmentSearchCourseDropdownItem" 
-                      key={i} 
-                      onMouseDown={ () => { setChosenCourse(course); setCourseQuery(course) } }
-                    >{course}</div>
-                  )
-                }
-              </div>
-            </div> */}
             { allCoursesInDb &&
               <div className="teamAssessmentsDropdownBox">
                 <SearchDropdown 
@@ -150,6 +98,7 @@ const TeamAssessments = () => {
                   options={ allCoursesInDb } 
                   setChosenOption={ setChosenCourse }
                   dropdownClassName="teamAssessmentsDropdown"
+                  includeNone={ true }
                 />
               </div>
             }
