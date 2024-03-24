@@ -84,7 +84,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     if (plot && user && courses) {
-      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean))
+      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean, 'Course'))
     }
   }, [plot, user, courses])
   console.log(anonData, analyticsError, plot, plottingError)
