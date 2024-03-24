@@ -21,7 +21,7 @@
 }
 
 .researchInfoBodyCard .researchInfoCardContent {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .researchInfoTable table {
@@ -48,6 +48,7 @@
   padding: 5px;
   justify-content: space-around;
   align-items: end;
+  flex-wrap: wrap;
 }
 .options .researchInfoDropdownBox {
   flex: 1 1 0px;
@@ -67,14 +68,12 @@
   font: 16px Arial, Helvetica, sans-serif;
   height: 45px;
   color: var(--cardtext);
-  margin-bottom: 10px;
 }
 
 .options .pageSelectors {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .options .pageSelectorBox {
@@ -87,7 +86,7 @@
   display: block;
   cursor: pointer;
   color: var(--cardtext);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
   padding: 8px 18px;
   text-decoration: none;
@@ -102,4 +101,23 @@
 
 .options .active {
   background-color: var(--cardbghover);
+}
+
+@media screen and (max-width: 1350px) {
+  .options {
+    width: 70%;
+  }
+  .options button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+@media screen and (max-width: 1050px) {
+  .options {
+    width: 80%;
+  }
+  .options button {
+    font-size: 10px;
+    padding: 8px 6px;
+  }
 }

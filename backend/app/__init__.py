@@ -11,6 +11,7 @@ from app.grant_upload_module import blueprint as grantupload_bp
 from app.pub_upload_module import blueprint as pubupload_bp
 from app.expen_upload_module import blueprint as expenupload_bp
 from app.account_settings_module import blueprint as account_settings_bp
+from app.delete_data_module import blueprint as delete_data_bp
 from app.login_module.manager import load_user, unauthorized
 from flask_cors import CORS
 from http import HTTPStatus
@@ -43,5 +44,6 @@ def create_app(config_class=Config):
     app.register_blueprint(pubupload_bp)
     app.register_blueprint(expenupload_bp)
     app.register_blueprint(account_settings_bp)
+    app.register_blueprint(delete_data_bp)
 
     return app

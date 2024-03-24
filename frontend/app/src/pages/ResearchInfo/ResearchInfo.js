@@ -3,6 +3,8 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
 
 const ResearchInfo = () => {
@@ -13,7 +15,8 @@ const ResearchInfo = () => {
   const queryEmail = query.get('email')
 
   const { user } = useAuthContext()
-  const { usersToChoose, grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
+  const { grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
+  const { usersToChoose, courseAnalyticsDispatch } = useCourseAnalyticsContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
@@ -26,7 +29,9 @@ const ResearchInfo = () => {
 
   const usersDropdownRef = useRef(null)
 
-  const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email) => {
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email, sortFunc) => {
     const response = await fetch(`${url}/${email}`, {
       method: 'GET',
       credentials: 'include'
@@ -35,7 +40,7 @@ const ResearchInfo = () => {
     const data = await response.json()
     if (response.ok) {
       setErrorFunc(null)
-      setFunc(data)
+      setFunc(data.sort(sortFunc))
     }
     else if (response.status === 404) {
       setFunc(null)
@@ -75,7 +80,7 @@ const ResearchInfo = () => {
 
       if (response.ok) {
         const data = await response.json()
-        researchInfoDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
+        courseAnalyticsDispatch({type: 'SET_USERS_TO_CHOOSE', payload: [
           {
             email: user.email, 
             first_name: user.first_name,
@@ -90,7 +95,7 @@ const ResearchInfo = () => {
     }
     if (!usersToChoose)
       fetchUsersToChoose()
-  }, [usersToChoose, researchInfoDispatch])
+  }, [usersToChoose, courseAnalyticsDispatch])
 
 
   // Don't allow non-logged in users to access this page
@@ -124,7 +129,7 @@ const ResearchInfo = () => {
       const data = await response.json()
       if (response.ok) {
         setGrantsError(null)
-        researchInfoDispatch({type: 'SET_GRANTS', payload: data})
+        researchInfoDispatch({type: 'SET_GRANTS', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setGrantsError(data?.error)
@@ -140,7 +145,7 @@ const ResearchInfo = () => {
       const data = await response.json()
       if (response.ok) {
         setPubsError(null)
-        researchInfoDispatch({type: 'SET_PUBS', payload: data})
+        researchInfoDispatch({type: 'SET_PUBS', payload: data.sort((a,b) => parseInt(b.publication_year) - parseInt(a.publication_year))})
       }
       else if (response.status === 404) {
         setPubsError(data?.error)
@@ -155,7 +160,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
-        researchInfoDispatch({type: 'SET_EXPEN', payload: data})
+        researchInfoDispatch({type: 'SET_EXPEN', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setExpenError(data?.error)
@@ -174,8 +179,8 @@ const ResearchInfo = () => {
     }
   }, [grants, expens, pubs, researchInfoDispatch])
 
-  const choosePerson = (e) => {
-    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+  const choosePerson = (option) => {
+    const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
     if (chosenPersonTmp.email === user.email) {
       setChosenPerson(null)
       setOtherUserGrants(null)
@@ -184,9 +189,9 @@ const ResearchInfo = () => {
       return
     }
     setChosenPerson(chosenPersonTmp)
-    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email)
-    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email)
-    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email)
+    fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
+    fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email, (a,b) => parseInt(b.publication_year) - parseInt(a.publication_year))
+    fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
   }
 
   return (
@@ -196,14 +201,22 @@ const ResearchInfo = () => {
         <div className='researchInfobuttons'>
           { user && user.position === 'chair' &&
             <div className='researchInfoDropdownBox'>
-              <h3>Choose Person</h3>
-              <select name="person" id="person" className="researchInfoDropdown" required  onChange={ choosePerson } ref={ usersDropdownRef }>
-                { usersToChoose && usersToChoose.map((person, i) =>
-                  <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                )}
-              </select>
+              { usersToChoose &&
+                <SearchDropdown
+                  label='Choose Person'
+                  placeholder='Enter Name'
+                  options={ usersToChoose.map((person) => `${person.first_name} ${person.last_name}`) }
+                  setChosenOption={ choosePerson }
+                  dropdownClassName="researchInfoDropdown"
+                  includeNone={ false }
+                />
+              }
             </div>
           }
+          <div className="researchInfoDropdownBox">
+            <h3>Filter Items</h3>
+            <input type="text" className="researchInfoDropdown" onChange={ (e) => setSearchQuery(e.target.value) } placeholder="Enter Item Name or Year" />
+          </div>
           <div className="researchInfoDropdownBox pageSelectorBox">
             <h3>Choose Page</h3>
             <div className="pageSelectors">
@@ -240,7 +253,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ?
-                    otherUserGrants?.map((grant) => {
+                    otherUserGrants?.filter((grant) => {
+                      return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
+                    })?.map((grant) => {
                       return (
                         <tr key={ grant.title }>
                           <td>{ grant.title }</td>
@@ -249,7 +264,9 @@ const ResearchInfo = () => {
                         </tr>
                       )
                     }) : 
-                    grants?.map((grant) => {
+                    grants?.filter((grant) => {
+                      return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
+                    })?.map((grant) => {
                       return (
                         <tr key={ grant.title }>
                           <td>{ grant.title }</td>
@@ -285,7 +302,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ?
-                    otherUserPubs?.map((pub) => {
+                    otherUserPubs?.filter((pub) => {
+                      return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
+                    })?.map((pub) => {
                       return (
                         <tr key={ pub.title }>
                           <td>{ pub.title }</td>
@@ -294,7 +313,9 @@ const ResearchInfo = () => {
                           <td>{ pub.isbn }</td>
                         </tr>
                       )}) :
-                    pubs?.map((pub) => {
+                    pubs?.filter((pub) => {
+                      return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
+                    })?.map((pub) => {
                       return (
                         <tr key={ pub.title }>
                           <td>{ pub.title }</td>
@@ -331,7 +352,9 @@ const ResearchInfo = () => {
                   </thead>
                   <tbody>
                   { chosenPerson ? 
-                    otherUserExpen.map((ex, i) => {
+                    otherUserExpen?.filter((expen) => {
+                      return expen.year.includes(searchQuery)
+                    })?.map((ex, i) => {
                       return (
                         <tr key={ i }>
                           <td>{ ex.year }</td>
@@ -340,7 +363,9 @@ const ResearchInfo = () => {
                           <td>{ ex.amount }</td>
                         </tr>
                       )}) :
-                    expens.map((ex, i) => {
+                    expens?.filter((expen) => {
+                      return expen.year.includes(searchQuery)
+                    })?.map((ex, i) => {
                       return (
                         <tr key={ i }>
                           <td>{ ex.year }</td>

@@ -84,7 +84,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     if (plot && user && courses) {
-      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean))
+      setCourseRatingsPlot(plot_kde(plot.data, plot.layout, 'Your', courses[0].ave_course_rating_mean, 'Course'))
     }
   }, [plot, user, courses])
   console.log(anonData, analyticsError, plot, plottingError)
@@ -204,7 +204,7 @@ const Dashboard = () => {
             </div>
           </div> : ''
         }
-        <div className={ `dashboardCard ${user.position === 'instructor' ? 'instructorCard' : ''}` }>
+        <div className={ `dashboardCard ${user?.position === 'instructor' ? 'instructorCard' : ''}` }>
           <div className='dashboardCardHeader'>
             <h1>Student Evals</h1>
             <button onClick={ (e) => navigate('/student-evals') }>See All</button>

@@ -96,8 +96,8 @@ describe('Research Info Test: Chair', () => {
   it('Chair can choose other people and sees their info', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.wait(100)
-    cy.contains('div', 'Choose Person').find('select').select(Cypress.env('nonChairUserName'))
-
+    cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
+    cy.get('.searchDropdownItem').eq(0).click()
     // Check grants
     cy.contains(professsorGrantTitle)
 

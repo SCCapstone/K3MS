@@ -42,6 +42,16 @@
     color: var(--cardtext)
   }
 
+  .updatePasswordCard label {
+    font-size: 1.2em;
+    text-align: center;
+    margin: auto auto 15px auto;
+    display: block;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+
   .updatePasswordCard button {
     width: 50%;
     background-color: var(--cardtext);

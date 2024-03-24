@@ -3,6 +3,7 @@ import { COURSE_ANALYTICS_URLS, DEC_PLACES } from '../../config'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import plot_kde from '../../utils/plot_kde'
 import { useLocation } from 'react-router-dom'
 
@@ -208,8 +209,8 @@ const CourseAnalytics = () => {
     }
   }, [chosenCourse, chosenPeriod, courseAnalyticsDispatch, courses, anonData])
 
-  const choosePerson = (e) => {
-    const chosenPersonTmp = usersToChoose.find(person => person.email === e.target.value)
+  const choosePerson = (option) => {
+    const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
     courseAnalyticsDispatch({type: 'SET_COURSES', payload: null})
     setChosenPerson(chosenPersonTmp)
     setChosenPersonName(`${chosenPersonTmp.first_name} ${chosenPersonTmp.last_name}`)
@@ -224,6 +225,17 @@ const CourseAnalytics = () => {
     setChosenCourse(courses[e.target.value])
   }
 
+  const chooseCourseFromAllCourses = (option) => {
+    let courseTmp = courses.find(course => course.course === option)
+    if (!courseTmp) {
+      courseTmp = {
+        ave_course_rating_mean: null,
+        ave_instructor_rating_mean: null,
+        course: option
+      }
+    }
+    setChosenCourse(courseTmp)
+  }
 
   const [courseRatingsPlot, setCourseRatingsPlot] = useState(null)
   const [instrRatingsPlot, setInstrRatingsPlot] = useState(null)
@@ -231,8 +243,8 @@ const CourseAnalytics = () => {
     if (anonData?.[anonDataKey]?.plots?.course_rating_plot && chosenCourse && chosenPersonName) {
       const { data: courseData, layout: courseLayout } = JSON.parse(anonData[anonDataKey].plots.course_rating_plot)
       const { data: instructorData, layout: instructorLayout } = JSON.parse(anonData[anonDataKey].plots.instructor_rating_plot)
-      setCourseRatingsPlot(plot_kde(courseData, courseLayout, chosenPersonName, chosenCourse.ave_course_rating_mean))
-      setInstrRatingsPlot(plot_kde(instructorData, instructorLayout, chosenPersonName, chosenCourse.ave_instructor_rating_mean))
+      setCourseRatingsPlot(plot_kde(courseData, courseLayout, chosenPersonName, chosenCourse.ave_course_rating_mean, 'Course'))
+      setInstrRatingsPlot(plot_kde(instructorData, instructorLayout, chosenPersonName, chosenCourse.ave_instructor_rating_mean, 'Instructor'))
     }
   }, [anonData, anonDataKey, chosenCourse, chosenPersonName])
 
@@ -245,12 +257,16 @@ const CourseAnalytics = () => {
           <div className='dropdowns'>
             { user && user.position === 'chair' &&
               <div className='choosePersonDropdown dropdownBox'>
-                <h3>Choose Person</h3>
-                <select name="person" id="person" className="dropdown" required onChange={ choosePerson } ref={ usersDropdownRef }>
-                  { usersToChoose && usersToChoose.map((person, i) =>
-                    <option key={i} value={ person.email }>{ `${person.first_name} ${person.last_name}` }</option>
-                  )}
-                </select>
+                { usersToChoose &&
+                  <SearchDropdown
+                    label='Choose Person'
+                    placeholder='Search for users'
+                    options={ usersToChoose.map(person => `${person.first_name} ${person.last_name}`) }
+                    setChosenOption={ choosePerson }
+                    dropdownClassName='dropdown'
+                    includeNone={false}
+                  />
+                }
               </div>
             }
             { coursesError ? <p className='dropDownError'>{ coursesError }</p> :
@@ -264,8 +280,16 @@ const CourseAnalytics = () => {
                   </select>
                 </div>
                 <div className="searchCourse dropdownBox">
-                  <h3>Search All Courses</h3>
-                  <input type="text" id="course" className="dropdown" placeholder="Search for a course" />
+                  { allCoursesInDb && courses &&
+                    <SearchDropdown
+                      label='Search All Courses'
+                      placeholder='Search for course'
+                      options={ allCoursesInDb }
+                      setChosenOption={ chooseCourseFromAllCourses }
+                      dropdownClassName='dropdown'
+                      includeNone={false}
+                    />
+                  }
                 </div>
               </>
             }
@@ -282,39 +306,41 @@ const CourseAnalytics = () => {
         </div>
 
         <div className='analyticsTableDiv'>
-          <h1>Data for {chosenCourse ? chosenCourse.course : ''}</h1>
+          { !coursesError && <h1>Data for {chosenCourse ? chosenCourse.course : ''}</h1> }
           { anonDataError && <p className='anonDataError'>{ anonDataError }</p> }
-          <table className="analyticsTable">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Course Rating</th>
-                <th>Instructor Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>{ chosenPersonName }</th>
-                <td>{ chosenCourse?.ave_course_rating_mean?.toFixed(DEC_PLACES) }</td>
-                <td>{ chosenCourse?.ave_instructor_rating_mean?.toFixed(DEC_PLACES) }</td>
-              </tr>
-              <tr>
-                <th>Average</th>
-                <td>{ anonData?.[anonDataKey]?.mean_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
-                <td>{ anonData?.[anonDataKey]?.mean_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
-              </tr>
-              <tr>
-                <th>Median</th>
-                <td>{ anonData?.[anonDataKey]?.median_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
-                <td>{ anonData?.[anonDataKey]?.median_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
-              </tr>
-              <tr>
-                <th>75%</th>
-                <td>{ anonData?.[anonDataKey]?.course_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
-                <td>{ anonData?.[anonDataKey]?.instructor_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
-              </tr>
-            </tbody>
-          </table>
+          { !coursesError && 
+            <table className="analyticsTable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Course Rating</th>
+                  <th>Instructor Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>{ chosenPersonName }</th>
+                  <td>{ chosenCourse?.ave_course_rating_mean ? chosenCourse?.ave_course_rating_mean?.toFixed(DEC_PLACES) : 'n/a'}</td>
+                  <td>{ chosenCourse?.ave_instructor_rating_mean ? chosenCourse?.ave_instructor_rating_mean?.toFixed(DEC_PLACES) : 'n/a' }</td>
+                </tr>
+                <tr>
+                  <th>Average</th>
+                  <td>{ anonData?.[anonDataKey]?.mean_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
+                  <td>{ anonData?.[anonDataKey]?.mean_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
+                </tr>
+                <tr>
+                  <th>Median</th>
+                  <td>{ anonData?.[anonDataKey]?.median_of_all_course_ratings?.toFixed(DEC_PLACES) }</td>
+                  <td>{ anonData?.[anonDataKey]?.median_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
+                </tr>
+                <tr>
+                  <th>75%</th>
+                  <td>{ anonData?.[anonDataKey]?.course_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
+                  <td>{ anonData?.[anonDataKey]?.instructor_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
+                </tr>
+              </tbody>
+            </table>
+          }
         </div>
 
         <div className="analyticsPlot">
