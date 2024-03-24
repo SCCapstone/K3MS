@@ -42,6 +42,9 @@ module.exports = global.config = {
     USER_UPDATE_URL: BASE_URL + "update_user",
 
     DELETE_EVALS_URL: BASE_URL + "delete_evals",
+    DELETE_ALL_GRANTS_URL: BASE_URL + "delete_all_my_grants",
+    DELETE_ALL_PUBS_URL: BASE_URL + "delete_all_my_pubs",
+    DELETE_ALL_EXPENS_URL: BASE_URL + "delete_all_my_expens",
 
     DEC_PLACES: 2
 }

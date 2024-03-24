@@ -21,10 +21,10 @@ def expen_upload_controller(req):
     json_data = ret
 
     # Get Expenditure fields
-    amount = json_data.get(form_fields[0])
-    year = json_data.get(form_fields[1])
-    reporting_department = json_data.get(form_fields[2])
-    pi_name = json_data.get(form_fields[3])
+    amount = str(json_data.get(form_fields[0]))
+    year = str(json_data.get(form_fields[1]))
+    reporting_department = str(json_data.get(form_fields[2]))
+    pi_name = str(json_data.get(form_fields[3]))
 
     if year.isnumeric() == False:
         return dict(error='Year must be a number'), HTTPStatus.BAD_REQUEST

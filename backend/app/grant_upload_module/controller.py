@@ -20,9 +20,9 @@ def grant_upload_controller(req):
     json_data = ret
 
     # Get Grant fields
-    title = json_data.get(form_fields[0])
-    amount = json_data.get(form_fields[1])
-    year = json_data.get(form_fields[2])
+    title = str(json_data.get(form_fields[0]))
+    amount = str(json_data.get(form_fields[1]))
+    year = str(json_data.get(form_fields[2]))
 
     if year.isnumeric() == False:
         return dict(error='Year must be a number'), HTTPStatus.BAD_REQUEST
