@@ -347,9 +347,9 @@ def parse_and_upload_excel(fbytes):
             course_info = str(row['course'])
             instructor_type = str(row['form of address'])
             participants_count = str(row['participants'])
-            number_of_returns = row['no. of returns']
-            course_rating_mean = row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"]
-            instructor_rating_mean = row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"]
+            number_of_returns = str(row['no. of returns'])
+            course_rating_mean = str(row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"])
+            instructor_rating_mean = str(row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"])
         except KeyError:
             keyerror = True
 
@@ -374,7 +374,8 @@ def parse_and_upload_excel(fbytes):
 
         semester, year = period.split(' ')
         course, section,_,_ = course_info.split('-')
-        
+        semester = semester.title()
+
         # Temporarily Save row info
         row_info = dict(
             row_index=i+1,
@@ -396,6 +397,23 @@ def parse_and_upload_excel(fbytes):
         email = row_user.email
         row_info['email'] = email
 
+        # Check that fields are the correct values
+        try:
+            participants_count = int(float(participants_count))
+            number_of_returns = int(float(number_of_returns))
+            course_rating_mean = float(course_rating_mean)
+            instructor_rating_mean = float(instructor_rating_mean)
+            year = int(year)
+            section = int(section)
+        except ValueError:
+            skipped_entries.append(dict(**row_info, reason='Row meta data missing or incorrect type'))
+            continue
+        
+        # Check that semester is correct
+        if semester not in ['Fall', 'Spring', 'Summer']:
+            skipped_entries.append(dict(**row_info, reason='Semester is not one of Fall, Spring, or Summer'))
+            continue
+
         if f"{email}{year}{semester}{course}{section}" in seen_sections:
             skipped_entries.append(dict(**row_info, reason='This row is a duplicate (based on name, year, semester, course, and section)'))
             continue
@@ -415,11 +433,16 @@ def parse_and_upload_excel(fbytes):
             # Get the mean, std, median, and returns for each question
             # If fields are missing or incorrect, skip this entry
             try:
-                mean = row[f'{q}(mean)']
-                std = row[f'{q}(standard deviation)']
-                median = row[f'{q}(median)']
-                returns = row[f'{q}(returns per question)']
+                mean = float(row[f'{q}(mean)'])
+                std = float(row[f'{q}(standard deviation)'])
+                median = float(row[f'{q}(median)'])
+                returns = float(row[f'{q}(returns per question)'])
             except KeyError:
+                # Value is missing
+                skipped = True
+                break
+            except ValueError:
+                # Value is not a number
                 skipped = True
                 break
             if np.isnan(mean) or np.isnan(std) or np.isnan(median) or np.isnan(returns):
@@ -445,7 +468,7 @@ def parse_and_upload_excel(fbytes):
                 details_rows.append(eval_details)
 
         if skipped:
-            skipped_entries.append(dict(**row_info, reason='Fields are missing'))
+            skipped_entries.append(dict(**row_info, reason='Value fields are missing or incorrect types'))
             continue
 
         # Add this section to list of seen sections

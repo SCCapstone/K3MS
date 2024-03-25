@@ -221,7 +221,7 @@ function EvalUpload() {
                       {skippedRowsOverwrite.map((row, index) => {
                         return (
                           <tr key={index}>
-                            <td>{row.row_index}</td>
+                            <td>{row.row_index + 1}</td>
                             <td>{row.course}</td>
                             <td>{row.email}</td>
                             <td>{row.first_name} {row.last_name}</td>
@@ -266,7 +266,7 @@ function EvalUpload() {
                       {skippedRowsOther.map((row, index) => {
                         return (
                           <tr key={index}>
-                            <td>{row.row_index}</td>
+                            <td>{row.row_index + 1}</td>
                             <td>{row.course ? row.course : 'Unkown'}</td>
                             <td>{row.email ? row.email : 'Unkown'}</td>
                             <td>{(row.first_name && row.last_name) ? `${row.first_name} ${row.last_name}` : 'Unkown'}</td>
@@ -280,7 +280,7 @@ function EvalUpload() {
                 </div>
                 <div className='evalupload_skippedRowsButtons evalupload_otherButton'>
                   <button onClick={ () => { 
-                    if (skippedRowsOverwrite) {
+                    if (skippedRowsOverwrite?.length > 0) {
                       setOverwriteError('Please confirm or ignore skipped rows')
                     }
                     else{

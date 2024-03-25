@@ -27,9 +27,9 @@ def expen_upload_controller(req):
     pi_name = str(json_data.get(form_fields[3]))
 
     if year.isnumeric() == False:
-        return dict(error='Year must be a number'), HTTPStatus.BAD_REQUEST
+        return dict(error='Year must be an integer'), HTTPStatus.BAD_REQUEST
     if amount.isnumeric() == False:
-        return dict(error='Amount must be a number'), HTTPStatus.BAD_REQUEST
+        return dict(error='Amount must be an integer'), HTTPStatus.BAD_REQUEST
 
     # Make sure expen with title doesn't already exist for this user
     expen = Expens.query.filter_by(email=current_user.email, year=year).first()
