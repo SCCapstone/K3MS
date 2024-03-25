@@ -64,6 +64,8 @@ def eval_upload_controller(request):
 
     except Exception as e:
         print(e)
+        if e == 'Error reading excel file':
+            return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
         return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def overwrite_evals_rows_controller(request):
@@ -90,6 +92,7 @@ def overwrite_evals_rows_controller(request):
 
         # Get the rows from the temporary database
         for row in rows:
+            print(row)
             eval = EvaluationsTmp.query.filter_by(
                 email=row['email'],
                 year=row['year'],
@@ -105,6 +108,7 @@ def overwrite_evals_rows_controller(request):
                 course=row['course'],
                 section=row['section']
             ).all()
+            print(eval, eval_details)
 
             # Entries were found in tmp tables, update the main tables
             if eval and eval_details:
@@ -132,8 +136,8 @@ def overwrite_evals_rows_controller(request):
         db.session.commit()
         return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
     except Exception as e:
-            print(e)
-            return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+        print(e)
+        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def get_student_evals_controller(user_email=None, limit=False):
@@ -317,13 +321,18 @@ def get_student_evals_details_controller(course_name, user_email=None):
 
 
 def parse_and_upload_excel(fbytes):
-    df = pd.read_excel(fbytes)
+    try:
+        df = pd.read_excel(fbytes)
+    except Exception:
+        raise Exception('Error reading excel file')
+        
     df.columns = [c.lower() for c in df.columns]
 
     evals = []
     details_rows = []
     skipped_entries = []
     existing_entries = ([],[])
+    seen_sections = set()
 
     questions = current_app.config['QUESTIONS']
 
@@ -340,9 +349,9 @@ def parse_and_upload_excel(fbytes):
             course_info = str(row['course'])
             instructor_type = str(row['form of address'])
             participants_count = str(row['participants'])
-            number_of_returns = row['no. of returns']
-            course_rating_mean = row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"]
-            instructor_rating_mean = row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"]
+            number_of_returns = str(row['no. of returns'])
+            course_rating_mean = str(row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"])
+            instructor_rating_mean = str(row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"])
         except KeyError:
             keyerror = True
 
@@ -367,7 +376,8 @@ def parse_and_upload_excel(fbytes):
 
         semester, year = period.split(' ')
         course, section,_,_ = course_info.split('-')
-        
+        semester = semester.title()
+
         # Temporarily Save row info
         row_info = dict(
             row_index=i+1,
@@ -387,7 +397,28 @@ def parse_and_upload_excel(fbytes):
             continue
 
         email = row_user.email
-        row_info['email'] = email    
+        row_info['email'] = email
+
+        # Check that fields are the correct values
+        try:
+            participants_count = int(float(participants_count))
+            number_of_returns = int(float(number_of_returns))
+            course_rating_mean = float(course_rating_mean)
+            instructor_rating_mean = float(instructor_rating_mean)
+            if not section.isnumeric():
+                raise ValueError
+        except ValueError:
+            skipped_entries.append(dict(**row_info, reason='Row meta data missing or incorrect type'))
+            continue
+        
+        # Check that semester is correct
+        if semester not in ['Fall', 'Spring', 'Summer']:
+            skipped_entries.append(dict(**row_info, reason='Semester is not one of Fall, Spring, or Summer'))
+            continue
+
+        if f"{email}{year}{semester}{course}{section}" in seen_sections:
+            skipped_entries.append(dict(**row_info, reason='This row is a duplicate (based on name, year, semester, course, and section)'))
+            continue
 
         # Check if entry exists in database already
         row_exists = Eval.query.filter_by(
@@ -404,11 +435,16 @@ def parse_and_upload_excel(fbytes):
             # Get the mean, std, median, and returns for each question
             # If fields are missing or incorrect, skip this entry
             try:
-                mean = row[f'{q}(mean)']
-                std = row[f'{q}(standard deviation)']
-                median = row[f'{q}(median)']
-                returns = row[f'{q}(returns per question)']
+                mean = float(row[f'{q}(mean)'])
+                std = float(row[f'{q}(standard deviation)'])
+                median = float(row[f'{q}(median)'])
+                returns = float(row[f'{q}(returns per question)'])
             except KeyError:
+                # Value is missing
+                skipped = True
+                break
+            except ValueError:
+                # Value is not a number
                 skipped = True
                 break
             if np.isnan(mean) or np.isnan(std) or np.isnan(median) or np.isnan(returns):
@@ -434,8 +470,11 @@ def parse_and_upload_excel(fbytes):
                 details_rows.append(eval_details)
 
         if skipped:
-            skipped_entries.append(dict(**row_info, reason='Fields are missing'))
+            skipped_entries.append(dict(**row_info, reason='Value fields are missing or incorrect types'))
             continue
+
+        # Add this section to list of seen sections
+        seen_sections.add(f"{email}{year}{semester}{course}{section}")
 
         # Create Evaluation Table Row
         eval = Eval(

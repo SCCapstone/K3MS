@@ -152,3 +152,15 @@
   .evalupload_otherButton {
     width: 20%;
   }
+
+@media only screen and (max-width: 1200px) {
+  .evalupload_skippedRowsTable {
+    width: 95%;
+    font-size: 0.9em;
+  }
+
+  .evalupload_skippedRowsButtons {
+    width: 95%;
+  }
+
+}
