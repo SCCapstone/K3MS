@@ -64,6 +64,8 @@ def eval_upload_controller(request):
 
     except Exception as e:
         print(e)
+        if e == 'Error reading excel file':
+            return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
         return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def overwrite_evals_rows_controller(request):
@@ -90,6 +92,7 @@ def overwrite_evals_rows_controller(request):
 
         # Get the rows from the temporary database
         for row in rows:
+            print(row)
             eval = EvaluationsTmp.query.filter_by(
                 email=row['email'],
                 year=row['year'],
@@ -105,6 +108,7 @@ def overwrite_evals_rows_controller(request):
                 course=row['course'],
                 section=row['section']
             ).all()
+            print(eval, eval_details)
 
             # Entries were found in tmp tables, update the main tables
             if eval and eval_details:
@@ -133,8 +137,6 @@ def overwrite_evals_rows_controller(request):
         return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
     except Exception as e:
         print(e)
-        if e == 'Error reading excel file':
-            return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
         return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
@@ -403,8 +405,8 @@ def parse_and_upload_excel(fbytes):
             number_of_returns = int(float(number_of_returns))
             course_rating_mean = float(course_rating_mean)
             instructor_rating_mean = float(instructor_rating_mean)
-            year = int(year)
-            section = int(section)
+            if not section.isnumeric():
+                raise ValueError
         except ValueError:
             skipped_entries.append(dict(**row_info, reason='Row meta data missing or incorrect type'))
             continue

@@ -71,6 +71,7 @@ function EvalUpload() {
     formData.append('fileName', file.name);
 
     try {
+      setError(null)
       setEvalProcessing(true)
       const response = await fetch(EVAL_UPLOAD_URL, {
         method: 'POST',
