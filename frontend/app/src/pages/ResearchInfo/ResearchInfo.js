@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
+import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS, DELETE_ENTRY_URL } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
@@ -26,6 +26,10 @@ const ResearchInfo = () => {
   const [otherUserGrants, setOtherUserGrants] = useState(null)
   const [otherUserPubs, setOtherUserPubs] = useState(null)
   const [otherUserExpen, setOtherUserExpen] = useState(null)
+
+  const [deleteEntryConfirm, setDeleteEntryConfirm] = useState('')              // Used to confirm grant deletion
+
+
 
   const usersDropdownRef = useRef(null)
 
@@ -177,7 +181,19 @@ const ResearchInfo = () => {
     if (!expens) {
       fetchExpen()
     }
-  }, [grants, expens, pubs, researchInfoDispatch])
+    if (deleteEntryConfirm === 'grantDeleted') {
+      setDeleteEntryConfirm('')
+      fetchGrants()
+    }
+    if (deleteEntryConfirm === 'pubDeleted') {
+      setDeleteEntryConfirm('')
+      fetchPubs()
+    }
+    if (deleteEntryConfirm === 'expenDeleted') {
+      setDeleteEntryConfirm('')
+      fetchExpen()
+    }
+  }, [grants, expens, pubs, researchInfoDispatch, deleteEntryConfirm])
 
   const choosePerson = (option) => {
     const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
@@ -192,6 +208,62 @@ const ResearchInfo = () => {
     fetchOtherUserInfo(GRANTS_URL, setOtherUserGrants, setGrantsError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
     fetchOtherUserInfo(PUBS_URL, setOtherUserPubs, setPubsError, chosenPersonTmp.email, (a,b) => parseInt(b.publication_year) - parseInt(a.publication_year))
     fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
+  }
+
+
+  // Delete Functionality:
+  const deleteEntry = async (e) => {
+    // e passes in the object which includes grant_title which is used to delete that specific grant
+    const alertResponse = window.confirm("Are you sure you want to delete this entry's data? This cannot be undone.");
+    if (alertResponse) {
+
+      // Debug
+      // console.log(e.title)
+      // console.log(e.email)
+      const type = e.type
+
+      const response = await fetch(DELETE_ENTRY_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: e.email,
+          type: e.type,
+          title: e.title,
+          year: e.year,     
+        })
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        if (type === 'grant'){
+          setGrantsError(json.error)
+        } else if (type === 'pub'){
+          setPubsError(json.error)
+        } else if (type === 'expen'){
+          setExpenError(json.error)
+        }
+        console.log(json.error)
+      }
+      if (response.ok) {
+
+        if (type === 'grant') {
+          // Update grants state to remove the grant that was deleted
+          setGrantsError(null)
+          setDeleteEntryConfirm('grantDeleted')
+
+        } else if (type === 'pub') {
+          // Update pubs state to remove the publication that was deleted
+          setPubsError(null)
+          setDeleteEntryConfirm('pubDeleted')
+
+        } else if (type === 'expen') {
+          // Update expen state to remove the expenditure that was deleted
+          setExpenError(null)
+          setDeleteEntryConfirm('expenDeleted')
+        }
+        window.location.reload()
+      }
+    }
   }
 
   return (
@@ -261,6 +333,7 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
+                          <button onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>Delete</button>
                         </tr>
                       )
                     }) : 
@@ -272,9 +345,10 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
+                          <button onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>Delete</button>
                         </tr>
                       )
-                    })
+                    })  
                   }
                   </tbody>
                 </table>
@@ -311,6 +385,7 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
+                          <button onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>Delete</button>
                         </tr>
                       )}) :
                     pubs?.filter((pub) => {
@@ -322,6 +397,7 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
+                          <button onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>Delete</button>
                         </tr>
                       )
                     })
@@ -361,6 +437,7 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
+                          <button onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: chosenPerson.email, year: ex.year})}>Delete</button>
                         </tr>
                       )}) :
                     expens?.filter((expen) => {
@@ -372,6 +449,7 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
+                          <button onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: user.email, year: ex.year})}>Delete</button>
                         </tr>
                       )})
                     }

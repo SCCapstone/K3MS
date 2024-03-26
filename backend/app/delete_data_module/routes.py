@@ -5,7 +5,8 @@ from app.delete_data_module.controller import (
     delete_evals_controller,
     delete_all_grants_controller,
     delete_all_pubs_controller,
-    delete_all_expens_controller
+    delete_all_expens_controller,
+    delete_entry_controller,
 )
 
 @blueprint.route('/delete_evals', methods=['DELETE'])
@@ -27,3 +28,8 @@ def delete_all_pubs():
 @login_required
 def delete_all_expens():
     return delete_all_expens_controller(request)
+
+@blueprint.route('/delete_entry', methods=['DELETE'])
+@login_required
+def delete_entry():
+    return delete_entry_controller(request)

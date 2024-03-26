@@ -16,6 +16,7 @@ export const researchInfoReducer = (state, action) => {
         ...state, 
         grants: state.grants ? state.grants.concat(action.payload) : action.payload
       }
+
     case 'SET_PUBS':
       return { 
         ...state, 

@@ -86,3 +86,48 @@ def validate_request(req, confirmation_text):
         return dict(error='Confirmation text is incorrect'), HTTPStatus.BAD_REQUEST
     
     return None
+
+
+# Individual delete grant controller
+def delete_entry_controller(req):
+    try:
+        # Get JSON data
+        content_type = req.headers.get('Content-Type')
+        if content_type != 'application/json':
+            return dict(error='Content-Type not supported'), HTTPStatus.BAD_REQUEST
+        
+        json_data = req.get_json()
+
+        if not json_data:
+            return dict(error='Missing JSON data'), HTTPStatus.BAD_REQUEST
+        
+        
+        # Get type of entry
+        type = json_data.get('type')
+        
+        # Get entry title from request
+        entry_title = json_data.get('title')
+
+        # Get entry email
+        entry_email = json_data.get('email')
+
+        # Get entry year
+        entry_year = json_data.get('year')
+
+        if type == 'grant':
+            # Delete all grants for this user
+            Grants.query.filter_by(email=entry_email, title=entry_title, year=entry_year).delete()
+            db.session.commit()
+        elif type == 'pub':
+            # Delete all publications for this user
+            Publications.query.filter_by(email=entry_email, title=entry_title, publication_year=entry_year).delete()
+            db.session.commit()
+        elif type == 'expen':
+            # Delete all expenditures for this user
+            Expenditures.query.filter_by(email=entry_email, pi_name=entry_title, year=entry_year).delete()
+            db.session.commit()
+
+        return dict(message=f'{type}: {entry_title} has been deleted'), HTTPStatus.OK
+    
+    except:
+        return dict(error=f'Error deleting: {req.get_json()}'), HTTPStatus.INTERNAL_SERVER_ERROR
