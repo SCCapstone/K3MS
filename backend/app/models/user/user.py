@@ -11,8 +11,11 @@ class User(db.Model, UserMixin):
     last_name: str = db.Column(db.String(64), nullable=False)
     position: str = db.Column(db.String(64), nullable=False)    # ie. chair, professor, instructor
     date_added: str = db.Column(db.DateTime, default=datetime.utcnow)
-    password_hash = db.Column(db.String(2000))
+    password_hash = db.Column(db.String(2000), nullable=False)
     
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
     # Override UserMixin function to return email when loading user
     def get_id(self):
         return str(self.email)

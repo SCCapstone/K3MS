@@ -17,10 +17,9 @@ const UserAdmin = () => {
   const [lastNameCreate, setlastNameCreate] = useState('')
   const [emailCreate, setEmailCreate] = useState('')
   const [positionCreate, setPositionCreate] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [emptyFields, setEmptyFields] = useState([])
+  const [isProcessing, setIsProcessing] = useState(false)
 
   // Update
   const [emailUpdate, setEmailUpdate] = useState('')
@@ -56,11 +55,9 @@ const UserAdmin = () => {
 
   const createUser = async (e) => {
     e.preventDefault()
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
+    setError(null)
+    setEmptyFields([])
+    setIsProcessing(true)
 
     const response = await fetch(USER_CREATION_URL, {
       method: 'POST',
@@ -71,30 +68,29 @@ const UserAdmin = () => {
         last_name: lastNameCreate,
         email: emailCreate,
         position: positionCreate,
-        password: password
       })
     })
     
     const json = await response.json()
     if (!response.ok) {
+      setIsProcessing(false)
       setError(json.error)
       if (json.empty_fields)
         setEmptyFields(json.empty_fields)
     }
 
     if (response.ok) {
+      setIsProcessing(false)
       setError(null)
       setEmptyFields([])
       setfirstNameCreate('')
       setlastNameCreate('')
       setEmailCreate('')
       setPositionCreate('')
-      setPassword('')
-      setConfirmPassword('')
 
       // Clear users to choose and data that may contain info from them
       courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
-      navigate('/dashboard', { state: { mssg: 'User Created', status: 'ok' }})
+      navigate('/dashboard', { state: { mssg: 'User Created - Awaiting their response', status: 'ok' }})
     }
   }
 
@@ -203,22 +199,9 @@ const UserAdmin = () => {
               <option value="professor">Professor</option>
               <option value="instructor">Instructor</option>
             </select>
-            <input 
-              type="password" 
-              onChange={(e) => setPassword(e.target.value)} 
-              value={ password } 
-              placeholder="Password"
-              className={ emptyFields.includes('password') ? 'errorField' : '' }
-            />
-            <input 
-              type="password" 
-              onChange={(e) => setConfirmPassword(e.target.value)} 
-              value={ confirmPassword } 
-              placeholder="Confirm Password"
-              className={ emptyFields.includes('password') ? 'errorField' : '' }
-            />
             <button>Create</button>
             {error && <div className="errorField">{ error }</div>}
+            {isProcessing && <div>Processing...</div>}
         </form>
       </section>
       <section className="userCreationCard">

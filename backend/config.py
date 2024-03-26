@@ -19,6 +19,10 @@ class Config:
 
     ALLOWED_EVAL_EXTENSIONS = ['xlsx', 'xls', 'ods']
 
+    EMAIL = os.getenv("EMAIL")
+    EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+    FRONTEND_SET_PASSWORD_URL = os.getenv("FRONTEND_SET_PASSWORD_URL")
+
     # These strings are exactly as they appear in the excel sheet - dont modify them
     QUESTIONS = {
         1: "the instructor clearly stated the instructional objectives of the course.",

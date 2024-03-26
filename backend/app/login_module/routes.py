@@ -2,18 +2,20 @@ from flask import session, request
 from flask_login import login_required, current_user
 from app.login_module import blueprint
 from app.login_module.controller import (
-    signup_controller,
     login_controller,
     logout_controller,
     check_auth_controller,
     delete_user_controller,
-    update_user_controller
+    update_user_controller,
+    create_user_controller,
+    set_password_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
 @login_required
 def signup():
-    return signup_controller(request)
+    # return signup_controller(request)
+    return create_user_controller(request)
 
 @blueprint.route('/login', methods=['POST'])
 def login():
@@ -38,3 +40,7 @@ def update_user():
 @login_required
 def check_auth():
     return check_auth_controller()
+
+@blueprint.route('/set_password', methods=['POST'])
+def set_password():
+    return set_password_controller(request)
