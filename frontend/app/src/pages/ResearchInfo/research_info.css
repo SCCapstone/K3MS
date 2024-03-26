@@ -121,3 +121,27 @@
     padding: 8px 6px;
   }
 }
+
+
+/* Add css options for button with className="delete" */
+.delete {
+  background-color: var(--cardbg);
+  border: var(--cardtext) thin solid;
+  display: block;
+  cursor: pointer;
+  color: var(--cardtext);
+  /* font-size: 30px;
+  font-weight: 900; */
+  padding: 8px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  border: 1px solid #dddddd;
+  height: 45px;
+  /* margin-left: 10px; */
+  /* Add these lines */
+  background-image: url('../../utils/delete_icon.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

@@ -333,7 +333,7 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
-                          <button onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}></button>
                         </tr>
                       )
                     }) : 
@@ -345,7 +345,7 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
-                          <button onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}></button>
                         </tr>
                       )
                     })  
@@ -385,7 +385,7 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
-                          <button onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}></button>
                         </tr>
                       )}) :
                     pubs?.filter((pub) => {
@@ -397,7 +397,7 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
-                          <button onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}></button>
                         </tr>
                       )
                     })
@@ -437,7 +437,7 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
-                          <button onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: chosenPerson.email, year: ex.year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: chosenPerson.email, year: ex.year})}></button>
                         </tr>
                       )}) :
                     expens?.filter((expen) => {
@@ -449,7 +449,7 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
-                          <button onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: user.email, year: ex.year})}>Delete</button>
+                          <button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: user.email, year: ex.year})}></button>
                         </tr>
                       )})
                     }
