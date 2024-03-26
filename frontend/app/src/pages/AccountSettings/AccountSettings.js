@@ -85,6 +85,41 @@ const AccountSettings = () => {
         }
     };
 
+    // Update profile
+    const updateProfile = async (e) => {
+      e.preventDefault()
+
+      // // Check If new_password and confirm_new_password Match
+      // if (new_password !== confirm_new_password) {
+      //     setError("Passwords Do Not Match");
+      //     return;
+      // }
+
+
+  
+      const response = await fetch(UPDATE_PASSWORD_URL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          new_password: new_password,
+          confirm_new_password: confirm_new_password
+        })
+      })
+  
+      const json = await response.json()
+      if (!response.ok) {
+        setError(json.error)
+      }
+  
+      if (response.ok) {
+        setError(null)
+  
+          // Navigate to dashboard
+          navigate('/dashboard', { state: { mssg: 'Profile Picture Updated Successfully', status: 'ok' }})
+      }
+  };
+
     const deleteAllEvals = async (e) => {
       e.preventDefault()
       if (deleteEvalsConfirm !== confirmation_text) {
@@ -222,7 +257,31 @@ const AccountSettings = () => {
 
     return (
         <>
+
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
+          <section className="updatePasswordCard">
+            <h1>Update Profile</h1>
+            <form className="updatePassword" onSubmit={ updatePassword }>
+                <input
+                  type="password" 
+                  onChange={(e) => setNewPassword(e.target.value)} 
+                  value={ new_password } 
+                  placeholder="New Password"
+                  className={ emptyFields.includes('new_password') ? 'errorField' : '' }
+                />
+            
+                <input 
+                  type="password" 
+                  onChange={(e) => setConfirmNewPassword(e.target.value)} 
+                  value={ confirm_new_password } 
+                  placeholder="Confirm New Password"
+                />
+                <button>Update Password</button>
+                {error && <div className="errorField">{ error }</div>}
+            </form>
+          </section>
+
+
           <section className="updatePasswordCard">
             <h1>Update Password</h1>
             <form className="updatePassword" onSubmit={ updatePassword }>

@@ -4,6 +4,7 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import { LOGOUT_URL } from '../../config';
 import { useNavigate } from "react-router-dom";
 import USCLogo from '../../assets/navbar-usc-logo.svg';
+import profile from '../../assets/profile.jpg';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
@@ -51,7 +52,9 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
       <div className={`navbar ${navbarVisible ? '' : 'navBarCollapsed'}`}>
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
-        <p className="user">{ user ? user.email : '' }</p>
+        {/* Add image here for user profile picture */}
+        <img id="profile_picture" src={ profile } alt="Profile Picture"></img>
+        <p className="user">{ user ? user.first_name +' '+ user.last_name : '' }</p>
         <div className="buttons">
           <div className='buttonGroup'>
             <p>View Data</p>

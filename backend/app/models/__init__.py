@@ -1,4 +1,5 @@
 from app.models.user import User
+from app.models.profile import Profile
 from app.models.student_evaluations import Evaluations, EvaluationDetails, EvaluationQuestions
 from app.models.grants import Grants
 from app.models.publications import Publications

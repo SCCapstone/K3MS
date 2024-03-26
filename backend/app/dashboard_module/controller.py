@@ -1,5 +1,5 @@
 from app.extensions import db
-from app.models import User # import models
+from app.models import User, Profile # import models
 from http import HTTPStatus
 from flask_login import current_user
 
