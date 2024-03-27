@@ -27,10 +27,6 @@ const ResearchInfo = () => {
   const [otherUserPubs, setOtherUserPubs] = useState(null)
   const [otherUserExpen, setOtherUserExpen] = useState(null)
 
-  const [deleteEntryConfirm, setDeleteEntryConfirm] = useState('')              // Used to confirm grant deletion
-
-
-
   const usersDropdownRef = useRef(null)
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -181,19 +177,7 @@ const ResearchInfo = () => {
     if (!expens) {
       fetchExpen()
     }
-    if (deleteEntryConfirm === 'grantDeleted') {
-      setDeleteEntryConfirm('')
-      fetchGrants()
-    }
-    if (deleteEntryConfirm === 'pubDeleted') {
-      setDeleteEntryConfirm('')
-      fetchPubs()
-    }
-    if (deleteEntryConfirm === 'expenDeleted') {
-      setDeleteEntryConfirm('')
-      fetchExpen()
-    }
-  }, [grants, expens, pubs, researchInfoDispatch, deleteEntryConfirm])
+  }, [grants, expens, pubs, researchInfoDispatch])
 
   const choosePerson = (option) => {
     const chosenPersonTmp = usersToChoose.find(person => `${person.first_name} ${person.last_name}` === option)
@@ -217,9 +201,6 @@ const ResearchInfo = () => {
     const alertResponse = window.confirm("Are you sure you want to delete this entry's data? This cannot be undone.");
     if (alertResponse) {
 
-      // Debug
-      // console.log(e.title)
-      // console.log(e.email)
       const type = e.type
 
       const response = await fetch(DELETE_ENTRY_URL, {
@@ -230,7 +211,7 @@ const ResearchInfo = () => {
           email: e.email,
           type: e.type,
           title: e.title,
-          year: e.year,     
+          year: e.year,
         })
       })
       const json = await response.json()
@@ -245,23 +226,71 @@ const ResearchInfo = () => {
         console.log(json.error)
       }
       if (response.ok) {
-
         if (type === 'grant') {
           // Update grants state to remove the grant that was deleted
           setGrantsError(null)
-          setDeleteEntryConfirm('grantDeleted')
+          if (e.email === user.email){
+            const temp_grants = grants.filter((g) => g.title != e.title)
+            if (temp_grants.length === 0){
+              setPubsError('No grants found for this user.')
+              researchInfoDispatch({type: 'SET_GRANTS', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_GRANTS', payload: temp_grants})
+            }
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_grants = otherUserGrants.filter((g) => g.title != e.title)
+            if (temp_grants.length === 0){
+              setPubsError('No grants found for this user.')
+              setOtherUserGrants(null)
+            } else {
+              setOtherUserGrants(temp_grants)
+            }
+          }
 
         } else if (type === 'pub') {
           // Update pubs state to remove the publication that was deleted
           setPubsError(null)
-          setDeleteEntryConfirm('pubDeleted')
+          if (e.email === user.email){
+            const temp_pubs = pubs.filter((p) => p.title != p.title)
+            if (temp_pubs.length === 0){
+              setPubsError('No publications found for this user.')
+              researchInfoDispatch({type: 'SET_PUBS', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_PUBS', payload: temp_pubs})
+            }
+
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_pubs = otherUserPubs.filter((p) => p.title != e.title)
+            if (temp_pubs.length === 0){
+              setPubsError('No publications found for this user.')
+              setOtherUserPubs(null)
+            } else {
+              setOtherUserPubs(temp_pubs)
+            }
+          }
 
         } else if (type === 'expen') {
           // Update expen state to remove the expenditure that was deleted
           setExpenError(null)
-          setDeleteEntryConfirm('expenDeleted')
+          if (e.email === user.email){
+            const temp_expens = expens.filter((p) => p.pi_name != e.title)
+            if (temp_expens.length === 0){
+              setExpenError('No expenditures found for this user.')
+              researchInfoDispatch({type: 'SET_EXPEN', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_EXPEN', payload: temp_expens})
+            }
+
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_expens = otherUserExpen.filter((p) => p.pi_name != e.title)
+            if (temp_expens.length === 0){
+              setExpenError('No expenditures found for this user.')
+              setOtherUserExpen(null)
+            } else {
+              setOtherUserExpen(temp_expens)
+            }
+          }
         }
-        window.location.reload()
       }
     }
   }

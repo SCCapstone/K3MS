@@ -1,4 +1,4 @@
-from app.models import Evaluations, EvaluationDetails, Grants, Publications, Expenditures
+from app.models import User, Evaluations, EvaluationDetails, Grants, Publications, Expenditures
 from http import HTTPStatus
 from flask_login import current_user
 from app.extensions import db
@@ -101,18 +101,36 @@ def delete_entry_controller(req):
         if not json_data:
             return dict(error='Missing JSON data'), HTTPStatus.BAD_REQUEST
         
-        
         # Get type of entry
         type = json_data.get('type')
+        if type not in ['grant', 'pub', 'expen']:
+            return dict(error='Invalid type'), HTTPStatus.BAD_REQUEST
         
         # Get entry title from request
         entry_title = json_data.get('title')
+        if not entry_title:
+            return dict(error='Missing title'), HTTPStatus.BAD_REQUEST
 
         # Get entry email
         entry_email = json_data.get('email')
+        if not entry_email:
+            return dict(error='Missing email'), HTTPStatus.BAD_REQUEST
+
+        # Get entry position
+        entry_position = User.query.filter_by(email=entry_email).first().position
+
+        # entry_position = json_data.get('position')
+        # if not entry_position:
+        #     return dict(error='Missing position'), HTTPStatus.BAD_REQUEST
 
         # Get entry year
         entry_year = json_data.get('year')
+        if not entry_year:
+            return dict(error='Missing year'), HTTPStatus.BAD_REQUEST
+
+        if entry_email != current_user.email:
+            if current_user.position != 'chair' or entry_position == 'chair':
+                return dict(error='You do not have authority to delete this entry'), HTTPStatus.UNAUTHORIZED
 
         if type == 'grant':
             # Delete all grants for this user
