@@ -4,8 +4,10 @@ import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS, DELETE_ENTRY_UR
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
+import deleteIcon from '../../assets/delete-icon.svg'
 
 const ResearchInfo = () => {
   const navigate = useNavigate()
@@ -17,6 +19,7 @@ const ResearchInfo = () => {
   const { user } = useAuthContext()
   const { grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
   const { usersToChoose, courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { dashboardDispatch } = useDashboardContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
@@ -240,12 +243,15 @@ const ResearchInfo = () => {
           } else if (chosenPerson && e.email === chosenPerson.email){
             const temp_grants = otherUserGrants.filter((g) => g.title != e.title)
             if (temp_grants.length === 0){
-              setPubsError('No grants found for this user.')
+              setGrantsError('No grants found for this user.')
               setOtherUserGrants(null)
             } else {
               setOtherUserGrants(temp_grants)
             }
           }
+
+          // Clear grants state in dashboard context
+          dashboardDispatch({type: 'SET_GRANTS', payload: null})
 
         } else if (type === 'pub') {
           // Update pubs state to remove the publication that was deleted
@@ -269,11 +275,14 @@ const ResearchInfo = () => {
             }
           }
 
+          // Clear pubs state in dashboard context
+          dashboardDispatch({type: 'SET_PUBS', payload: null})
+
         } else if (type === 'expen') {
           // Update expen state to remove the expenditure that was deleted
           setExpenError(null)
           if (e.email === user.email){
-            const temp_expens = expens.filter((p) => p.pi_name != e.title)
+            const temp_expens = expens.filter((p) => p.year != e.title)
             if (temp_expens.length === 0){
               setExpenError('No expenditures found for this user.')
               researchInfoDispatch({type: 'SET_EXPEN', payload: null})
@@ -282,7 +291,7 @@ const ResearchInfo = () => {
             }
 
           } else if (chosenPerson && e.email === chosenPerson.email){
-            const temp_expens = otherUserExpen.filter((p) => p.pi_name != e.title)
+            const temp_expens = otherUserExpen.filter((p) => p.year != e.title)
             if (temp_expens.length === 0){
               setExpenError('No expenditures found for this user.')
               setOtherUserExpen(null)
@@ -290,6 +299,9 @@ const ResearchInfo = () => {
               setOtherUserExpen(temp_expens)
             }
           }
+
+          // Clear expen state in dashboard context
+          dashboardDispatch({type: 'SET_EXPEN', payload: null})
         }
       }
     }
@@ -350,6 +362,7 @@ const ResearchInfo = () => {
                       <th>Title</th>
                       <th>Amount</th>
                       <th>Grant Year</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -362,7 +375,9 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
                     }) : 
@@ -374,7 +389,9 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
                     })  
@@ -401,6 +418,7 @@ const ResearchInfo = () => {
                       <th>Authors</th>
                       <th>Publication Year</th>
                       <th>ISBN</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -414,7 +432,9 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )}) :
                     pubs?.filter((pub) => {
@@ -426,7 +446,9 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
                     })
@@ -453,6 +475,7 @@ const ResearchInfo = () => {
                       <th>Reporting Department</th>
                       <th>P.I.</th>
                       <th>Amount</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -466,7 +489,9 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: chosenPerson.email, year: ex.year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.year, email: chosenPerson.email, year: ex.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )}) :
                     expens?.filter((expen) => {
@@ -478,7 +503,9 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
-                          <button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.pi_name, email: user.email, year: ex.year})}></button>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.year, email: user.email, year: ex.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )})
                     }

@@ -116,33 +116,35 @@ def delete_entry_controller(req):
         if not entry_email:
             return dict(error='Missing email'), HTTPStatus.BAD_REQUEST
 
+        # Get user
+        user = User.query.filter_by(email=entry_email).first()
+        if not user:
+            return dict(error='User not found'), HTTPStatus.BAD_REQUEST
+        
         # Get entry position
-        entry_position = User.query.filter_by(email=entry_email).first().position
-
-        # entry_position = json_data.get('position')
-        # if not entry_position:
-        #     return dict(error='Missing position'), HTTPStatus.BAD_REQUEST
+        entry_position = user.position
 
         # Get entry year
         entry_year = json_data.get('year')
         if not entry_year:
             return dict(error='Missing year'), HTTPStatus.BAD_REQUEST
 
+        # Check if user has authority to delete this entry
         if entry_email != current_user.email:
             if current_user.position != 'chair' or entry_position == 'chair':
                 return dict(error='You do not have authority to delete this entry'), HTTPStatus.UNAUTHORIZED
 
         if type == 'grant':
             # Delete all grants for this user
-            Grants.query.filter_by(email=entry_email, title=entry_title, year=entry_year).delete()
+            Grants.query.filter_by(email=entry_email, title=entry_title).delete()
             db.session.commit()
         elif type == 'pub':
             # Delete all publications for this user
-            Publications.query.filter_by(email=entry_email, title=entry_title, publication_year=entry_year).delete()
+            Publications.query.filter_by(email=entry_email, title=entry_title).delete()
             db.session.commit()
         elif type == 'expen':
             # Delete all expenditures for this user
-            Expenditures.query.filter_by(email=entry_email, pi_name=entry_title, year=entry_year).delete()
+            Expenditures.query.filter_by(email=entry_email, year=entry_title).delete()
             db.session.commit()
 
         return dict(message=f'{type}: {entry_title} has been deleted'), HTTPStatus.OK
