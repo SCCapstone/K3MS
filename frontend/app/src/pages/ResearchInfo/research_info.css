@@ -121,3 +121,19 @@
     padding: 8px 6px;
   }
 }
+.researchInfoTable th:last-child, .researchInfoTable td:last-child {
+  width: 90px;
+  text-align: center;
+}
+
+/* Add css options for button with className="delete" */
+.delete {
+  background-color: var(--cardbg);
+  border: none;
+  cursor: pointer;
+}
+
+.deleteIcon {
+  height: 30px;
+  width: 30px;
+}
