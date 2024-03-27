@@ -26,7 +26,7 @@ const StudentEvaluations = () => {
 
   const [courseQuery, setCourseQuery] = useState('')
 
-  const fetchOtherUserEvals = async (email) => {
+  const fetchOtherUserEvals = async (email, setErrorFunc) => {
     const response = await fetch(`${STUDENT_EVALS_URL}/${email}`, {
       method: 'GET',
       credentials: 'include'
@@ -34,12 +34,12 @@ const StudentEvaluations = () => {
 
     const data = await response.json()
     if (response.ok) {
-      // setErrorFunc(null)
+      setErrorFunc(null)
       setOtherUserEvals(data)
     }
     else if (response.status === 404) {
       setOtherUserEvals(null)
-      // setErrorFunc(data?.error)
+      setErrorFunc(data?.error)
     }
   }
 
@@ -143,7 +143,7 @@ const StudentEvaluations = () => {
 
   return (
     <div className="studentEvalsBody">
-      <h1 className="pageHeader">My Student Evaluations</h1>
+      <h1 className="pageHeader">{user && user.position === 'chair' ? "Student Evaluations" : "My Student Evaluations"}</h1>
         <div className='studentEvalsCard studentEvalsOptions'>
           <div className='studentEvalsButtons'>
             { user && user.position === 'chair' &&
