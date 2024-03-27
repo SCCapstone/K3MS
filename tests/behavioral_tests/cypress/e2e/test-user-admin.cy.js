@@ -19,20 +19,20 @@ describe('Test User Administration Functionality', () => {
   })
 
   it("Can Create a User", () => {
-    cy.contains('section', 'Create a User').find('input').eq(0)
+    cy.contains('section', 'Create a User - Manual').find('input').eq(0)
       .type('Some')
-    cy.contains('section', 'Create a User').find('input').eq(1)
+    cy.contains('section', 'Create a User - Manual').find('input').eq(1)
       .type('Professor')
-    cy.contains('section', 'Create a User').find('input').eq(2)
+    cy.contains('section', 'Create a User - Manual').find('input').eq(2)
       .type(Cypress.env('TmpTestProfessorEmail'))
-    cy.contains('section', 'Create a User').find('select')
+    cy.contains('section', 'Create a User - Manual').find('select')
       .select('professor')
-    cy.contains('section', 'Create a User').find('input').eq(3)
+    cy.contains('section', 'Create a User - Manual').find('input').eq(3)
       .type(Cypress.env('TmpTestProfessorPassword'))
-    cy.contains('section', 'Create a User').find('input').eq(4)
+    cy.contains('section', 'Create a User - Manual').find('input').eq(4)
       .type(Cypress.env('TmpTestProfessorPassword'))
 
-    cy.contains('button', 'Create').click()
+    cy.contains('section', 'Create a User - Manual').contains('button', 'Create').click()
 
     // Check that on dashboard page
     cy.url().should('include', '/dashboard')

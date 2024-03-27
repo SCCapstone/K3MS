@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../hooks/useAuthContext';
-import { USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL } from '../../config'
+import { MANUAL_USER_CREATION_URL, USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL } from '../../config'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 
 import './useradmin.css'
@@ -17,10 +17,19 @@ const UserAdmin = () => {
   const [lastNameCreate, setlastNameCreate] = useState('')
   const [emailCreate, setEmailCreate] = useState('')
   const [positionCreate, setPositionCreate] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [emptyFields, setEmptyFields] = useState([])
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  // Manual Create
+  const [firstNameManual, setfirstNameManual] = useState('')
+  const [lastNameManual, setlastNameManual] = useState('')
+  const [emailManual, setEmailManual] = useState('')
+  const [positionManual, setPositionManual] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [manualError, setManualError] = useState('')
+  const [manualEmptyFields, setManualEmptyFields] = useState([])
 
   // Update
   const [emailUpdate, setEmailUpdate] = useState('')
@@ -56,11 +65,9 @@ const UserAdmin = () => {
 
   const createUser = async (e) => {
     e.preventDefault()
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
+    setError(null)
+    setEmptyFields([])
+    setIsProcessing(true)
 
     const response = await fetch(USER_CREATION_URL, {
       method: 'POST',
@@ -71,29 +78,72 @@ const UserAdmin = () => {
         last_name: lastNameCreate,
         email: emailCreate,
         position: positionCreate,
-        password: password
       })
     })
     
     const json = await response.json()
     if (!response.ok) {
+      setIsProcessing(false)
       setError(json.error)
       if (json.empty_fields)
         setEmptyFields(json.empty_fields)
     }
 
     if (response.ok) {
+      setIsProcessing(false)
       setError(null)
       setEmptyFields([])
       setfirstNameCreate('')
       setlastNameCreate('')
       setEmailCreate('')
       setPositionCreate('')
+
+      navigate('/dashboard', { state: { mssg: 'User Creation Process Started - Awaiting their response', status: 'ok' }})
+    }
+  }
+
+  const createUserManual = async (e) => {
+    e.preventDefault()
+    setManualError(null)
+    setManualEmptyFields([])
+
+    if (password !== confirmPassword) {
+      setManualError('Passwords do not match')
+      return
+    }
+
+    const response = await fetch(MANUAL_USER_CREATION_URL, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        first_name: firstNameManual,
+        last_name: lastNameManual,
+        email: emailManual,
+        position: positionManual,
+        password: password
+      })
+    })
+
+    const json = await response.json()
+    if (!response.ok) {
+      setManualError(json.error)
+      if (json.empty_fields)
+        setManualEmptyFields(json.empty_fields)
+    }
+    if (response.ok) {
+      setManualError(null)
+      setManualEmptyFields([])
+      setfirstNameManual('')
+      setlastNameManual('')
+      setEmailManual('')
+      setPositionManual('')
       setPassword('')
       setConfirmPassword('')
 
       // Clear users to choose and data that may contain info from them
       courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
+
       navigate('/dashboard', { state: { mssg: 'User Created', status: 'ok' }})
     }
   }
@@ -114,6 +164,7 @@ const UserAdmin = () => {
 
       const json = await response.json()
       if (!response.ok) {
+        console.log(json)
         setDeleteError(json.error)
         if (json.empty_fields)
           setDeleteEmptyFields(json.empty_fields)
@@ -172,6 +223,7 @@ const UserAdmin = () => {
       <h1 className="userCreationPageHeader">User Administration</h1>
       <section className="userCreationCard">
         <h1>Create a User</h1>
+        <p>User will receive an email to set their password</p>
         <form className="userCreationForm" onSubmit={ (e) => {createUser(e)} }>
             <input 
               type="text" 
@@ -203,22 +255,61 @@ const UserAdmin = () => {
               <option value="professor">Professor</option>
               <option value="instructor">Instructor</option>
             </select>
+            <button>Create</button>
+            {error && <div className="errorField">{ error }</div>}
+            {isProcessing && <div>Processing...</div>}
+        </form>
+      </section>
+      <section className="userCreationCard">
+        <h1>Create a User - Manual</h1>
+        <p>Create user and manually set a password</p>
+        <form className="userCreationForm" onSubmit={ (e) => {createUserManual(e)} }>
+            <input 
+              type="text" 
+              onChange={(e) => setfirstNameManual(e.target.value)} 
+              value={ firstNameManual } 
+              placeholder="First Name"
+              className={ manualEmptyFields.includes('first_name') ? 'errorField' : '' }
+            />
+            <input 
+              type="text" 
+              onChange={(e) => setlastNameManual(e.target.value)} 
+              value={ lastNameManual } 
+              placeholder="Last Name"
+              className={ manualEmptyFields.includes('last_name') ? 'errorField' : '' }
+            />
+            <input 
+              type="email" 
+              onChange={(e) => setEmailManual(e.target.value)} 
+              value={ emailManual } 
+              placeholder="Email"
+              className={ manualEmptyFields.includes('email') ? 'errorField' : '' }
+            />
+            <select
+              type="text" 
+              onChange={(e) => setPositionManual(e.target.value)} 
+              className={ manualEmptyFields.includes('position') ? 'errorField' : '' }>
+              <option value="">Position</option>
+              <option value="chair">Chair</option>
+              <option value="professor">Professor</option>
+              <option value="instructor">Instructor</option>
+            </select>
             <input 
               type="password" 
               onChange={(e) => setPassword(e.target.value)} 
               value={ password } 
               placeholder="Password"
-              className={ emptyFields.includes('password') ? 'errorField' : '' }
+              className={ manualEmptyFields.includes('password') ? 'errorField' : '' }
             />
             <input 
               type="password" 
               onChange={(e) => setConfirmPassword(e.target.value)} 
               value={ confirmPassword } 
               placeholder="Confirm Password"
-              className={ emptyFields.includes('password') ? 'errorField' : '' }
+              className={ manualEmptyFields.includes('password') ? 'errorField' : '' }
             />
             <button>Create</button>
-            {error && <div className="errorField">{ error }</div>}
+            {manualError && <div className="errorField">{ manualError }</div>}
         </form>
       </section>
       <section className="userCreationCard">

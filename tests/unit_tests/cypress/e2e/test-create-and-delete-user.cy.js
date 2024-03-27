@@ -16,7 +16,7 @@ describe('Create and Delete Users Test', () => {
 
     // Create a user
     cy.request({
-      url: Cypress.env('baseUrl') + '/signup',
+      url: Cypress.env('baseUrl') + '/manual_signup',
       followRedirect: false,
       failOnStatusCode: false,
       method: 'POST',
@@ -49,7 +49,7 @@ describe('Create and Delete Users Test', () => {
 
     // Create a user
     cy.request({
-      url: Cypress.env('baseUrl') + '/signup',
+      url: Cypress.env('baseUrl') + '/manual_signup',
       followRedirect: false,
       failOnStatusCode: false,
       method: 'POST',
