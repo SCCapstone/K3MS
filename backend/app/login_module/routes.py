@@ -8,14 +8,19 @@ from app.login_module.controller import (
     delete_user_controller,
     update_user_controller,
     create_user_controller,
-    set_password_controller
+    set_password_controller,
+    manual_create_user_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
 @login_required
 def signup():
-    # return signup_controller(request)
     return create_user_controller(request)
+
+@blueprint.route('/manual_signup', methods=['POST'])
+@login_required
+def manual_signup():
+    return manual_create_user_controller(request)
 
 @blueprint.route('/login', methods=['POST'])
 def login():

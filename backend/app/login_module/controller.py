@@ -16,6 +16,8 @@ create_user_fields = [
     'position',
 ]
 
+manual_create_user_fields = create_user_fields + ['password']
+
 login_fields = [    
     'email',
     'password'
@@ -205,8 +207,7 @@ def create_user_controller(req):
             msg['Subject'] = 'USC Dashboard Account Created - Set Password'
             msg['From'] = current_app.config['EMAIL']
             msg['To'] = email
-
-            s = smtplib.SMTP('smtp-mail.outlook.com')
+            s = smtplib.SMTP('smtp-mail.outlook.com', 587)
             s.starttls()
             s.login(current_app.config['EMAIL'], current_app.config['EMAIL_PASSWORD'])
             s.send_message(msg)
@@ -237,6 +238,10 @@ def set_password_controller(req):
         email = json_data.get('email')
         password = json_data.get('password')
         hash = json_data.get('hash')
+
+        # check that user with email doesn't already exist
+        if User.query.filter_by(email=email).first():
+            return dict(error='User already exists'), HTTPStatus.BAD_REQUEST
 
         # Make sure user is in the tmp table
         user = UserTmp.query.filter_by(email=email).first()
@@ -270,6 +275,68 @@ def set_password_controller(req):
     except:
         return dict(error='Error verifying hash'), HTTPStatus.INTERNAL_SERVER_ERROR
 
+def manual_create_user_controller(req):
+    try:
+        # if user is not a chair, they cant create new users
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to create new users'), HTTPStatus.UNAUTHORIZED
+
+        # Validate request
+        ret = validate_request(req, manual_create_user_fields)
+        
+        if isinstance(ret, tuple):
+            return ret
+
+        json_data = ret
+
+        # Get fields
+        email = json_data.get(manual_create_user_fields[0])
+        first_name = json_data.get(manual_create_user_fields[1])
+        last_name = json_data.get(manual_create_user_fields[2])
+        position = json_data.get(manual_create_user_fields[3])
+        password = json_data.get(manual_create_user_fields[4])
+
+        if position not in ['chair', 'professor', 'instructor']:
+            return dict(error='Invalid position'), HTTPStatus.BAD_REQUEST
+        
+        if not re.match(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
+            return dict(error='Invalid email'), HTTPStatus.BAD_REQUEST
+        
+        if len(first_name.split()) > 1 or len(last_name.split()) > 1:
+            return dict(error='First and last name must be one word'), HTTPStatus.BAD_REQUEST
+        
+        # Make sure user with email doesn't already exist
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return dict(error='User already exists'), HTTPStatus.BAD_REQUEST
+        
+        # Make sure user with same first and last name doesn't already exist
+        user = User.query.filter_by(first_name=first_name, last_name=last_name).first()
+        if user:
+            return dict(error='User with same first and last name already exists'), HTTPStatus.BAD_REQUEST
+        
+        # Check password
+        if (bad_password := is_bad_password(password)):
+            return bad_password, HTTPStatus.BAD_REQUEST
+        
+        # Create new user
+        new_user = User(
+            email=email, 
+            first_name=first_name, 
+            last_name=last_name,
+            position=position,
+            password_hash=generate_password_hash(password, method='scrypt')
+        )
+
+        # Add user to database
+        db.session.add(new_user)
+        db.session.commit()
+
+        return [new_user], HTTPStatus.CREATED
+    
+    except Exception as e:
+        print(e)
+        return dict(error='Error creating user'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, fields):
     # Make sure request is JSON
