@@ -19,10 +19,13 @@ def pub_upload_controller(req):
     json_data = ret
 
     # Get Publication Fields
-    title = json_data.get(form_fields[0])
-    authors = json_data.get(form_fields[1])
-    publication_year = json_data.get(form_fields[2])
-    isbn = json_data.get(form_fields[3])
+    title = str(json_data.get(form_fields[0]))
+    authors = str(json_data.get(form_fields[1]))
+    publication_year = str(json_data.get(form_fields[2]))
+    isbn = str(json_data.get(form_fields[3]))
+
+    if publication_year.isnumeric() == False:
+        return dict(error='Publication Year must be an integer'), HTTPStatus.BAD_REQUEST
 
     # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
     publication = Publications.query.filter_by(email=current_user.email, title=title).first()

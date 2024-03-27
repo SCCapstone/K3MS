@@ -3,9 +3,12 @@
   --bg: #D3D3D3;
   --hover: #570008;
   --cardbg: #C7C7C7;
+  --cardbghover: #A2A2A2;
   --error: #e7195a;
   --nav-width: 300px;
   --navbg:  #A2A2A2;
+  --accent: #844247;
+  --bright-hover: #b00000;
 }
 
 /* Clear any browser inserted css */
@@ -13,6 +16,23 @@
   padding: 0;
   margin: 0;
 } */
+
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 body {
   margin: 0;

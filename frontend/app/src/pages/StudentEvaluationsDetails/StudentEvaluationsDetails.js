@@ -8,11 +8,15 @@ import './student_evaluations_details.css'
 
 const StudentEvaluationsDetails = () => {
   const navigate = useNavigate()
-  const location = useLocation();
+
+  const query = new URLSearchParams(useLocation().search)
+  const queryEmail = query.get('email')
+  const courseQueryParam = query.get('course');
+  const course_name = JSON.parse(decodeURIComponent(courseQueryParam));
 
   const { user } = useAuthContext()
   const { courseDetails, studentEvalsDispatch } = useStudentEvalsContext()
-  const [ name, setName ] = useState('');
+  const [ name, setName ] = useState(course_name);
 
   // TEST for Dropdown
   const [selectedSemester, setSelectedSemester] = useState('');
@@ -33,14 +37,12 @@ const StudentEvaluationsDetails = () => {
   
   // Fetch student evals details
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const courseQueryParam = queryParams.get('course');
-
-    const course_name = JSON.parse(decodeURIComponent(courseQueryParam));
-    setName(course_name);
-
     const fetchStudentEvalsDetails = async () => {
-      const response = await fetch(`${STUDENT_EVALS_DETAILS_URL}/${course_name}`, {
+      let url = `${STUDENT_EVALS_DETAILS_URL}/${course_name}`
+      if (queryEmail && queryEmail !== user.email) {
+        url = `${STUDENT_EVALS_DETAILS_URL}/${course_name}/${queryEmail}`
+      }
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include'
       })
@@ -49,11 +51,12 @@ const StudentEvaluationsDetails = () => {
         const data = await response.json()
         studentEvalsDispatch({type: 'SET_COURSE_DETAILS', payload: data})
         // Extract available semester and year options for each course
-        const years = new Set();
+        let years = new Set();
 
         data.forEach(course => {
           years.add(course.year);
         });
+        years = [...years].sort((a, b) => parseInt(b) - parseInt(a))
         setYearOptions([...years]);
         setSelectedYear([...years][0])
       }
@@ -61,16 +64,22 @@ const StudentEvaluationsDetails = () => {
         console.log('error')
       }
     }
-    if (!courseDetails || courseDetails[0].course !== course_name) {
+    if (
+      !courseDetails || 
+      courseDetails[0].course !== course_name || 
+      (queryEmail && courseDetails[0].email !== queryEmail) ||
+      (!queryEmail && courseDetails[0].email !== user.email)
+    ) {
       fetchStudentEvalsDetails()
     } 
     else {
       // If context is already set but options are empty, fill them in
       if (yearOptions.length === 0) {
-      const years = new Set();
+      let years = new Set();
         courseDetails.forEach(course => {
           years.add(course.year);
         });
+        years = [...years].sort((a, b) => parseInt(b) - parseInt(a))
         setYearOptions([...years]);
         setSelectedYear([...years][0])
       }
@@ -138,32 +147,30 @@ const StudentEvaluationsDetails = () => {
   const handleSectionChange = (event) => {
     setSelectedSection(event.target.value);
   };
-
   return (
     <div className="studentEvalsDetailsBody">
-      <h1 className="pageHeader">{name} Evaluation Details</h1>
+      <h2 className="pageHeader">{name} Evaluation Details</h2>
       <div className="studentEvalsCard">
-        <h1>Filters</h1>
-        <div className='dropdowns'>
-          <div className='dropdownBox'>
+        <div className='studentEvalsDetailsDropdowns'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Year</h3>
-            <select className='dropdown' value={selectedYear} onChange={handleYearChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedYear} onChange={handleYearChange}>
               {yearOptions.map((year) => (
                 <option key={ year } value={ year }>{ year }</option>
               ))}
             </select>
           </div>
-          <div className='dropdownBox'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Semester</h3>
-            <select className='dropdown' value={selectedSemester} onChange={handleSemesterChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedSemester} onChange={handleSemesterChange}>
               {semesterOptions.map((semester) => (
                 <option key={ semester } value={ semester }>{ semester }</option>
               ))}
             </select>
           </div>
-          <div className='dropdownBox'>
+          <div className='studentEvalsDetailsDropdownBox'>
             <h3>Section</h3>
-            <select className='dropdown' value={selectedSection} onChange={handleSectionChange}>
+            <select className='studentEvalsDetailsDropdown' value={selectedSection} onChange={handleSectionChange}>
               {sectionOptions.map((section) => (
                 <option key={ section } value={ section }>{ section }</option>
               ))}
@@ -171,28 +178,54 @@ const StudentEvaluationsDetails = () => {
           </div>
         </div>
       </div>
-      <div className="course_details">
+      <div>
         {selectedCourse &&
-          <div className="studentEvalsDetailsCard">
+          <div className="course_details">
             <h1>{selectedCourse.semester} {selectedCourse.year} {selectedCourse.section}</h1>
-            <div className="studentEvalsDetailsCardContent">
-              <p>Instructor_type       :     {selectedCourse.instructor_type                  }</p>
-              <p>Participants_count    :     {selectedCourse.participants_count               }</p>
-              <p>Number_of_returns     :     {selectedCourse.number_of_returns                }</p>
-              <p>Course_rating_mean    :     {selectedCourse.course_rating_mean               }</p>
-              <p>Instructor_rating_mean:     {selectedCourse.instructor_rating_mean           }</p>
+              <table className="introTable">
+                <thead>
+                  <tr>
+                    <th>Instructor Type</th>
+                    <th>Participants Count</th>
+                    <th>Number of Returns</th>
+                    <th>Course Rating Mean</th>
+                    <th>Instructor Rating Mean</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{selectedCourse.instructor_type}</td>
+                    <td>{selectedCourse.participants_count}</td>
+                    <td>{selectedCourse.number_of_returns}</td>
+                    <td>{selectedCourse.course_rating_mean}</td>
+                    <td>{selectedCourse.instructor_rating_mean}</td>
+                  </tr>
+                </tbody>
+              </table>
+              
               <div className='questions'>
-                {selectedCourse.details.map((detail, j) => (
-                  <div key={j}>
-                    <div className="SPACER">_</div>
-                    <p>{detail.question_id}. {detail.question}</p>
-                    <p>Mean: {detail.mean}</p>
-                    <p>STD: {detail.std}</p>
-                    <p>Median: {detail.median}</p>
-                    <p>Returns: {detail.returns}</p>
-                  </div>
-                ))}
-              </div>
+                <table className="evaluationsTable">
+                  <thead>
+                    <tr>
+                      <th>Evaluation Question</th>
+                      <th>Mean</th>
+                      <th>STD</th>
+                      <th>Median</th>
+                      <th>Returns</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedCourse.details.map((detail, j) => (
+                      <tr key={j}>
+                        <td className="evalQuestion">{detail.question_id}. {detail.question}</td>
+                        <td>{detail.mean}</td>
+                        <td>{detail.std}</td>
+                        <td>{detail.median}</td>
+                        <td>{detail.returns}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
             </div>
           </div>
           }

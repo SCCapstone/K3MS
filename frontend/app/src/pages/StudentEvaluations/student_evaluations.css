@@ -2,11 +2,13 @@
 /* display currentCourses in a 2 column grid */
 .courses {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-gap: 0px;
   padding: 20px;
 }
-
+.studentEvalError {
+  color: var(--error);
+  text-align: center;
+}
 .studentEvalsCard {
   margin: 50px auto;
   padding: 5px;
@@ -44,4 +46,42 @@
   border-radius: 5%;
   margin: 10px 0;
 }
+.studentEvalsOptions {
+  width: 60%;
+}
+.studentEvalsButtons {
+  display: flex;
+  padding: 5px;
+  justify-content: space-around;
+  align-items: end;
+}
 
+.studentEvalsOptions .studentEvalsDropdownBox {
+  flex: 1 1 0px;
+  padding: 10px;
+}
+.studentEvalsOptions .studentEvalsDropdownBox h3 {
+  margin: 5px;
+}
+
+.studentEvalsOptions .studentEvalsDropdown {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  padding: 7px;
+  border: thin solid var(--cardtext);
+  background: transparent;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+  color: var(--cardtext);
+}
+
+/* Display One Column On Small Screen Sizes */ 
+@media (max-width: 1300px) {
+  .courses { grid-template-columns: 1fr; }
+}
+
+/* Display Two Columns On Large Screen Sizes */
+@media (min-width: 1300px) {
+  .courses { grid-template-columns: 1fr 1fr; }
+}

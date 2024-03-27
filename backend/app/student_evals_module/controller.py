@@ -1,7 +1,9 @@
 from app.models.student_evaluations import (
     Evaluations as Eval, 
     EvaluationDetails as EvalDetails, 
-    EvaluationQuestions as EvalQuestions
+    EvaluationQuestions as EvalQuestions,
+    EvaluationDetailsTmp,
+    EvaluationsTmp
 )
 from app.models.student_evaluations import EvaluationDetails
 from app.models.user import User
@@ -12,6 +14,7 @@ from app.extensions import db
 from flask import jsonify, current_app
 from werkzeug.utils import secure_filename
 import pandas as pd
+import numpy as np
 from io import BytesIO
 from collections import defaultdict
 
@@ -39,8 +42,18 @@ def eval_upload_controller(request):
 
         # Parse the file
         fbytes = BytesIO(file.stream.read())
-        evals, eval_details, skipped_rows = parse_and_upload_excel(fbytes)
+        evals, eval_details, skipped_rows, existing_rows = parse_and_upload_excel(fbytes)
 
+        # Clear old rows from tmp tables
+        db.session.query(EvaluationsTmp).delete()
+        db.session.query(EvaluationDetailsTmp).delete()
+
+        # Add existing rows to the temporary tables in database
+        if skipped_rows:
+            db.session.add_all(existing_rows[0]) # evals
+            db.session.add_all(existing_rows[1]) # eval_details
+
+        # Add the evals to the database
         db.session.add_all(evals)
         db.session.add_all(eval_details)
         db.session.commit()
@@ -51,12 +64,96 @@ def eval_upload_controller(request):
 
     except Exception as e:
         print(e)
+        if e == 'Error reading excel file':
+            return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
         return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
-def get_student_evals_controller(limit=False):
+def overwrite_evals_rows_controller(request):
+    try:
+        # Make sure current user is a chair
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to modify student evaluations'), HTTPStatus.UNAUTHORIZED
+        
+        # Get rows to overwrite from request
+        content_type = request.headers.get('Content-Type')
+        if content_type != 'application/json':
+            return dict(error='Content-Type not supported'), HTTPStatus.BAD_REQUEST
+        
+        rows = request.get_json().get('rows')
+        if rows is None:
+            return dict(error='rows field missing'), HTTPStatus.BAD_REQUEST
+        
+        # If no rows provided, return no change
+        if not rows:
+            # Clear rows from tmp tables
+            db.session.query(EvaluationsTmp).delete()
+            db.session.query(EvaluationDetailsTmp).delete()
+            return dict(mssg='No rows overwritten'), HTTPStatus.OK
+
+        # Get the rows from the temporary database
+        for row in rows:
+            print(row)
+            eval = EvaluationsTmp.query.filter_by(
+                email=row['email'],
+                year=row['year'],
+                semester=row['semester'],
+                course=row['course'],
+                section=row['section']
+            ).first()
+
+            eval_details = EvaluationDetailsTmp.query.filter_by(
+                email=row['email'],
+                year=row['year'],
+                semester=row['semester'],
+                course=row['course'],
+                section=row['section']
+            ).all()
+            print(eval, eval_details)
+
+            # Entries were found in tmp tables, update the main tables
+            if eval and eval_details:
+                # Update the main tables
+                Eval.query.filter_by(
+                    email=row['email'],
+                    year=row['year'],
+                    semester=row['semester'],
+                    course=row['course'],
+                    section=row['section']
+                ).update(eval.get_attr())
+
+                EvalDetails.query.filter_by(
+                    email=row['email'],
+                    year=row['year'],
+                    semester=row['semester'],
+                    course=row['course'],
+                    section=row['section']
+                ).delete()
+
+                db.session.add_all([EvaluationDetails(**d.get_attr()) for d in eval_details])
+            else:
+                return dict(error='Error Overwriting Evaluations. Please reupload file and try again'), HTTPStatus.BAD_REQUEST
+        
+        db.session.commit()
+        return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
+    except Exception as e:
+        print(e)
+        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+def get_student_evals_controller(user_email=None, limit=False):
+    # Get Current User's Email
     email = current_user.email
 
-    # SELECT email, course, AVG(course_rating_mean) AS ave_course_rating_mean, AVG(instructor_rating_mean) AS avg_instructor_rating_mean FROM evaluations WHERE email = 'email' GROUP BY email, year;
+    # If user_email is provided, use it to query the database
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+
     courses = db.session.query(
         Eval.email, 
         Eval.course, 
@@ -80,8 +177,16 @@ def get_student_evals_controller(limit=False):
     } for course in courses], HTTPStatus.OK
 
 
-def get_student_evals_details_controller(course_name):
+def get_student_evals_details_controller(course_name, user_email=None):
     email = current_user.email
+    if user_email:
+        if current_user.position != 'chair':
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
+        email = user_email
+
+        # make sure provided user is not a chair
+        if User.query.filter_by(email=email, position='chair').first():
+            return dict(error='You do not have authority to access this information'), HTTPStatus.UNAUTHORIZED
     
     course_evals = db.session.query(
         Eval.email, 
@@ -193,6 +298,7 @@ def get_student_evals_details_controller(course_name):
         return {'error': 'No courses found for this user.'}, HTTPStatus.NOT_FOUND
     
     return [{
+        'email'                 : course.get('email'                , 'N/A'),
         'course'                : course.get('course'                , 'N/A'),
         'year'                  : course.get('year'                  , 'N/A'),
         'semester'              : course.get('semester'              , 'N/A'),
@@ -215,12 +321,18 @@ def get_student_evals_details_controller(course_name):
 
 
 def parse_and_upload_excel(fbytes):
-    df = pd.read_excel(fbytes)
+    try:
+        df = pd.read_excel(fbytes)
+    except Exception:
+        raise Exception('Error reading excel file')
+        
     df.columns = [c.lower() for c in df.columns]
 
     evals = []
     details_rows = []
     skipped_entries = []
+    existing_entries = ([],[])
+    seen_sections = set()
 
     questions = current_app.config['QUESTIONS']
 
@@ -229,20 +341,28 @@ def parse_and_upload_excel(fbytes):
         row = df.iloc[i].to_dict()
 
         # Get first few fields
+        keyerror = False
         try:
-            first_name = row['first name']
-            last_name = row['last name']
-            semester = row['period'].split(' ')[0]
-            year = row['period'].split(' ')[-1]
-            course = row['course'].split('-')[0]
-            section = row['course'].split('-')[1]
-            instructor_type = row['form of address']
-            participants_count = row['participants']
-            number_of_returns = row['no. of returns']
-            course_rating_mean = row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"]
-            instructor_rating_mean = row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"]
+            first_name = str(row['first name'])
+            last_name = str(row['last name'])
+            period = str(row['period'])
+            course_info = str(row['course'])
+            instructor_type = str(row['form of address'])
+            participants_count = str(row['participants'])
+            number_of_returns = str(row['no. of returns'])
+            course_rating_mean = str(row[f"{questions[current_app.config['COURSE_MEAN_KEY']]}(mean)"])
+            instructor_rating_mean = str(row[f"{questions[current_app.config['INSTRUCTOR_MEAN_KEY']]}(mean)"])
         except KeyError:
+            keyerror = True
+
+        # If fields were missing or incorrect, skip this entry
+        if (keyerror or 
+            not first_name or not last_name or 
+            len(period.split(' ')) != 2 or
+            len(course_info.split('-')) != 4
+        ):
             skipped_entries.append(dict(
+                row_index=i+1,
                 email=None, 
                 first_name=None, 
                 last_name=None, 
@@ -253,9 +373,14 @@ def parse_and_upload_excel(fbytes):
                 reason='Fields are missing'
             ))
             continue
-        
-        # Save row info for skipped entries
+
+        semester, year = period.split(' ')
+        course, section,_,_ = course_info.split('-')
+        semester = semester.title()
+
+        # Temporarily Save row info
         row_info = dict(
+            row_index=i+1,
             email=None,
             first_name=first_name,
             last_name=last_name,
@@ -272,7 +397,28 @@ def parse_and_upload_excel(fbytes):
             continue
 
         email = row_user.email
-        row_info['email'] = email    
+        row_info['email'] = email
+
+        # Check that fields are the correct values
+        try:
+            participants_count = int(float(participants_count))
+            number_of_returns = int(float(number_of_returns))
+            course_rating_mean = float(course_rating_mean)
+            instructor_rating_mean = float(instructor_rating_mean)
+            if not section.isnumeric():
+                raise ValueError
+        except ValueError:
+            skipped_entries.append(dict(**row_info, reason='Row meta data missing or incorrect type'))
+            continue
+        
+        # Check that semester is correct
+        if semester not in ['Fall', 'Spring', 'Summer']:
+            skipped_entries.append(dict(**row_info, reason='Semester is not one of Fall, Spring, or Summer'))
+            continue
+
+        if f"{email}{year}{semester}{course}{section}" in seen_sections:
+            skipped_entries.append(dict(**row_info, reason='This row is a duplicate (based on name, year, semester, course, and section)'))
+            continue
 
         # Check if entry exists in database already
         row_exists = Eval.query.filter_by(
@@ -282,19 +428,56 @@ def parse_and_upload_excel(fbytes):
             course=course,
             section=section
         ).first()
-        details_row_exists = EvaluationDetails.query.filter_by(
-            email=email,
-            year=year,
-            semester=semester,
-            course=course,
-            section=section
-        ).first()
-        if row_exists or details_row_exists:
-            skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
+
+        # Get Evaluation details from the row
+        skipped = False
+        for j,q in questions.items():
+            # Get the mean, std, median, and returns for each question
+            # If fields are missing or incorrect, skip this entry
+            try:
+                mean = float(row[f'{q}(mean)'])
+                std = float(row[f'{q}(standard deviation)'])
+                median = float(row[f'{q}(median)'])
+                returns = float(row[f'{q}(returns per question)'])
+            except KeyError:
+                # Value is missing
+                skipped = True
+                break
+            except ValueError:
+                # Value is not a number
+                skipped = True
+                break
+            if np.isnan(mean) or np.isnan(std) or np.isnan(median) or np.isnan(returns):
+                skipped = True
+                break
+                
+            eval_details = EvaluationDetails(
+                email=email,
+                year=year,
+                semester=semester,
+                course=course,
+                section=section,
+                question_id=j,
+                mean=mean,
+                std=std,
+                median=median,
+                returns=returns                
+            )
+            # If row already exists, add to tmp table. If not, add to list of details
+            if row_exists:
+                existing_entries[1].append(EvaluationDetailsTmp(**eval_details.get_attr()))
+            else:
+                details_rows.append(eval_details)
+
+        if skipped:
+            skipped_entries.append(dict(**row_info, reason='Value fields are missing or incorrect types'))
             continue
 
-        # Evaluation
-        evals.append(Eval(
+        # Add this section to list of seen sections
+        seen_sections.add(f"{email}{year}{semester}{course}{section}")
+
+        # Create Evaluation Table Row
+        eval = Eval(
             email=email,
             year=year,
             semester=semester,
@@ -305,37 +488,15 @@ def parse_and_upload_excel(fbytes):
             number_of_returns=number_of_returns,
             course_rating_mean=course_rating_mean,
             instructor_rating_mean=instructor_rating_mean
-        ))
+        )
 
-        # Get Evaluation details
-
-        skipped = False
-        for i,q in questions.items():
-            try:
-                mean = row[f'{q}(mean)']
-                std = row[f'{q}(standard deviation)']
-                median = row[f'{q}(median)']
-                returns = row[f'{q}(returns per question)']
-            except KeyError:
-                skipped = True
-                break
-                
-            eval_details = EvaluationDetails(
-                email=email,
-                year=year,
-                semester=semester,
-                course=course,
-                section=section,
-                question_id=i,
-                mean=mean,
-                std=std,
-                median=median,
-                returns=returns                
-            )
-            details_rows.append(eval_details)
-
-        if skipped:
-            skipped_entries.append(dict(**row_info, reason='Fields are missing'))
+        if row_exists:
+            skipped_entries.append(dict(**row_info, reason='This entry already exists in the database'))
+            # Add the eval to the list of existing evals
+            existing_entries[0].append(EvaluationsTmp(**eval.get_attr()))
             continue
+
+        # Add the eval to the list of evals
+        evals.append(eval)
     
-    return evals, details_rows, skipped_entries
+    return evals, details_rows, skipped_entries, existing_entries

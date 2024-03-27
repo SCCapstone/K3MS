@@ -1,9 +1,11 @@
 
-/* display currentCourses in a 2 column grid */
-
 .course_details {
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center; /* Move the dropdown to the right */
+  gap: 40px;
+  margin-top: 100px;
 }
 
 .studentEvalsDetailsCard {
@@ -16,18 +18,11 @@
   width: 80%;
 }
 
-.studentEvalsDetailsCard h1 {
-  color: black;
+.course_details h1 {
+  color: var(--cardtext);
   text-align: center;
   padding: 10px 40px;
-  font-size: 2.5em;
-  text-transform: capitalize;
-}
-
-/* Below is the spacer betweeen the questions, adjust for positioning */
-.SPACER {
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 2em;
 }
 
 .questions {
@@ -36,8 +31,7 @@
 
 .studentEvalsDetailsCardContent {
   padding: 20px 50px;
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 20px;
 }
 
 .studentEvalsDetailsCardContent p {
@@ -58,17 +52,17 @@
   border-radius: 5%;
   margin: 10px 0;
 }
-.dropdowns {
+.studentEvalsDetailsDropdowns {
   display: flex;
   padding: 20px;
   justify-content: space-around;
   align-items: end;
 }
-.dropdownBox {
+.studentEvalsDetailsDropdownBox {
   flex: 1 1 0px;
   padding: 10px;
 }
-.dropdown {
+.studentEvalsDetailsDropdown {
   width: 100%;
   box-sizing: border-box;
   outline: none;
@@ -79,4 +73,118 @@
   font: 16px Arial, Helvetica, sans-serif;
   height: 45px;
   color: var(--cardtext);
+}
+
+.introTable, .evaluationsTable {
+  border-collapse: collapse;
+  width: 80%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  margin: auto;
+}
+
+  .introTable td, .introTable th,
+  .evaluationsTable td, .evaluationsTable th {
+    text-align: center;
+    padding: 8px;
+  }
+
+  .evaluationsTable th:first-child,
+  .evaluationsTable td:first-child {
+    /* Set a fixed width for the first column */
+    width: 448px; /* Adjust the width to your preference */
+  }
+
+  .evaluationsTable thead tr , .introTable thead tr {
+    background-color: var(--cardtext);
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .evaluationsTable tbody tr, .introTable tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .evaluationsTable tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+
+.evalQuestion {
+  text-align: left !important;
+}
+
+/* First Font Size Decrease */
+@media only screen and (max-width: 1100px) {
+  .introTable, .evaluationsTable {
+    font-size: 19px;
+  }
+}
+
+/* Second Font Size Decrease */
+@media only screen and (max-width: 1100px) {
+  .introTable, .evaluationsTable {
+    font-size: 18px;
+  }
+}
+
+/* Third Font Size Decrease */
+@media only screen and (max-width: 1050px) {
+  .introTable, .evaluationsTable {
+    font-size: 17px;
+  }
+}
+
+/* Fourth Font Size Decrease */
+@media only screen and (max-width: 1025px) {
+  .introTable, .evaluationsTable {
+    font-size: 16px;
+  }
+}
+
+/* Fourth Font Size Decrease */
+@media only screen and (max-width: 1000px) {
+  .introTable, .evaluationsTable {
+    font-size: 15px;
+  }
+}
+
+/* Fifth Font Size Decrease */
+@media only screen and (max-width: 975px) {
+  .introTable, .evaluationsTable {
+    font-size: 14px;
+  }
+}
+
+/* Sixth Font Size Decrease */
+@media only screen and (max-width: 950px) {
+  .introTable, .evaluationsTable {
+    font-size: 13px;
+  }
+}
+
+/* Seventh Font Size Decrease */
+@media only screen and (max-width: 925px) {
+  .introTable, .evaluationsTable {
+    font-size: 12px;
+  }
+}
+
+/* Eighth Font Size Decrease */
+@media only screen and (max-width: 900px) {
+  .introTable, .evaluationsTable {
+    font-size: 11px;
+  }
+}
+
+/* Ninth Font Size Decrease */
+@media only screen and (max-width: 875px) {
+  .introTable, .evaluationsTable {
+    font-size: 10px;
+  }
+}
+
+/* Tenth Font Size Decrease */
+@media only screen and (max-width: 850px) {
+  .introTable, .evaluationsTable {
+    font-size: 9px;
+  }
 }

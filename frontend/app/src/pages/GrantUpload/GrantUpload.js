@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GRANT_UPLOAD_URL } from '../../config';
+import { GRANT_UPLOAD_URL, GRANTS_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ const GrantUpload = () => {
   const navigate = useNavigate()
 
   const { user, userDispatch } = useAuthContext()
-  const { researchInfoDispatch } = useResearchInfoContext()
+  const { grants, researchInfoDispatch } = useResearchInfoContext()
 
 
   useEffect(() => {
@@ -55,12 +55,29 @@ const GrantUpload = () => {
       setAmount('')
       setYear('')
 
-      // Update grants
-      console.log(json)
-      researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
+      // Fetch grants if not already fetched
+      if (!grants) {
+        const fetchGrants = async () => {
+          const response = await fetch(GRANTS_URL, {
+            method: 'GET',
+            credentials: 'include'
+          })
+    
+          const data = await response.json()
+          console.log(data)
+          if (response.ok) {
+            researchInfoDispatch({type: 'SET_GRANTS', payload: data})
+          }
+        }
+        fetchGrants()
+      }
+      else {
+        // Update grants
+        researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
+      }
 
       // Navigate to grants page
-      navigate('/research-info', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
+      navigate('/research-info?page=grants', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
     }
   };
 
@@ -86,13 +103,13 @@ const GrantUpload = () => {
               className={ emptyFields.includes('number') ? 'errorField' : '' }
             />
             <input 
-              type="text" 
+              type="number" 
               onChange={(e) => setYear(e.target.value)} 
               value={ year } 
               placeholder="Year"
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
-            <button>Upload</button>
+            <button>Add</button>
             {error && <div className="errorField">{ error }</div>}
         </form>
       </section>

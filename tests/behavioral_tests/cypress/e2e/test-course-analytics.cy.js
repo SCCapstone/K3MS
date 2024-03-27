@@ -20,14 +20,14 @@ describe('Test Course Analytics Page', () => {
       .select(Cypress.env('coursesInStudentEvalSampleForTestUser')[0])
 
     // Check mean is as expected for default time period (1 year)
-    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanOneYear'))
+    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanAllTime'))
 
     // Select a new time period
     cy.get('.choosePeriodDropdown').find('select')
-      .select('All Time')
+      .select('Last Year')
 
     // Check mean is as expected for all time
-    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanAllTime'))
+    cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanOneYear'))
   })
   it("Chair can see data for other users", () => {
     cy.visit(Cypress.env('baseUrl'))
@@ -46,9 +46,9 @@ describe('Test Course Analytics Page', () => {
      cy.contains('Course Analytics').click()
 
      // Select a user
-     cy.get('.choosePersonDropdown').find('select')
-      .select(Cypress.env('nonChairUserEmail'))
-    
+     cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
+     cy.get('.searchDropdownItem').eq(0).click()
+
     cy.get('.analyticsTable').find('th').eq(3).contains(Cypress.env('nonChairUserName'))
   })
   it("Non-chair cannot see data for other users", () => {

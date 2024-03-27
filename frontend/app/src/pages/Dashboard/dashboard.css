@@ -1,6 +1,5 @@
 .dashboardBody {
   display: grid;
-  grid-template-columns: 1fr 1fr;
 }
 
 .dashboardCard {
@@ -10,7 +9,8 @@
   color: var(--cardtext);
   box-shadow: 1px 0px 4px black;
   border-radius: 20px;
-  width: 80%;
+  width: 90%;
+  overflow: hidden;
 }
 
 .dashboardCard h1 {
@@ -28,16 +28,15 @@
 .dashboardCardHeader {
   display: flex;
   justify-content: space-between;
-  /* padding: 10px 50px; */
   align-items: center;
   padding: 0px 50px;
 }
 
 .dashboardCardContent {
-  padding: 10px 50px;
+  padding: 50px 50px;
   font-size: 1.5em;
+  /* text-align: center; */
 }
-
 
 .dashboardTable table {
   border-collapse: collapse;
@@ -45,10 +44,14 @@
 }
 
 .dashboardTable th, .dashboardTable td {
-    border: 1px solid #dddddd;
+    border: 2px solid #dddddd;
     padding: 8px;
     text-align: center;
 }
+/* 
+.publicationTable {
+  font-size: 0.75em;
+} */
 
 .dashboardBody button {
   width: 30%;
@@ -67,7 +70,28 @@
   border-radius: 6px;
 }
 
+.dashboardBody button:hover {
+  background-color: var(--hover);
+}
+.instructorCard {
+  grid-column: span 2;
+  width: 95%;
+}
+.dashboardPlotCard {
+  grid-column: span 2;
+  width: 95%;
+}
+
 .dashboardPlot {
-  justify-content: center;
-  /* border: black solid thin; */
+  border: black solid thin;
+}
+
+/* Display One Column On Small Screen Sizes */ 
+@media (max-width: 1300px) {
+  .dashboardBody { grid-template-columns: repeat(1, 1fr); }
+}
+
+/* Display Two Columns On Medium to Large Screen Sizes */ 
+@media (min-width: 1300px) {
+  .dashboardBody { grid-template-columns: repeat(2, 1fr); }
 }

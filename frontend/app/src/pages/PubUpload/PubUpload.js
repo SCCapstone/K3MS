@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PUB_UPLOAD_URL } from '../../config';
+import { PUB_UPLOAD_URL, PUBS_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ function PubUpload() {
   const navigate = useNavigate()
 
   const { user, userDispatch } = useAuthContext()
-  const { researchInfoDispatch } = useResearchInfoContext()
+  const { pubs, researchInfoDispatch } = useResearchInfoContext()
 
   useEffect(() => {
     if (!user) {
@@ -54,10 +54,29 @@ function PubUpload() {
       setAuthors('')
       setPublicationYear('')
       setISBN('')
-
-      researchInfoDispatch({type: 'UPDATE_PUBS', payload: json})
+      
+      // Fetch pubs if not already fetched
+      if (!pubs) {
+        const fetchPubs = async () => {
+          const response = await fetch(PUBS_URL, {
+            method: 'GET',
+            credentials: 'include'
+          })
+    
+          const data = await response.json()
+          console.log(data)
+          if (response.ok) {
+            researchInfoDispatch({type: 'SET_PUBS', payload: data})
+          }
+        }
+        fetchPubs()
+      }
+      else {
+        // Update pubs
+        researchInfoDispatch({ type: 'UPDATE_PUBS', payload: json })
+      }
       // Navigate To Publications Page
-      navigate('/research-info', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
+      navigate('/research-info?page=publications', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
     }
   };
 
@@ -82,7 +101,7 @@ function PubUpload() {
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
             <input 
-              type="text" 
+              type="number" 
               onChange={(e) => setPublicationYear(e.target.value)} 
               value={ publication_year } 
               placeholder="Publication Year"
@@ -95,7 +114,7 @@ function PubUpload() {
               placeholder="ISBN (Optional)"
               className={ emptyFields.includes('text') ? 'errorField' : '' }
             />
-            <button>Upload</button>
+            <button>Add</button>
             {error && <div className="errorField">{ error }</div>}
         </form>
       </section>
