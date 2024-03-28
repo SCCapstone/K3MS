@@ -1,7 +1,9 @@
 const professsorGrantTitle = 'Research Info Test Grant Professor'
 const professorPubTitle = 'Research Info Test Publication Professor'
+const professorExpenYear = '2005'
 const chairGrantTitle = 'Research Info Test Grant Chair'
 const chairPubTitle = 'Research Info Test Publication Chair'
+const chairExpenYear = '2006'
 
 describe('Research Info Test: Professor', () => {
   beforeEach(() => {
@@ -15,7 +17,7 @@ describe('Research Info Test: Professor', () => {
     cy.contains('button', 'Log in').click()
     cy.url().should('include', '/dashboard') // make sure logged in
   })
-  it("Professor Can Upload a Grant", () => {
+  it("Professor Can Add a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(professsorGrantTitle)
@@ -29,7 +31,7 @@ describe('Research Info Test: Professor', () => {
     cy.url().should('include', '/research-info')
     cy.contains(professsorGrantTitle)
   })
-  it("Professor Can Upload a Publication", () => {
+  it("Professor Can Add a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
     cy.contains('Publication Information')
@@ -44,6 +46,26 @@ describe('Research Info Test: Professor', () => {
     // Check that redirected to research-info and see pub
     cy.url().should('include', '/research-info')
     cy.contains(professorPubTitle)
+  })
+  it("Professor Can Add an Expenditure", () => {
+    // Visit expen add form
+    cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.contains('Expenditure Information')
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(0).type(professorExpenYear)
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(1).type(10000)
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(2).type('Testing Lab')
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(3).type('Testing PI')
+    cy.contains('section', 'Expenditure Information').find('button').first().click()
+
+    // Check that redirected to research-info and see expen
+    cy.url().should('include', '/research-info')
+
+    // Check that expenditure is there
+    cy.contains(professorExpenYear)
   })
   it('Professor Can\'t choose other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
@@ -93,6 +115,26 @@ describe('Research Info Test: Chair', () => {
     cy.url().should('include', '/research-info')
     cy.contains(chairPubTitle)
   })
+  it("Chair Can Add an Expenditure", () => {
+    // Visit expen add form
+    cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.contains('Expenditure Information')
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(0).type(chairExpenYear)
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(1).type(10000)
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(2).type('Testing Lab')
+    cy.contains('section', 'Expenditure Information').find('input')
+      .eq(3).type('Testing PI')
+    cy.contains('section', 'Expenditure Information').find('button').first().click()
+
+    // Check that redirected to research-info and see expen
+    cy.url().should('include', '/research-info')
+
+    // Check that expenditure is there
+    cy.contains(chairExpenYear)
+  })
   it('Chair can choose other people and sees their info', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.wait(100)
@@ -104,5 +146,9 @@ describe('Research Info Test: Chair', () => {
     // Check publications
     cy.contains('div', 'Choose Page').contains('Publications').click()
     cy.contains(professorPubTitle)
+
+    // Check expenditures
+    cy.contains('div', 'Choose Page').contains('Expenditures').click()
+    cy.contains(professorExpenYear)
   })
 })
