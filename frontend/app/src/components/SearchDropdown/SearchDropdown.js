@@ -2,10 +2,10 @@ import { useEffect, useState, useRef } from 'react'
 import './search-dropdown.css';
 
 
-const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdownClassName, includeNone }) => {
+const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdownClassName, includeNone, initialSearchQuery }) => {
   // options must be array of strings - must not be null
 
-  const [ searchQuery, setSearchQuery ] = useState('')
+  const [ searchQuery, setSearchQuery ] = useState(initialSearchQuery)
   const [ showDropdown, setShowDropdown ] = useState(false)
   
   // Ensure Dropdown width is set correctly
