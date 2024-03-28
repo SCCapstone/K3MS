@@ -156,7 +156,7 @@ const StudentEvaluations = () => {
                       setChosenOption={ choosePerson }
                       dropdownClassName='studentEvalsDropdown'
                       includeNone={ false }
-                      initialSearchQuery={ queryEmail ? `${user?.first_name} ${user?.last_name}` : '' }
+                      initialSearchQuery={ chosenPerson ? `${chosenPerson.first_name} ${chosenPerson.last_name}` : `${user?.first_name} ${user?.last_name}`}
                     />
                   }
                 </div>

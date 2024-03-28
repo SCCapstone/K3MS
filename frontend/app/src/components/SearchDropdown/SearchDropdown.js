@@ -4,7 +4,9 @@ import './search-dropdown.css';
 
 const SearchDropdown = ({ label, placeholder, options, setChosenOption, dropdownClassName, includeNone, initialSearchQuery }) => {
   // options must be array of strings - must not be null
-
+  useEffect(() => {
+    setSearchQuery(initialSearchQuery)
+  }, [initialSearchQuery])
   const [ searchQuery, setSearchQuery ] = useState(initialSearchQuery)
   const [ showDropdown, setShowDropdown ] = useState(false)
   
