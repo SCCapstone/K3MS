@@ -12,43 +12,45 @@ form_fields = [
 ]
 
 def expen_upload_controller(req):
-    
-    ret = validate_request(req, form_fields)
+    try:
+        ret = validate_request(req, form_fields)
 
-    if isinstance(ret, tuple):
-        return ret
-    
-    json_data = ret
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
 
-    # Get Expenditure fields
-    amount = str(json_data.get(form_fields[0]))
-    year = str(json_data.get(form_fields[1]))
-    reporting_department = str(json_data.get(form_fields[2]))
-    pi_name = str(json_data.get(form_fields[3]))
+        # Get Expenditure fields
+        amount = str(json_data.get(form_fields[0]))
+        year = str(json_data.get(form_fields[1]))
+        reporting_department = str(json_data.get(form_fields[2]))
+        pi_name = str(json_data.get(form_fields[3]))
 
-    if year.isnumeric() == False:
-        return dict(error='Year must be an integer'), HTTPStatus.BAD_REQUEST
-    if amount.isnumeric() == False:
-        return dict(error='Amount must be an integer'), HTTPStatus.BAD_REQUEST
+        if year.isnumeric() == False:
+            return dict(error='Year must be an integer'), HTTPStatus.BAD_REQUEST
+        if amount.isnumeric() == False:
+            return dict(error='Amount must be an integer'), HTTPStatus.BAD_REQUEST
 
-    # Make sure expen with title doesn't already exist for this user
-    expen = Expens.query.filter_by(email=current_user.email, year=year).first()
-    if expen:
-        return dict(error='Expenditure already exists'), HTTPStatus.BAD_REQUEST
+        # Make sure expen with title doesn't already exist for this user
+        expen = Expens.query.filter_by(email=current_user.email, year=year).first()
+        if expen:
+            return dict(error='Expenditure already exists'), HTTPStatus.BAD_REQUEST
 
-    new_expen = Expens(
-        email=current_user.email, 
-        year=year,
-        amount=amount,
-        reporting_department=reporting_department,
-        pi_name=pi_name
-    )
+        new_expen = Expens(
+            email=current_user.email, 
+            year=year,
+            amount=amount,
+            reporting_department=reporting_department,
+            pi_name=pi_name
+        )
 
-    # Add expen to database
-    db.session.add(new_expen)
-    db.session.commit()
+        # Add expen to database
+        db.session.add(new_expen)
+        db.session.commit()
 
-    return [new_expen], HTTPStatus.CREATED
+        return [new_expen], HTTPStatus.CREATED
+    except:
+        return dict(error='Internal Server Error'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, fields):
     # Make sure request is JSON

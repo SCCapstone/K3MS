@@ -34,10 +34,10 @@ def delete_all_grants_controller(req):
         Grants.query.filter_by(email=current_user.email).delete()
         db.session.commit()
 
-        return dict(message='All evaluations have been deleted'), HTTPStatus.OK
+        return dict(message='All grants have been deleted'), HTTPStatus.OK
     
     except:
-        return dict(error='Error deleting evaluations'), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error='Error deleting grants'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def delete_all_pubs_controller(req):
     try:
@@ -49,10 +49,10 @@ def delete_all_pubs_controller(req):
         Publications.query.filter_by(email=current_user.email).delete()
         db.session.commit()
 
-        return dict(message='All evaluations have been deleted'), HTTPStatus.OK
+        return dict(message='All publications have been deleted'), HTTPStatus.OK
     
     except:
-        return dict(error='Error deleting evaluations'), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error='Error deleting publications'), HTTPStatus.INTERNAL_SERVER_ERROR
     
 def delete_all_expens_controller(req):
     try:
@@ -64,10 +64,10 @@ def delete_all_expens_controller(req):
         Expenditures.query.filter_by(email=current_user.email).delete()
         db.session.commit()
 
-        return dict(message='All evaluations have been deleted'), HTTPStatus.OK
+        return dict(message='All expenditures have been deleted'), HTTPStatus.OK
     
     except:
-        return dict(error='Error deleting evaluations'), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error='Error deleting expenditures'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, confirmation_text):
     # Make sure request is JSON

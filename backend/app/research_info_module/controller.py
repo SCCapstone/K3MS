@@ -75,7 +75,7 @@ def limited_grants_controller():
         return jsonify(grants_data), 200
     
     except Exception as e:
-        print("Error retrieving grants: {e}")
+        print(f"Error retrieving grants: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Publications Controller
@@ -116,7 +116,7 @@ def publications_controller(user_email=None):
         return jsonify(publications_data), 200
     
     except Exception as e:
-        print("Error retrieving publications: {e}")
+        print(f"Error retrieving publications: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Limited Publications Controller
@@ -149,7 +149,7 @@ def limited_publications_controller():
         return jsonify(publications_data), 200
     
     except Exception as e:
-        print("Error retrieving publications: {e}")
+        print(f"Error retrieving publications: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Expenditures Controller
@@ -192,7 +192,7 @@ def expenditures_controller(user_email=None):
         return jsonify(expens_data), 200
     
     except Exception as e:
-        print("Error retrieving grants: {e}")
+        print(f"Error retrieving grants: {e}")
         return jsonify({'error': f'Internal Server Error = {e}'}), 500
     
 # Limited Expenditures Controller
@@ -223,5 +223,5 @@ def limited_expens_controller():
         return jsonify(expens_data), 200
     
     except Exception as e:
-        print("Error retrieving grants: {e}")
-        return jsonify({'error': f'Internal Server Error - {e}'}), 500
+        print(f"Error retrieving grants: {e}")
+        return jsonify({'error': f'Internal Server Error'}), 500
