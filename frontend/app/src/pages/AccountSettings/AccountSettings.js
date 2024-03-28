@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UPDATE_PASSWORD_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL } from '../../config';
+import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
@@ -48,6 +48,11 @@ const AccountSettings = () => {
     const [deleteExpensConfirm, setDeleteExpensConfirm] = useState('')
     const [expensError, setExpensError] = useState(null)
 
+
+    const [pictureError, setPictureError] = useState(null)
+    const [pictureFile, setPictureFile] = useState()
+    const [pictureProcessing, setPictureProcessing] = useState(false)
+
     const updatePassword = async (e) => {
         e.preventDefault()
 
@@ -85,40 +90,74 @@ const AccountSettings = () => {
         }
     };
 
-    // Update profile
-    const updateProfile = async (e) => {
-      e.preventDefault()
+    // Update profile picture file
+    function handleChangePicture(event) {
+      setPictureFile(event.target.files[0])
+    }
 
-      // // Check If new_password and confirm_new_password Match
-      // if (new_password !== confirm_new_password) {
-      //     setError("Passwords Do Not Match");
-      //     return;
-      // }
+    // Update profile picture through backend
+    async function handleSubmitPicture(event) {
+      event.preventDefault();
+      
+      console.log('pictureFile: ', pictureFile)
 
-
-  
-      const response = await fetch(UPDATE_PASSWORD_URL, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          new_password: new_password,
-          confirm_new_password: confirm_new_password
-        })
-      })
-  
-      const json = await response.json()
-      if (!response.ok) {
-        setError(json.error)
+      if (pictureProcessing) {
+        setPictureError('Picture is currently being processed')
+        return
       }
   
-      if (response.ok) {
-        setError(null)
-  
-          // Navigate to dashboard
-          navigate('/dashboard', { state: { mssg: 'Profile Picture Updated Successfully', status: 'ok' }})
+      if (!pictureFile) {
+        setPictureError('No file selected')
+        return
       }
-  };
+
+      
+  
+      const formData = new FormData();
+      formData.append('file', pictureFile);
+      formData.append('fileName', pictureFile.name);
+  
+      try {
+        setPictureError(null)
+        setPictureProcessing(true)
+        const response = await fetch(UPDATE_PROFILE_PICTURE_URL, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        const json = await response.json();
+  
+        if(!response.ok) {
+          setPictureProcessing(false)
+          if (json.error) {
+            setPictureError(`Error uploading file - ${json.error}`)
+          }
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        if (response.ok) {
+          setPictureError(null)
+          setPictureProcessing(false)
+  
+          // Clear all eval-related data
+          // studentEvalsDispatch({type: 'CLEAR_DATA'})
+          // courseAnalyticsDispatch({type: 'CLEAR_DATA'})
+          // dashboardDispatch({type: 'CLEAR_DATA'})
+          // teamAssessmentsDispatch({type: 'CLEAR_DATA'})
+  
+          // if (json.skipped_rows && json.skipped_rows.length > 0) {
+          //   // setSkippedRowsOverwrite(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
+          //   setSkippedRowsOverwrite(json.skipped_rows.filter(row => row.reason === 'This entry already exists in the database'))
+          //   setSkippedRowsOther(json.skipped_rows.filter(row => row.reason !== 'This entry already exists in the database'))
+          // }
+          // else {
+          //   navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
+          // }
+        }
+      } catch (error) {
+        console.error('Fetch error: ', error.message);
+      }
+    }
 
     const deleteAllEvals = async (e) => {
       e.preventDefault()
@@ -260,8 +299,15 @@ const AccountSettings = () => {
 
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
           <section className="updatePasswordCard">
-            <h1>Update Profile</h1>
-            <form className="updatePassword" onSubmit={ updatePassword }>
+            <h1>Update Profile Picture</h1>
+
+            <form onSubmit={handleSubmitPicture} className="evalupload-form">
+                <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
+                <button type="submit" className="evalupload-form-button">Upload</button>
+                {pictureError && <div className="errorField">{ pictureError }</div>}
+            </form>
+
+            {/* <form className="updatePassword" onSubmit={ updateProfilePicture }>
                 <input
                   type="password" 
                   onChange={(e) => setNewPassword(e.target.value)} 
@@ -276,9 +322,10 @@ const AccountSettings = () => {
                   value={ confirm_new_password } 
                   placeholder="Confirm New Password"
                 />
+
                 <button>Update Password</button>
                 {error && <div className="errorField">{ error }</div>}
-            </form>
+            </form> */}
           </section>
 
 
