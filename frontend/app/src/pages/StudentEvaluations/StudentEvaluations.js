@@ -26,7 +26,7 @@ const StudentEvaluations = () => {
 
   const [courseQuery, setCourseQuery] = useState('')
 
-  const fetchOtherUserEvals = async (email, setErrorFunc) => {
+  const fetchOtherUserEvals = async (email) => {
     const response = await fetch(`${STUDENT_EVALS_URL}/${email}`, {
       method: 'GET',
       credentials: 'include'
@@ -34,12 +34,12 @@ const StudentEvaluations = () => {
 
     const data = await response.json()
     if (response.ok) {
-      setErrorFunc(null)
+      setError(null)
       setOtherUserEvals(data)
     }
     else if (response.status === 404) {
       setOtherUserEvals(null)
-      setErrorFunc(data?.error)
+      setError(data?.error)
     }
   }
 
