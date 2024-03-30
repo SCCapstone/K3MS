@@ -77,14 +77,14 @@ const GrantUpload = () => {
       }
 
       // Navigate to grants page
-      navigate('/research-info?page=grants', { state: { mssg: 'Grant Uploaded', status: 'ok' }})
+      navigate('/research-info?page=grants', { state: { mssg: 'Grant Added', status: 'ok' }})
     }
   };
 
   return (
     <>
       <Alert />
-      <h1 className="grantuploadPageHeader">Upload Grant Form</h1>
+      <h1 className="grantuploadPageHeader">Add Grant Form</h1>
       <section className="grantuploadCard">
         <h1>Grant Information</h1>
         <form className="grantupload" onSubmit={ grantupload }>
