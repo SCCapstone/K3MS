@@ -10,42 +10,44 @@ update_password_fields = [
 ]
 
 def update_password_controller(req):
-
-    # Validate Request
-    ret = validate_request(req, update_password_fields)
-
-    if isinstance(ret, tuple):
-        return ret
-    
-    json_data = ret
-
-    # Get Update Password Fields
-    new_password = json_data.get(update_password_fields[0])
-    confirm_new_password = json_data.get(update_password_fields[1])
-
-    # Error If new_password and confirm_new_password Aren't The Same
-    if confirm_new_password != new_password:
-        return dict(error='New Password Cannot Be Confirmed'), HTTPStatus.BAD_REQUEST
-    
-    if len(new_password) < 8:
-        return dict(error='Password must be at least 8 characters long'), HTTPStatus.BAD_REQUEST
-    if not re.search("[A-Z]", new_password):
-        return dict(error='Password must contain at least one uppercase letter'), HTTPStatus.BAD_REQUEST
-    if not re.search("[a-z]", new_password):
-        return dict(error='Password must contain at least one lowercase letter'), HTTPStatus.BAD_REQUEST
-    if not re.search("[0-9]", new_password):
-        return dict(error='Password must contain at least one number'), HTTPStatus.BAD_REQUEST
-    
     try:
-        # Reset current_user's Password In The DB
-        current_user.password_hash = generate_password_hash(new_password, method='scrypt')
+        # Validate Request
+        ret = validate_request(req, update_password_fields)
 
-        # Commit Changes To The DB
-        db.session.commit()
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
+
+        # Get Update Password Fields
+        new_password = json_data.get(update_password_fields[0])
+        confirm_new_password = json_data.get(update_password_fields[1])
+
+        # Error If new_password and confirm_new_password Aren't The Same
+        if confirm_new_password != new_password:
+            return dict(error='New Password Cannot Be Confirmed'), HTTPStatus.BAD_REQUEST
+        
+        if len(new_password) < 8:
+            return dict(error='Password must be at least 8 characters long'), HTTPStatus.BAD_REQUEST
+        if not re.search("[A-Z]", new_password):
+            return dict(error='Password must contain at least one uppercase letter'), HTTPStatus.BAD_REQUEST
+        if not re.search("[a-z]", new_password):
+            return dict(error='Password must contain at least one lowercase letter'), HTTPStatus.BAD_REQUEST
+        if not re.search("[0-9]", new_password):
+            return dict(error='Password must contain at least one number'), HTTPStatus.BAD_REQUEST
+        
+        try:
+            # Reset current_user's Password In The DB
+            current_user.password_hash = generate_password_hash(new_password, method='scrypt')
+
+            # Commit Changes To The DB
+            db.session.commit()
+        except:
+            return dict(error='Error Updating Password'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+        return dict(mssg='Password Updated Successfully!'), HTTPStatus.OK
     except:
-        return dict(error='Error Updating Password'), HTTPStatus.INTERNAL_SERVER_ERROR
-
-    return dict(mssg='Password Updated Successfully!'), HTTPStatus.OK
+        return dict(error='Internal Server Error'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, fields):
     # Make sure request is JSON

@@ -11,41 +11,44 @@ form_fields = [
 ]
 
 def grant_upload_controller(req):
-    
-    ret = validate_request(req, form_fields)
+    try:
+        
+        ret = validate_request(req, form_fields)
 
-    if isinstance(ret, tuple):
-        return ret
-    
-    json_data = ret
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
 
-    # Get Grant fields
-    title = str(json_data.get(form_fields[0]))
-    amount = str(json_data.get(form_fields[1]))
-    year = str(json_data.get(form_fields[2]))
+        # Get Grant fields
+        title = str(json_data.get(form_fields[0]))
+        amount = str(json_data.get(form_fields[1]))
+        year = str(json_data.get(form_fields[2]))
 
-    if year.isnumeric() == False:
-        return dict(error='Year must be an integer'), HTTPStatus.BAD_REQUEST
-    if amount.isnumeric() == False:
-        return dict(error='Amount must be an integer'), HTTPStatus.BAD_REQUEST
+        if year.isnumeric() == False:
+            return dict(error='Year must be an integer'), HTTPStatus.BAD_REQUEST
+        if amount.isnumeric() == False:
+            return dict(error='Amount must be an integer'), HTTPStatus.BAD_REQUEST
 
-    # Make sure grant with title doesn't already exist for this user
-    grant = Grants.query.filter_by(email=current_user.email, title=title).first()
-    if grant:
-        return dict(error='Grant already exists'), HTTPStatus.BAD_REQUEST
+        # Make sure grant with title doesn't already exist for this user
+        grant = Grants.query.filter_by(email=current_user.email, title=title).first()
+        if grant:
+            return dict(error='Grant already exists'), HTTPStatus.BAD_REQUEST
 
-    new_grant = Grants(
-        email=current_user.email, 
-        title=title, 
-        year=year,
-        amount=amount
-    )
+        new_grant = Grants(
+            email=current_user.email, 
+            title=title, 
+            year=year,
+            amount=amount
+        )
 
-    # Add user to database
-    db.session.add(new_grant)
-    db.session.commit()
+        # Add user to database
+        db.session.add(new_grant)
+        db.session.commit()
 
-    return [new_grant], HTTPStatus.CREATED
+        return [new_grant], HTTPStatus.CREATED
+    except:
+        return dict(error='Internal Server Error'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, fields):
     # Make sure request is JSON

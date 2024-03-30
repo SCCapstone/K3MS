@@ -24,35 +24,40 @@ login_fields = [
 ]
 
 def login_controller(req):
-    
-    ret = validate_request(req, login_fields)
+    try:
+        ret = validate_request(req, login_fields)
 
-    if isinstance(ret, tuple):
-        return ret
-    
-    json_data = ret
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
 
-    # Get fields
-    email = json_data.get(login_fields[0])
-    password = json_data.get(login_fields[1])
+        # Get fields
+        email = json_data.get(login_fields[0])
+        password = json_data.get(login_fields[1])
 
-    # Make sure user exists
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
-    
-    # Make sure password is correct
-    if not check_password_hash(user.password_hash, password):
-        return dict(error='Incorrect password'), HTTPStatus.BAD_REQUEST
-    
-    # Log user in
-    login_user(user) # remember=True to remember user 
+        # Make sure user exists
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+        
+        # Make sure password is correct
+        if not check_password_hash(user.password_hash, password):
+            return dict(error='Incorrect password'), HTTPStatus.BAD_REQUEST
+        
+        # Log user in
+        login_user(user) # remember=True to remember user 
 
-    return [user], HTTPStatus.OK
+        return [user], HTTPStatus.OK
+    except:
+        return dict(error='Error logging in'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def logout_controller():
-    logout_user()
-    return dict(mssg='Logged out'), HTTPStatus.OK
+    try:
+        logout_user()
+        return dict(mssg='Logged out'), HTTPStatus.OK
+    except:
+        return dict(error='Error logging out'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def check_auth_controller():
     return [dict(
@@ -273,7 +278,7 @@ def set_password_controller(req):
         return [user], HTTPStatus.OK
 
     except:
-        return dict(error='Error verifying hash'), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error='Error setting password'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def manual_create_user_controller(req):
     try:

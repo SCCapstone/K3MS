@@ -66,7 +66,7 @@ def eval_upload_controller(request):
         print(e)
         if e == 'Error reading excel file':
             return dict(error='Excel file incorrectly formatted'), HTTPStatus.BAD_REQUEST
-        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error="Error uploading file. Please try again."), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def overwrite_evals_rows_controller(request):
     try:
@@ -137,7 +137,7 @@ def overwrite_evals_rows_controller(request):
         return {'mssg': f'{len(rows)} Rows Overwritten '}, HTTPStatus.OK
     except Exception as e:
         print(e)
-        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error="Error overwriting rows. Please try again."), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def get_student_evals_controller(user_email=None, limit=False):

@@ -265,6 +265,7 @@ const CourseAnalytics = () => {
                     setChosenOption={ choosePerson }
                     dropdownClassName='dropdown'
                     includeNone={false}
+                    initialSearchQuery={ chosenPerson ? `${chosenPerson.first_name} ${chosenPerson.last_name}` : `${user?.first_name} ${user?.last_name}`}
                   />
                 }
               </div>

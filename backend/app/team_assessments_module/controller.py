@@ -87,4 +87,4 @@ def get_team_assessments_controller():
         return team_assessments, HTTPStatus.OK
     
     except Exception as e:
-        return dict(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error="Error retrieving data"), HTTPStatus.INTERNAL_SERVER_ERROR
