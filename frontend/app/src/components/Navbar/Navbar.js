@@ -1,5 +1,5 @@
 import './navbar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { LOGOUT_URL } from '../../config';
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import { GET_PROFILE_PICTURE_URL } from '../../config';
 
 const Navbar = ({ navbarVisible, setNavbarVisible }) => {
   const navigate = useNavigate()
-  const { user, userDispatch } = useAuthContext()
+  const { user, profilePictureUrl, userDispatch } = useAuthContext()
   const { studentEvalsDispatch } = useStudentEvalsContext()
   const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
   const { dashboardDispatch } = useDashboardContext()
@@ -48,22 +48,24 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
     setNavbarVisible((prev) => !prev)
   }
 
-  // // Fetch profile picture
-  // const fetchProfilePicture = async () => {
-  //   const response = await fetch(GET_PROFILE_PICTURE_URL, {
-  //     method: 'GET',
-  //     credentials: 'include'
-  //   })
-
-  //   const data = await response.json()
-  //   if (response.ok) {
-  //     setPubsError(null)
-  //     researchInfoDispatch({type: 'SET_PUBS', payload: })
-  //   }
-  //   else if (response.status === 404) {
-  //     setPubsError(data?.error)
-  //   }
-  // }
+  useEffect(() => {
+    // fetchProfilePicture()
+    const fetchProfilePicture = async () => {
+      const response = await fetch(GET_PROFILE_PICTURE_URL, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      const blob = await response.blob()
+      if (response.ok) {
+        const url = URL.createObjectURL(blob)
+        userDispatch({type: 'SET_PROFILE_PICTURE_URL', payload: url})
+      }
+      else {
+        console.log('Error fetching profile picture')
+      }
+    }
+    fetchProfilePicture()
+  }, [])
 
   return (
     <div className="navbarWrapper">
@@ -71,7 +73,7 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
         {/* Add image here for user profile picture */}
-        <img id="profile_picture" src={ GET_PROFILE_PICTURE_URL } alt="Profile Picture"></img>
+        <img id="profile_picture" src={ profilePictureUrl } alt="Profile Picture"></img>
         <p className="user">{ user ? user.first_name +' '+ user.last_name : '' }</p>
         <div className="buttons">
           <div className='buttonGroup'>

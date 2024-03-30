@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL } from '../../config';
+import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL, GET_PROFILE_PICTURE_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
@@ -99,8 +99,6 @@ const AccountSettings = () => {
     async function handleSubmitPicture(event) {
       event.preventDefault();
       
-      console.log('pictureFile: ', pictureFile)
-
       if (pictureProcessing) {
         setPictureError('Picture is currently being processed')
         return
@@ -136,7 +134,24 @@ const AccountSettings = () => {
         if (response.ok) {
           setPictureError(null)
           setPictureProcessing(false)
-          console.log('Profile picture updated successfully')
+
+          const fetchProfilePicture = async () => {
+            const response = await fetch(GET_PROFILE_PICTURE_URL, {
+              method: 'GET',
+              credentials: 'include'
+            })
+            const blob = await response.blob()
+            if (response.ok) {
+              const url = URL.createObjectURL(blob)
+              userDispatch({type: 'SET_PROFILE_PICTURE_URL', payload: url})
+            }
+            else {
+              console.log('Error fetching profile picture')
+            }
+          }
+          fetchProfilePicture()
+
+          navigate('/dashboard', { state: { mssg: 'Profile picture updated successfully', status: 'ok' }})
         }
       } catch (error) {
         console.error('Fetch error: ', error.message);
@@ -289,6 +304,7 @@ const AccountSettings = () => {
                 <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
                 <button type="submit" className="evalupload-form-button">Upload</button>
                 {pictureError && <div className="errorField">{ pictureError }</div>}
+                {pictureProcessing && <p>Processing...</p>}
             </form>
           </section>
 
