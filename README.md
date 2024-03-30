@@ -23,6 +23,10 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
         - Alternatively (for development) do not add this. This will prompt the app to create a temporary sqlite database file called `app.db`
     - `SESSION_SECRET_KEY=<Some Secret Key>`
         - If you do not have one, you can generate a secret key with: `python3 -c "import secrets; print(secrets.token_hex(32))"`
+    - `EMAIL`: Outlook email address to be used by the backend server
+    - `EMAIL_PASSWORD`: Password for outlook account
+    - `FRONTEND_SET_PASSWORD_URL`: Frontend URL to send users to set their password
+
 - Create the file `frontend/app/.env` and add `REACT_APP_BASE_URL=<URL of backend server>` (eg. http://localhost:8000 if running locally)
 
 - Before running this app for the first time, run the following commands to set up the environments:
@@ -35,43 +39,26 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     cd frontend/app
     npm ci
     ```
-- If running a local database (rather than connected to the online shared database), run the following commands to initialize it:
+- If running a *new* local database (rather than connected to the online shared database), run the following commands to initialize it:
     ```
     env/bin/flask shell
     >>> db.create_all()
     >>> exit()
-    env/bin/flask db stamp head
     ```
 
 ## Start the Servers (Individually, for development)
-- In the `backend` directory, run `python3 run_debug_server.py` with the environment activated
+- In the `backend` directory, actiavte the python environment (`source env/bin/activate`) and run `env/bin/python3 run_debug_server.py`
 - In the `frontend/app` directory, run `npm run dev`
 
-## Start the Servers (Production)
-- Run the start script with `./run_app.sh` to start the gunicorn flask server and to serve the static react build.
+## Start the Servers (Script)
+- Run the start script with `./run_app.sh` to start the gunicorn flask server and the development react app.
 
 ### Stop the Production Server
 - To stop the React process, hit `^C` on the shell running `./run_app.py`.
 - To stop the Flask server, stop the gunicorn process by finding its pid or running the command `pkill gunicorn`.
 
-## TODO:
-- Installation & setup process will be taken care of in a docker file.
-
-# Deploy to Heroku
-## Backend
-- Install Heroku CLI and login
-- in `/backend`, run `echo "web: gunicorn app:app" > Procfile`
-- in `/backend`, add heroku git repo as a remote: `git init && git remote add heroku <heroku git url>`
-- track `master` in heroku with current branch: `git branch -u heroku/master`
-- commit changes: `git commit -am ""`
-- push changes to heroku: `git push HEAD:master`
-- Optionally, remove `heroku` remote
-
-## Frontend
-- Same steps as backend, but:
-- init the git repo in `/frontend/app`
-- the Procfile is `web: npm start`
-- run `npm run build` before pushing changes to heroku remote
+# Deploy Frontend to Github Pages
+- In the `frontend/app` directory, run `npm run deploy`
 
 
 # Testing
@@ -80,11 +67,10 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - Unit tests are in the `tests/unit_tests` directory
 
 ## Setup and Run the Tests
-- Follow the directions in `tests/README.md` to setup the environments. Here are some example .env files that can be used (these are required for tests to run):
-    - Goes in tests/behavioral_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077571/cypress.env.json)
-    - Goes in tests/unit_tests/[cypress.env.json](https://github.com/SCCapstone/K3MS/files/14077577/cypress.env.json)
-- Download the test database from Google Drive (app.db) with necessary users and entries
+- Follow the directions in `tests/README.md` to setup the environments.
+- Download the test database from Google Drive (app.db) with necessary users and entries. Also download the example Excel file.
 - Switch the backend mode to use the local database (in backend/.env, delete or comment out DATABASE_URI entry)
+- Start both servers with `./run_app.sh`z
 - Run the tests: 
     ```
     cd tests
