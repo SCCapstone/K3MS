@@ -78,14 +78,14 @@ const ExpenUpload = () => {
       }
 
       // Navigate to expens page
-      navigate('/research-info?page=expenditures', { state: { mssg: 'Expenditure Uploaded', status: 'ok' }})
+      navigate('/research-info?page=expenditures', { state: { mssg: 'Expenditure Added', status: 'ok' }})
     }
   };
 
   return (
     <>
       <Alert />
-      <h1 className="expenuploadPageHeader">Upload Expenditure Form</h1>
+      <h1 className="expenuploadPageHeader">Add Expenditure Form</h1>
       <section className="expenuploadCard">
         <h1>Expenditure Information</h1>
         <form className="expenupload" onSubmit={ expenupload }>
