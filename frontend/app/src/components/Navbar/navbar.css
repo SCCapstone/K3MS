@@ -116,4 +116,5 @@
   border-radius: 50%;
   width: 80%;
   height: auto;
+  max-height: 200px;
 }

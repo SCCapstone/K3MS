@@ -6,6 +6,7 @@ from io import BytesIO
 from app.models.user import User
 from app.models.profile import Profile
 from flask import send_file
+import sys
 
 update_password_fields = [
     'new_password',
@@ -90,10 +91,10 @@ def update_profile_picture_controller(req):
             return dict(error='Invalid file type'), HTTPStatus.BAD_REQUEST
         
         # Based on the type of file, convert to varbinary and store in db
-        # file_bytes = file.read()
-        # file_content = BytesIO(file_bytes).readlines()
         file_content = file.read()
-
+        size = sys.getsizeof(file_content) / (1024 * 1024)
+        if size > 2:
+            return dict(error='File size too large. Must be less than 2 MB'), HTTPStatus.BAD_REQUEST
 
         # Save file to db
         # Check if profile exists - if not, create one
