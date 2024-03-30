@@ -43,7 +43,7 @@ def grants_controller(user_email=None):
         return jsonify(grants_data), 200
     
     except Exception as e:
-        print("Error retrieving grants: {e}")
+        print(f"Error retrieving grants: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
     
 # Limited Grants Controller
@@ -193,7 +193,7 @@ def expenditures_controller(user_email=None):
     
     except Exception as e:
         print(f"Error retrieving grants: {e}")
-        return jsonify({'error': f'Internal Server Error = {e}'}), 500
+        return jsonify({'error': f'Internal Server Error'}), 500
     
 # Limited Expenditures Controller
 def limited_expens_controller():
