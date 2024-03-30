@@ -10,6 +10,7 @@ import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { GET_PROFILE_PICTURE_URL } from '../../config';
 
 const Navbar = ({ navbarVisible, setNavbarVisible }) => {
   const navigate = useNavigate()
@@ -47,13 +48,30 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
     setNavbarVisible((prev) => !prev)
   }
 
+  // // Fetch profile picture
+  // const fetchProfilePicture = async () => {
+  //   const response = await fetch(GET_PROFILE_PICTURE_URL, {
+  //     method: 'GET',
+  //     credentials: 'include'
+  //   })
+
+  //   const data = await response.json()
+  //   if (response.ok) {
+  //     setPubsError(null)
+  //     researchInfoDispatch({type: 'SET_PUBS', payload: })
+  //   }
+  //   else if (response.status === 404) {
+  //     setPubsError(data?.error)
+  //   }
+  // }
+
   return (
     <div className="navbarWrapper">
       <div className={`navbar ${navbarVisible ? '' : 'navBarCollapsed'}`}>
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
         {/* Add image here for user profile picture */}
-        <img id="profile_picture" src={ profile } alt="Profile Picture"></img>
+        <img id="profile_picture" src={ GET_PROFILE_PICTURE_URL } alt="Profile Picture"></img>
         <p className="user">{ user ? user.first_name +' '+ user.last_name : '' }</p>
         <div className="buttons">
           <div className='buttonGroup'>

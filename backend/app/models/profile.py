@@ -8,3 +8,4 @@ class Profile(db.Model):
     last_name: str = db.Column(db.String(64), nullable=False)
     # Add column for profile picture as a varbinary
     profile_picture: bytes = db.Column(db.LargeBinary, nullable=True)
+    file_type: str = db.Column(db.String(64), nullable=True)

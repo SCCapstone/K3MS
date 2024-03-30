@@ -110,8 +110,6 @@ const AccountSettings = () => {
         setPictureError('No file selected')
         return
       }
-
-      
   
       const formData = new FormData();
       formData.append('file', pictureFile);
@@ -138,21 +136,7 @@ const AccountSettings = () => {
         if (response.ok) {
           setPictureError(null)
           setPictureProcessing(false)
-  
-          // Clear all eval-related data
-          // studentEvalsDispatch({type: 'CLEAR_DATA'})
-          // courseAnalyticsDispatch({type: 'CLEAR_DATA'})
-          // dashboardDispatch({type: 'CLEAR_DATA'})
-          // teamAssessmentsDispatch({type: 'CLEAR_DATA'})
-  
-          // if (json.skipped_rows && json.skipped_rows.length > 0) {
-          //   // setSkippedRowsOverwrite(json.skipped_rows.map(row => ({...row, checked: false, enabled: row.reason === 'This entry already exists in the database'})))
-          //   setSkippedRowsOverwrite(json.skipped_rows.filter(row => row.reason === 'This entry already exists in the database'))
-          //   setSkippedRowsOther(json.skipped_rows.filter(row => row.reason !== 'This entry already exists in the database'))
-          // }
-          // else {
-          //   navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded', status: 'ok' }})
-          // }
+          console.log('Profile picture updated successfully')
         }
       } catch (error) {
         console.error('Fetch error: ', error.message);
@@ -306,26 +290,6 @@ const AccountSettings = () => {
                 <button type="submit" className="evalupload-form-button">Upload</button>
                 {pictureError && <div className="errorField">{ pictureError }</div>}
             </form>
-
-            {/* <form className="updatePassword" onSubmit={ updateProfilePicture }>
-                <input
-                  type="password" 
-                  onChange={(e) => setNewPassword(e.target.value)} 
-                  value={ new_password } 
-                  placeholder="New Password"
-                  className={ emptyFields.includes('new_password') ? 'errorField' : '' }
-                />
-            
-                <input 
-                  type="password" 
-                  onChange={(e) => setConfirmNewPassword(e.target.value)} 
-                  value={ confirm_new_password } 
-                  placeholder="Confirm New Password"
-                />
-
-                <button>Update Password</button>
-                {error && <div className="errorField">{ error }</div>}
-            </form> */}
           </section>
 
 

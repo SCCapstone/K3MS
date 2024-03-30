@@ -3,6 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
 from flask_login import current_user
 from io import BytesIO
+from app.models.user import User
+from app.models.profile import Profile
+from flask import send_file
 
 update_password_fields = [
     'new_password',
@@ -70,8 +73,6 @@ def update_profile_picture_controller(req):
 
     # Backend used to take in file, convert to varbinary, and store in db
 
-    # Take in data from req body
-
     # Validate data
     if 'file' not in req.files:
         return dict(error='No file part'), HTTPStatus.BAD_REQUEST
@@ -83,28 +84,53 @@ def update_profile_picture_controller(req):
         return dict(error='No selected file'), HTTPStatus.BAD_REQUEST
     
     fn = file.filename
-    if ('.' not in fn) or (fn.split('.')[-1].lower() not in ['jpg', 'jpeg', 'png']):
+    file_type = fn.split('.')[-1].lower()
+
+    if ('.' not in fn) or (file_type not in ['jpg', 'jpeg', 'png']):
         return dict(error='Invalid file type'), HTTPStatus.BAD_REQUEST
     
     # Based on the type of file, convert to varbinary and store in db
-    file_bytes = file.read()
-    file_content = BytesIO(file_bytes).readlines()
-    # print(file_content)
-
-    # To return image later use this code snippet:
-    # @app.route('/get-image')
-    # def get_image():
-    #     # Get the binary data from the database
-    #     image_binary = get_image_from_database()
-
-    #     # Create a BytesIO object from the binary data
-    #     image_io = BytesIO(image_binary)
-
-    #     # Send the image as a response
-    #     return send_file(image_io, mimetype='image/jpeg')
+    # file_bytes = file.read()
+    # file_content = BytesIO(file_bytes).readlines()
+    file_content = file.read()
 
 
-    return dict(mssg='Password Updated Successfully!'), HTTPStatus.OK
+    # Save file to db
+    # Check if profile exists - if not, create one
 
+    if not Profile.query.get(current_user.email):
+        profile = Profile(
+            email=current_user.email,
+            first_name=current_user.first_name,
+            last_name=current_user.last_name,
+            profile_picture=file_content,
+            file_type=file_type
+        )
+        db.session.add(profile)
+        db.session.commit()
+        return dict(mssg='Profile Picture Updated Successfully!'), HTTPStatus.OK
 
+    profile = Profile.query.get(current_user.email)
+    profile.profile_picture = file_content
+    profile.file_type = file_type
+
+    return dict(mssg='Profile Picture Updated Successfully!'), HTTPStatus.OK
+
+def get_profile_picture_controller():
+
+    # Get the profile picture for the user
+    profile = Profile.query.get(current_user.email)
+
+    if not profile:
+        return dict(error='Profile picture not found'), HTTPStatus.NOT_FOUND
+
+    # Get the binary data from the database
+    file_content = profile.profile_picture
+    file_type = profile.file_type
+
+    # Create a BytesIO object from the binary data
+    image_io = BytesIO(file_content)
+
+    # Send the image as a response
+    return send_file(image_io, mimetype=f'image/{file_type}')
 
