@@ -12,7 +12,7 @@ export const authReducer = (state, action) => {
       // localStorage.setItem('user', JSON.stringify(action.payload))
 
       // set logged in user to the payload user
-      return { user: action.payload } 
+      return { ...state, user: action.payload } 
 
     case 'SET_PROFILE_PICTURE_URL':
       return { ...state, profilePictureUrl: action.payload }
