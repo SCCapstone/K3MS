@@ -129,7 +129,6 @@ const AccountSettings = () => {
           if (json.error) {
             setPictureError(`Error uploading file - ${json.error}`)
           }
-          throw new Error(`HTTP error! Status: ${response.status}`);
         }
   
         if (response.ok) {

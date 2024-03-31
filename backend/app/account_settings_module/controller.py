@@ -129,7 +129,8 @@ def update_profile_picture_controller(req):
             db.session.commit()
             return dict(mssg='Profile Picture Updated Successfully!'), HTTPStatus.OK
 
-    except:
+    except Exception as e:
+        print(e)
         return dict(error='Error Updating Profile Picture'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def get_profile_picture_controller():
