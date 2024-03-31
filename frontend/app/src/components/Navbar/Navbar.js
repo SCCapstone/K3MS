@@ -1,18 +1,20 @@
 import './navbar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { LOGOUT_URL } from '../../config';
 import { useNavigate } from "react-router-dom";
 import USCLogo from '../../assets/navbar-usc-logo.svg';
+import profile from '../../assets/profile.jpg';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { GET_PROFILE_PICTURE_URL } from '../../config';
 
 const Navbar = ({ navbarVisible, setNavbarVisible }) => {
   const navigate = useNavigate()
-  const { user, userDispatch } = useAuthContext()
+  const { user, profilePictureUrl, userDispatch } = useAuthContext()
   const { studentEvalsDispatch } = useStudentEvalsContext()
   const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
   const { dashboardDispatch } = useDashboardContext()
@@ -46,12 +48,36 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
     setNavbarVisible((prev) => !prev)
   }
 
+  useEffect(() => {
+    // fetchProfilePicture()
+    const fetchProfilePicture = async () => {
+      const response = await fetch(GET_PROFILE_PICTURE_URL, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      const blob = await response.blob()
+      if (response.ok) {
+        const url = URL.createObjectURL(blob)
+        userDispatch({type: 'SET_PROFILE_PICTURE_URL', payload: url})
+      }
+      else {
+        console.log('Error fetching profile picture')
+      }
+    }
+    fetchProfilePicture()
+  }, [])
+
   return (
     <div className="navbarWrapper">
       <div className={`navbar ${navbarVisible ? '' : 'navBarCollapsed'}`}>
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
-        <p className="user">{ user ? user.email : '' }</p>
+        {/* Add image here for user profile picture */}
+        { profilePictureUrl ? 
+          <img id="profile_picture" src={ profilePictureUrl } alt="Profile Picture"></img>
+          : <img id="profile_picture" src={ profile } alt="Profile Picture"></img>
+        }
+        <p className="user">{ user ? user.first_name +' '+ user.last_name : '' }</p>
         <div className="buttons">
           <div className='buttonGroup'>
             <p>View Data</p>

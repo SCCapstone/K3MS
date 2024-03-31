@@ -335,7 +335,7 @@ const CourseAnalytics = () => {
                   <td>{ anonData?.[anonDataKey]?.median_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
                 </tr>
                 <tr>
-                  <th>75%</th>
+                  <th>75th Percentile</th>
                   <td>{ anonData?.[anonDataKey]?.course_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
                   <td>{ anonData?.[anonDataKey]?.instructor_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
                 </tr>

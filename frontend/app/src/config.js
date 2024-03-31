@@ -37,6 +37,9 @@ module.exports = global.config = {
 
     UPDATE_PASSWORD_URL: BASE_URL + "update_password",
 
+    UPDATE_PROFILE_PICTURE_URL: BASE_URL + "update_profile_picture",
+    GET_PROFILE_PICTURE_URL: BASE_URL + "get_profile_picture",
+
     USER_CREATION_URL: BASE_URL + "signup",
     MANUAL_USER_CREATION_URL: BASE_URL + "manual_signup",
     USER_DELETION_URL: BASE_URL + "delete_user",

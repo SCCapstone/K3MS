@@ -1,21 +1,30 @@
 /* The alert message box */
 .alert {
+  display: inline-block;
   padding: 20px;
   color: white;
   margin: 0;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  text-align: center;
+  font-size: 1.3em;
 }
 
 .error {
-  background-color: #f44336;
+  background-color: #f44336db;
 }
 
 .ok {
-  background-color: #04AA6D;
+  background-color: #04aa6ddb;
 }
 
 /* The close button */
 .closebtn {
   margin-left: 15px;
+  margin-right: 45px;
   color: white;
   font-weight: bold;
   float: right;

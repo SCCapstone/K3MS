@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UPDATE_PASSWORD_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL } from '../../config';
+import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL, GET_PROFILE_PICTURE_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
@@ -48,6 +48,10 @@ const AccountSettings = () => {
     const [deleteExpensConfirm, setDeleteExpensConfirm] = useState('')
     const [expensError, setExpensError] = useState(null)
 
+    const [pictureError, setPictureError] = useState(null)
+    const [pictureFile, setPictureFile] = useState()
+    const [pictureProcessing, setPictureProcessing] = useState(false)
+
     const updatePassword = async (e) => {
         e.preventDefault()
 
@@ -81,9 +85,79 @@ const AccountSettings = () => {
           setConfirmNewPassword('')
     
             // Navigate to dashboard
-            navigate('/dashboard', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
+            navigate('/account-settings', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
         }
     };
+
+    // Update profile picture file
+    function handleChangePicture(event) {
+      setPictureFile(event.target.files[0])
+    }
+
+    // Update profile picture through backend
+    async function handleSubmitPicture(event) {
+      event.preventDefault();
+      
+      if (pictureProcessing) {
+        setPictureError('Picture is currently being processed')
+        return
+      }
+  
+      if (!pictureFile) {
+        setPictureError('No file selected')
+        return
+      }
+  
+      const formData = new FormData();
+      formData.append('file', pictureFile);
+      formData.append('fileName', pictureFile.name);
+  
+      try {
+        setPictureError(null)
+        setPictureProcessing(true)
+        const response = await fetch(UPDATE_PROFILE_PICTURE_URL, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+        const json = await response.json();
+  
+        if(!response.ok) {
+          setPictureProcessing(false)
+          if (json.error) {
+            setPictureError(`Error uploading file - ${json.error}`)
+          }
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        if (response.ok) {
+          setPictureError(null)
+          setPictureProcessing(false)
+
+          const fetchProfilePicture = async () => {
+            const response = await fetch(GET_PROFILE_PICTURE_URL, {
+              method: 'GET',
+              credentials: 'include'
+            })
+            const blob = await response.blob()
+            if (response.ok) {
+              const url = URL.createObjectURL(blob)
+              userDispatch({type: 'SET_PROFILE_PICTURE_URL', payload: url})
+            }
+            else {
+              console.log('Error fetching profile picture')
+            }
+          }
+          fetchProfilePicture()
+
+          navigate('/account-settings', { state: { mssg: 'Profile picture updated successfully', status: 'ok' }})
+        }
+      } catch (error) {
+        setPictureProcessing(false)
+        setPictureError('Error uploading file')
+        console.error('Fetch error: ', error.message);
+      }
+    }
 
     const deleteAllEvals = async (e) => {
       e.preventDefault()
@@ -115,7 +189,7 @@ const AccountSettings = () => {
           dashboardDispatch({ type: 'CLEAR_DATA' })
           teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
 
-          navigate('/dashboard', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
         }
       }
     }
@@ -149,7 +223,7 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_GRANTS', payload: null })
           dashboardDispatch({ type: 'SET_GRANTS', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
         }
       }
     }
@@ -182,7 +256,7 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_PUBS', payload: null })
           dashboardDispatch({ type: 'SET_PUBS', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
         }
       }
     }
@@ -215,7 +289,7 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_EXPEN', payload: null })
           dashboardDispatch({ type: 'SET_EXPEN', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
         }
       }
     }
@@ -223,6 +297,18 @@ const AccountSettings = () => {
     return (
         <>
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
+          <section className="updatePasswordCard">
+            <h1>Update Profile Picture</h1>
+            <label>Please ensure your image is square for the best results</label>
+            <form onSubmit={handleSubmitPicture} className="evalupload-form">
+                <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
+                <button type="submit" className="evalupload-form-button">Upload</button>
+                {pictureError && <div className="errorField">{ pictureError }</div>}
+                {pictureProcessing && <p>Processing...</p>}
+            </form>
+          </section>
+
+
           <section className="updatePasswordCard">
             <h1>Update Password</h1>
             <form className="updatePassword" onSubmit={ updatePassword }>

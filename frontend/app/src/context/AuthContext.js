@@ -12,13 +12,17 @@ export const authReducer = (state, action) => {
       // localStorage.setItem('user', JSON.stringify(action.payload))
 
       // set logged in user to the payload user
-      return { user: action.payload } 
+      return { ...state, user: action.payload } 
+
+    case 'SET_PROFILE_PICTURE_URL':
+      return { ...state, profilePictureUrl: action.payload }
+
     case 'LOGOUT':
       // Remove user from local storage
       // localStorage.removeItem('user', JSON.stringify(action.payload))
 
       // set logged in user to null
-      return { user: null }
+      return { user: null, profilePictureUrl: null}
     default:
       return state
   }
@@ -26,7 +30,8 @@ export const authReducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
   const [state, userDispatch] = useReducer(authReducer, { 
-    user: null  // initial state is null - not logged in 
+    user: null,  // initial state is null - not logged in 
+    profilePictureUrl: null
   })
   const [checkedStorage, setCheckedStorage] = useState(false)
 
