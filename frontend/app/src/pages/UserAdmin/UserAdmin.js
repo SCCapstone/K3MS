@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { MANUAL_USER_CREATION_URL, USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL, CHECK_AUTH_URL } from '../../config'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 
 import './useradmin.css'
 
@@ -11,6 +12,7 @@ const UserAdmin = () => {
 
   const { user, userDispatch } = useAuthContext()
   const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { teamAssessmentsDispatch } = useTeamAssessmentsContext()
 
   // Create
   const [firstNameCreate, setfirstNameCreate] = useState('')
@@ -213,6 +215,7 @@ const UserAdmin = () => {
 
       // Clear users to choose and data that may contain info from them
       courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
+      teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
 
       // If the user updates their own account, update the user object
       if (user.email === emailUpdate) {

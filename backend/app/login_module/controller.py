@@ -127,6 +127,8 @@ def update_user_controller(req):
         last_name = json_data.get('last_name')
         position = json_data.get('position')
 
+        print(email, position)
+
         # Make sure user exists
         user = User.query.filter_by(email=email).first()
         if not user:
@@ -141,9 +143,9 @@ def update_user_controller(req):
             return dict(mssg='No update'), HTTPStatus.OK
         
         # Update User
-        first_name = first_name.strip() if first_name else current_user.first_name
-        last_name = last_name.strip() if last_name else current_user.last_name
-        position = position.strip() if position else current_user.position
+        first_name = first_name.strip() if first_name else user.first_name
+        last_name = last_name.strip() if last_name else user.last_name
+        position = position.strip() if position else user.position
 
         # Make sure user is not trying to change their own position
         if user.email == current_user.email and position != current_user.position:
@@ -162,7 +164,6 @@ def update_user_controller(req):
         return dict(mssg='User Updated'), HTTPStatus.OK
 
     except Exception as e:
-        raise Exception(e)
         return dict(error='Error updating user'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def create_user_controller(req):
