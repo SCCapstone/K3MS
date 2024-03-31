@@ -6,11 +6,9 @@ env/bin/pip3 install -r backend/requirements.txt
 
 # Set up node env
 npm --prefix frontend/app ci
-npm --prefix frontend/app run build
-
 
 # Backend: Start Flask Server
 env/bin/gunicorn --chdir ./backend wsgi:app &
 
-# Frontend: Serve Static React App
-(cd frontend/app; npx serve -s build)
+# Frontend: Start React App
+npm --prefix frontend/app run dev

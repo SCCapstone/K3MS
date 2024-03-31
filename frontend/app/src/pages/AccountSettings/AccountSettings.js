@@ -48,7 +48,6 @@ const AccountSettings = () => {
     const [deleteExpensConfirm, setDeleteExpensConfirm] = useState('')
     const [expensError, setExpensError] = useState(null)
 
-
     const [pictureError, setPictureError] = useState(null)
     const [pictureFile, setPictureFile] = useState()
     const [pictureProcessing, setPictureProcessing] = useState(false)
@@ -86,7 +85,7 @@ const AccountSettings = () => {
           setConfirmNewPassword('')
     
             // Navigate to dashboard
-            navigate('/dashboard', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
+            navigate('/account-settings', { state: { mssg: 'Password Updated Successfully', status: 'ok' }})
         }
     };
 
@@ -151,9 +150,11 @@ const AccountSettings = () => {
           }
           fetchProfilePicture()
 
-          navigate('/dashboard', { state: { mssg: 'Profile picture updated successfully', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'Profile picture updated successfully', status: 'ok' }})
         }
       } catch (error) {
+        setPictureProcessing(false)
+        setPictureError('Error uploading file')
         console.error('Fetch error: ', error.message);
       }
     }
@@ -188,7 +189,7 @@ const AccountSettings = () => {
           dashboardDispatch({ type: 'CLEAR_DATA' })
           teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
 
-          navigate('/dashboard', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
         }
       }
     }
@@ -222,7 +223,7 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_GRANTS', payload: null })
           dashboardDispatch({ type: 'SET_GRANTS', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
         }
       }
     }
@@ -255,7 +256,7 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_PUBS', payload: null })
           dashboardDispatch({ type: 'SET_PUBS', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
         }
       }
     }
@@ -288,18 +289,17 @@ const AccountSettings = () => {
           researchInfoDispatch({ type: 'SET_EXPEN', payload: null })
           dashboardDispatch({ type: 'SET_EXPEN', payload: null })
 
-          navigate('/dashboard', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
+          navigate('/account-settings', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
         }
       }
     }
 
     return (
         <>
-
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
           <section className="updatePasswordCard">
             <h1>Update Profile Picture</h1>
-
+            <label>Please ensure your image is square for the best results</label>
             <form onSubmit={handleSubmitPicture} className="evalupload-form">
                 <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
                 <button type="submit" className="evalupload-form-button">Upload</button>

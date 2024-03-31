@@ -34,6 +34,7 @@
     font-weight: bold;
     color: black;
     text-align: center;
+    margin: 10px 0;
   }
 
   li a:hover {
@@ -111,10 +112,10 @@
 
 #profile_picture {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  object-fit: cover;
+  margin: 20px auto 10px auto;
   border-radius: 50%;
-  width: 80%;
-  height: auto;
-  max-height: 200px;
+  width: 50%;
+  aspect-ratio : 1 / 1;
+  border: 1px solid black;
 }

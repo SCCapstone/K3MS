@@ -265,6 +265,7 @@ const CourseAnalytics = () => {
                     setChosenOption={ choosePerson }
                     dropdownClassName='dropdown'
                     includeNone={false}
+                    initialSearchQuery={ chosenPerson ? `${chosenPerson.first_name} ${chosenPerson.last_name}` : `${user?.first_name} ${user?.last_name}`}
                   />
                 }
               </div>
@@ -334,7 +335,7 @@ const CourseAnalytics = () => {
                   <td>{ anonData?.[anonDataKey]?.median_of_all_instructor_ratings?.toFixed(DEC_PLACES) }</td>
                 </tr>
                 <tr>
-                  <th>75%</th>
+                  <th>75th Percentile</th>
                   <td>{ anonData?.[anonDataKey]?.course_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
                   <td>{ anonData?.[anonDataKey]?.instructor_ratings_75th_percentile?.toFixed(DEC_PLACES) }</td>
                 </tr>

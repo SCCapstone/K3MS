@@ -11,6 +11,7 @@ import ExpenUpload from './pages/ExpenUpload/ExpenUpload';
 import EvalUpload from './pages/EvalUpload/EvalUpload';
 import AccountSettings from './pages/AccountSettings/AccountSettings';
 import UserAdmin from './pages/UserAdmin/UserAdmin';
+import SetPassword from './pages/SetPassword/SetPassword';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import './pages/main_pages.css'
@@ -42,6 +43,7 @@ function App() {
       <Routes>
         <Route path="/" element={ defaultPage } />
         <Route path="/login" element={ <Login /> } />
+        <Route path="/set_password" element={ <SetPassword /> } />
         <Route path="/dashboard" element={ getMainLayoutPage(<Dashboard />) } />
         <Route path="/student-evals" element={ getMainLayoutPage(<StudentEvaluations />) } />
         <Route path="/student-evals-details" element={ getMainLayoutPage(<StudentEvaluationsDetails />) } />

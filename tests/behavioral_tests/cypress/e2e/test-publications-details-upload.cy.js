@@ -1,4 +1,4 @@
-describe('Publication Details Upload Test Spec', () => {
+describe('Add Publication Test Spec', () => {
     // login before each
     beforeEach(() => {
       cy.visit(Cypress.env('baseUrl'))
@@ -14,14 +14,14 @@ describe('Publication Details Upload Test Spec', () => {
       cy.url().should('include', '/dashboard') // make sure logged in
 
     })
-    it('Can Access Pub Details Upload Page', () => {
+    it('Can Access  Add Pub Page', () => {
       // just the beforeEach part
       // Test that on publication upload page
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
       cy.contains('Publication Information')
     })
-    it("Can't Upload Pub Details without a title", () => {
+    it("Can't Add Pub Details without a title", () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
@@ -36,10 +36,10 @@ describe('Publication Details Upload Test Spec', () => {
       cy.contains('section', 'Publication Information').find('button').first().click()
   
       // Check that still on pub upload page and that error appears
-      cy.contains('Upload Publication Form')
+      cy.contains('Add Publication Form')
       cy.contains('Please fill in all fields')
     })
-    it("Can't Upload Pub Details without Author(s)", () => {
+    it("Can't Add Pub Details without Author(s)", () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
@@ -54,10 +54,10 @@ describe('Publication Details Upload Test Spec', () => {
       cy.contains('section', 'Publication Information').find('button').first().click()
   
       // Check that still on pub upload page and that error appears
-      cy.contains('Upload Publication Form')
+      cy.contains('Add Publication Form')
       cy.contains('Please fill in all fields')
     })
-    it("Can't Upload Publication Details without Year", () => {
+    it("Can't Add Publication Details without Year", () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
@@ -70,10 +70,10 @@ describe('Publication Details Upload Test Spec', () => {
       cy.contains('section', 'Publication Information').find('button').first().click()
 
       // Check that still on Publication upload page and that error appears
-      cy.contains('Upload Publication Form')
+      cy.contains('Add Publication Form')
       cy.contains('Please fill in all fields')
     })
-    it("Can Upload Publication without ISBN", () => {
+    it("Can Add Publication without ISBN", () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')

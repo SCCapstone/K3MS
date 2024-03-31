@@ -16,12 +16,12 @@ describe('Grant Upload Test Spec', () => {
     // Test that on grant upload page
     cy.wait(100)
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
-    cy.contains('Upload Grant Form')
+    cy.contains('Add Grant Form')
   })
   it('Can Access Grant Upload Page', () => {
     // just the beforeEach part
   })
-  it("Can't Upload Grant without a title", () => {
+  it("Can't Add Grant without a title", () => {
     cy.contains('section', 'Grant Information').find('input')
       .eq(1).type('10000')
     cy.contains('section', 'Grant Information').find('input')
@@ -29,10 +29,10 @@ describe('Grant Upload Test Spec', () => {
     cy.contains('section', 'Grant Information').find('button').first().click()
 
     // Check that still on grant upload page and that error appears
-    cy.contains('Upload Grant Form')
+    cy.contains('Add Grant Form')
     cy.contains('Please fill in all fields')
   })
-  it("Can't Upload Grant without Amount", () => {
+  it("Can't Add Grant without Amount", () => {
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type('Test Grant')
     cy.contains('section', 'Grant Information').find('input')
@@ -40,10 +40,10 @@ describe('Grant Upload Test Spec', () => {
     cy.contains('section', 'Grant Information').find('button').first().click()
 
     // Check that still on grant upload page and that error appears
-    cy.contains('Upload Grant Form')
+    cy.contains('Add Grant Form')
     cy.contains('Please fill in all fields')
   })
-  it("Can't Upload Grant without Year", () => {
+  it("Can't Add Grant without Year", () => {
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type('Test Grant')
     cy.contains('section', 'Grant Information').find('input')
@@ -51,10 +51,10 @@ describe('Grant Upload Test Spec', () => {
     cy.contains('section', 'Grant Information').find('button').first().click()
 
     // Check that still on grant upload page and that error appears
-    cy.contains('Upload Grant Form')
+    cy.contains('Add Grant Form')
     cy.contains('Please fill in all fields')
   })
-  it("Can Upload Grant", () => {
+  it("Can Add Grant", () => {
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type('Test Grant')
     cy.contains('section', 'Grant Information').find('input')

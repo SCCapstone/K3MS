@@ -76,13 +76,13 @@ function PubUpload() {
         researchInfoDispatch({ type: 'UPDATE_PUBS', payload: json })
       }
       // Navigate To Publications Page
-      navigate('/research-info?page=publications', { state: { mssg: 'Publication Uploaded Successfully', status: 'ok' }})
+      navigate('/research-info?page=publications', { state: { mssg: 'Publication Added Successfully', status: 'ok' }})
     }
   };
 
   return (
     <>
-      <h1 className="pubUploadPageHeader">Upload Publication Form</h1>
+      <h1 className="pubUploadPageHeader">Add Publication Form</h1>
       <section className="pubUploadCard">
         <h1>Publication Information</h1>
         <form className="pubUpload" onSubmit={ pubupload }>

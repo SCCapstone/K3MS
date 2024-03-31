@@ -41,6 +41,7 @@ module.exports = global.config = {
     GET_PROFILE_PICTURE_URL: BASE_URL + "get_profile_picture",
 
     USER_CREATION_URL: BASE_URL + "signup",
+    MANUAL_USER_CREATION_URL: BASE_URL + "manual_signup",
     USER_DELETION_URL: BASE_URL + "delete_user",
     USER_UPDATE_URL: BASE_URL + "update_user",
 
@@ -48,6 +49,9 @@ module.exports = global.config = {
     DELETE_ALL_GRANTS_URL: BASE_URL + "delete_all_my_grants",
     DELETE_ALL_PUBS_URL: BASE_URL + "delete_all_my_pubs",
     DELETE_ALL_EXPENS_URL: BASE_URL + "delete_all_my_expens",
+    DELETE_ENTRY_URL: BASE_URL + "delete_entry",
+
+    SET_PASSWORD_URL: BASE_URL + "set_password",
 
     DEC_PLACES: 2
 }

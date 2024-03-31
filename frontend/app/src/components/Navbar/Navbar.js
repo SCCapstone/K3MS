@@ -73,7 +73,10 @@ const Navbar = ({ navbarVisible, setNavbarVisible }) => {
         <img id="sclogo" src={ USCLogo } alt="SC Logo"></img>
         <hr></hr>
         {/* Add image here for user profile picture */}
-        <img id="profile_picture" src={ profilePictureUrl } alt="Profile Picture"></img>
+        { profilePictureUrl ? 
+          <img id="profile_picture" src={ profilePictureUrl } alt="Profile Picture"></img>
+          : <img id="profile_picture" src={ profile } alt="Profile Picture"></img>
+        }
         <p className="user">{ user ? user.first_name +' '+ user.last_name : '' }</p>
         <div className="buttons">
           <div className='buttonGroup'>

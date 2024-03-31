@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuthContext } from '../../hooks/useAuthContext'
-import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS } from '../../config';
+import { GRANTS_URL, PUBS_URL, EXPEN_URL, COURSE_ANALYTICS_URLS, DELETE_ENTRY_URL } from '../../config';
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
+import deleteIcon from '../../assets/delete-icon.svg'
 
 const ResearchInfo = () => {
   const navigate = useNavigate()
@@ -17,6 +19,7 @@ const ResearchInfo = () => {
   const { user } = useAuthContext()
   const { grants, pubs, expens, researchInfoDispatch } = useResearchInfoContext()
   const { usersToChoose, courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { dashboardDispatch } = useDashboardContext()
 
   const [grantsError, setGrantsError] = useState(null)
   const [pubsError, setPubsError] = useState(null)
@@ -194,6 +197,116 @@ const ResearchInfo = () => {
     fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
   }
 
+
+  // Delete Functionality:
+  const deleteEntry = async (e) => {
+    // e passes in the object which includes grant_title which is used to delete that specific grant
+    const alertResponse = window.confirm("Are you sure you want to delete this entry's data? This cannot be undone.");
+    if (alertResponse) {
+
+      const type = e.type
+
+      const response = await fetch(DELETE_ENTRY_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          email: e.email,
+          type: e.type,
+          title: e.title,
+          year: e.year,
+        })
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        if (type === 'grant'){
+          setGrantsError(json.error)
+        } else if (type === 'pub'){
+          setPubsError(json.error)
+        } else if (type === 'expen'){
+          setExpenError(json.error)
+        }
+        console.log(json.error)
+      }
+      if (response.ok) {
+        if (type === 'grant') {
+          // Update grants state to remove the grant that was deleted
+          setGrantsError(null)
+          if (e.email === user.email){
+            const temp_grants = grants.filter((g) => g.title != e.title)
+            if (temp_grants.length === 0){
+              setPubsError('No grants found for this user.')
+              researchInfoDispatch({type: 'SET_GRANTS', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_GRANTS', payload: temp_grants})
+            }
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_grants = otherUserGrants.filter((g) => g.title != e.title)
+            if (temp_grants.length === 0){
+              setGrantsError('No grants found for this user.')
+              setOtherUserGrants(null)
+            } else {
+              setOtherUserGrants(temp_grants)
+            }
+          }
+
+          // Clear grants state in dashboard context
+          dashboardDispatch({type: 'SET_GRANTS', payload: null})
+
+        } else if (type === 'pub') {
+          // Update pubs state to remove the publication that was deleted
+          setPubsError(null)
+          if (e.email === user.email){
+            const temp_pubs = pubs.filter((p) => p.title != p.title)
+            if (temp_pubs.length === 0){
+              setPubsError('No publications found for this user.')
+              researchInfoDispatch({type: 'SET_PUBS', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_PUBS', payload: temp_pubs})
+            }
+
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_pubs = otherUserPubs.filter((p) => p.title != e.title)
+            if (temp_pubs.length === 0){
+              setPubsError('No publications found for this user.')
+              setOtherUserPubs(null)
+            } else {
+              setOtherUserPubs(temp_pubs)
+            }
+          }
+
+          // Clear pubs state in dashboard context
+          dashboardDispatch({type: 'SET_PUBS', payload: null})
+
+        } else if (type === 'expen') {
+          // Update expen state to remove the expenditure that was deleted
+          setExpenError(null)
+          if (e.email === user.email){
+            const temp_expens = expens.filter((p) => p.year != e.title)
+            if (temp_expens.length === 0){
+              setExpenError('No expenditures found for this user.')
+              researchInfoDispatch({type: 'SET_EXPEN', payload: null})
+            } else {
+              researchInfoDispatch({type: 'SET_EXPEN', payload: temp_expens})
+            }
+
+          } else if (chosenPerson && e.email === chosenPerson.email){
+            const temp_expens = otherUserExpen.filter((p) => p.year != e.title)
+            if (temp_expens.length === 0){
+              setExpenError('No expenditures found for this user.')
+              setOtherUserExpen(null)
+            } else {
+              setOtherUserExpen(temp_expens)
+            }
+          }
+
+          // Clear expen state in dashboard context
+          dashboardDispatch({type: 'SET_EXPEN', payload: null})
+        }
+      }
+    }
+  }
+
   return (
     <div className="researchInfo">
       <h1 className='pageHeader'>Research Info</h1>
@@ -209,7 +322,8 @@ const ResearchInfo = () => {
                   setChosenOption={ choosePerson }
                   dropdownClassName="researchInfoDropdown"
                   includeNone={ false }
-                />
+                  initialSearchQuery={ chosenPerson ? `${chosenPerson.first_name} ${chosenPerson.last_name}` : `${user?.first_name} ${user?.last_name}`}
+                  />
               }
             </div>
           }
@@ -249,6 +363,7 @@ const ResearchInfo = () => {
                       <th>Title</th>
                       <th>Amount</th>
                       <th>Grant Year</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -261,6 +376,9 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
                     }) : 
@@ -272,9 +390,12 @@ const ResearchInfo = () => {
                           <td>{ grant.title }</td>
                           <td>{ grant.amount }</td>
                           <td>{ grant.year }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
-                    })
+                    })  
                   }
                   </tbody>
                 </table>
@@ -298,6 +419,7 @@ const ResearchInfo = () => {
                       <th>Authors</th>
                       <th>Publication Year</th>
                       <th>ISBN</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -311,6 +433,9 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )}) :
                     pubs?.filter((pub) => {
@@ -322,6 +447,9 @@ const ResearchInfo = () => {
                           <td>{ pub.authors }</td>
                           <td>{ pub.publication_year }</td>
                           <td>{ pub.isbn }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )
                     })
@@ -348,6 +476,7 @@ const ResearchInfo = () => {
                       <th>Reporting Department</th>
                       <th>P.I.</th>
                       <th>Amount</th>
+                      <th>Delete?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -361,6 +490,9 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.year, email: chosenPerson.email, year: ex.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )}) :
                     expens?.filter((expen) => {
@@ -372,6 +504,9 @@ const ResearchInfo = () => {
                           <td>{ ex.reporting_department }</td>
                           <td>{ ex.pi_name }</td>
                           <td>{ ex.amount }</td>
+                          <td><button className="delete" onClick={() => deleteEntry({type: 'expen', title: ex.year, email: user.email, year: ex.year})}>
+                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                          </button></td>
                         </tr>
                       )})
                     }

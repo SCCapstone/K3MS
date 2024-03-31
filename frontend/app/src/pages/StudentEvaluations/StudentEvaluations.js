@@ -34,12 +34,12 @@ const StudentEvaluations = () => {
 
     const data = await response.json()
     if (response.ok) {
-      // setErrorFunc(null)
+      setError(null)
       setOtherUserEvals(data)
     }
     else if (response.status === 404) {
       setOtherUserEvals(null)
-      // setErrorFunc(data?.error)
+      setError(data?.error)
     }
   }
 
@@ -143,7 +143,7 @@ const StudentEvaluations = () => {
 
   return (
     <div className="studentEvalsBody">
-      <h1 className="pageHeader">My Student Evaluations</h1>
+      <h1 className="pageHeader">{user && user.position === 'chair' ? "Student Evaluations" : "My Student Evaluations"}</h1>
         <div className='studentEvalsCard studentEvalsOptions'>
           <div className='studentEvalsButtons'>
             { user && user.position === 'chair' &&
@@ -156,6 +156,7 @@ const StudentEvaluations = () => {
                       setChosenOption={ choosePerson }
                       dropdownClassName='studentEvalsDropdown'
                       includeNone={ false }
+                      initialSearchQuery={ chosenPerson ? `${chosenPerson.first_name} ${chosenPerson.last_name}` : `${user?.first_name} ${user?.last_name}`}
                     />
                   }
                 </div>

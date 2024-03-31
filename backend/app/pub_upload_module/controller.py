@@ -11,44 +11,49 @@ form_fields = [
 ]
 
 def pub_upload_controller(req):
-    ret = validate_request(req, form_fields)
+    try:
+        ret = validate_request(req, form_fields)
 
-    if isinstance(ret, tuple):
-        return ret
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
+
+        # Get Publication Fields
+        title = str(json_data.get(form_fields[0]))
+        authors = str(json_data.get(form_fields[1]))
+        publication_year = str(json_data.get(form_fields[2]))
+        isbn = str(json_data.get(form_fields[3]))
+
+        if publication_year.isnumeric() == False:
+            return dict(error='Publication Year must be an integer'), HTTPStatus.BAD_REQUEST
+
+        # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
+        publication = Publications.query.filter_by(email=current_user.email, title=title).first()
+        if publication:
+            return dict(error='Publication Already Exists'), HTTPStatus.BAD_REQUEST
+        
+        # Set isbn To None, If It Is Null
+        if isbn is None:
+            isbn = None
+
+        new_publication = Publications(
+            email = current_user.email, 
+            title = title, 
+            authors = authors,
+            publication_year = publication_year,
+            isbn = isbn
+        )
+
+        # Add user to database
+        db.session.add(new_publication)
+        db.session.commit()
+
+        return [new_publication], HTTPStatus.CREATED
     
-    json_data = ret
-
-    # Get Publication Fields
-    title = str(json_data.get(form_fields[0]))
-    authors = str(json_data.get(form_fields[1]))
-    publication_year = str(json_data.get(form_fields[2]))
-    isbn = str(json_data.get(form_fields[3]))
-
-    if publication_year.isnumeric() == False:
-        return dict(error='Publication Year must be an integer'), HTTPStatus.BAD_REQUEST
-
-    # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
-    publication = Publications.query.filter_by(email=current_user.email, title=title).first()
-    if publication:
-        return dict(error='Publication Already Exists'), HTTPStatus.BAD_REQUEST
-    
-     # Set isbn To None, If It Is Null
-    if isbn is None:
-        isbn = None
-
-    new_publication = Publications(
-        email = current_user.email, 
-        title = title, 
-        authors = authors,
-        publication_year = publication_year,
-        isbn = isbn
-    )
-
-    # Add user to database
-    db.session.add(new_publication)
-    db.session.commit()
-
-    return [new_publication], HTTPStatus.CREATED
+    except Exception as e:
+        print(f"Error uploading publication: {e}")
+        return dict(error='Internal Server Error'), HTTPStatus.INTERNAL_SERVER_ERROR
     
 def validate_request(req, fields):
     # Make Sure Request Is JSON
