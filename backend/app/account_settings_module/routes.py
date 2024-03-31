@@ -5,7 +5,8 @@ from flask_login import login_required
 from app.account_settings_module.controller import (
     update_password_controller,
     update_profile_picture_controller,
-    get_profile_picture_controller
+    get_profile_picture_controller,
+    delete_profile_picture_controller
 )
 
 @blueprint.route('/update_password', methods=['POST'])
@@ -22,3 +23,8 @@ def update_profile_picture():
 @login_required
 def get_profile_picture():
     return get_profile_picture_controller()
+
+@blueprint.route('/delete_profile_picture', methods=['DELETE'])
+@login_required
+def delete_profile_picture():
+    return delete_profile_picture_controller()
