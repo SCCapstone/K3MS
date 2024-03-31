@@ -152,3 +152,18 @@ def get_profile_picture_controller():
     except:
         return dict(error='Error Getting Profile Picture'), HTTPStatus.INTERNAL_SERVER_ERROR
 
+def delete_profile_picture_controller():
+    try:
+        # Get the profile picture for the user
+        profile = Profile.query.get(current_user.email)
+
+        if not profile:
+            return dict(error='Profile picture not found'), HTTPStatus.NOT_FOUND
+
+        # Delete the profile picture from the database
+        db.session.delete(profile)
+        db.session.commit()
+
+        return dict(mssg='Profile Picture Deleted Successfully!'), HTTPStatus.OK
+    except:
+        return dict(error='Error Deleting Profile Picture'), HTTPStatus.INTERNAL_SERVER_ERROR

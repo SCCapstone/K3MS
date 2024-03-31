@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL, GET_PROFILE_PICTURE_URL } from '../../config';
+import { UPDATE_PASSWORD_URL, UPDATE_PROFILE_PICTURE_URL, DELETE_EVALS_URL, DELETE_ALL_GRANTS_URL, DELETE_ALL_PUBS_URL, DELETE_ALL_EXPENS_URL, GET_PROFILE_PICTURE_URL, DELETE_PROFILE_PICTURE_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useStudentEvalsContext } from '../../hooks/useStudentEvalsContext';
@@ -51,6 +51,8 @@ const AccountSettings = () => {
     const [pictureError, setPictureError] = useState(null)
     const [pictureFile, setPictureFile] = useState()
     const [pictureProcessing, setPictureProcessing] = useState(false)
+
+    const [deletePictureError, setDeletePictureError] = useState(null)
 
     const updatePassword = async (e) => {
         e.preventDefault()
@@ -156,6 +158,28 @@ const AccountSettings = () => {
         setPictureProcessing(false)
         setPictureError('Error uploading file')
         console.error('Fetch error: ', error.message);
+      }
+    }
+
+    const handleDeletePicture = async (e) => {
+      const alertResponse = window.confirm("Are you sure you want to delete all student evaluation data? This cannot be undone.");
+      if (!alertResponse) {
+        return
+      }
+      e.preventDefault()
+      const response = await fetch(DELETE_PROFILE_PICTURE_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'}
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        setDeletePictureError(json.error)
+      }
+      if (response.ok) {
+        setDeletePictureError(null)
+        userDispatch({type: 'SET_PROFILE_PICTURE_URL', payload: null})
+        navigate('/account-settings', { state: { mssg: 'Profile picture deleted successfully', status: 'ok' }})
       }
     }
 
@@ -297,17 +321,6 @@ const AccountSettings = () => {
     return (
         <>
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
-          <section className="updatePasswordCard">
-            <h1>Update Profile Picture</h1>
-            <label>Please ensure your image is square for the best results</label>
-            <form onSubmit={handleSubmitPicture} className="evalupload-form">
-                <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
-                <button type="submit" className="evalupload-form-button">Upload</button>
-                {pictureError && <div className="errorField">{ pictureError }</div>}
-                {pictureProcessing && <p>Processing...</p>}
-            </form>
-          </section>
-
 
           <section className="updatePasswordCard">
             <h1>Update Password</h1>
@@ -328,6 +341,25 @@ const AccountSettings = () => {
                 />
                 <button>Update Password</button>
                 {error && <div className="errorField">{ error }</div>}
+            </form>
+          </section>
+
+          <section className="updatePasswordCard">
+            <h1>Update Profile Picture</h1>
+            <label>Please ensure your image is square for the best results</label>
+            <form onSubmit={handleSubmitPicture} className="evalupload-form">
+                <input type="file" onChange={handleChangePicture} className="evalupload-form-input" />
+                <button type="submit" className="evalupload-form-button">Upload</button>
+                {pictureError && <div className="errorField">{ pictureError }</div>}
+                {pictureProcessing && <p>Processing...</p>}
+            </form>
+          </section>
+
+          <section className="updatePasswordCard">
+            <h1>Delete Profile Picture</h1>
+            <form onSubmit={handleDeletePicture} className="evalupload-form">
+                <button type="submit" className="evalupload-form-button">Delete Profile Picture</button>
+                {deletePictureError && <div className="errorField">{ deletePictureError }</div>}
             </form>
           </section>
 
