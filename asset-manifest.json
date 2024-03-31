@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/K3MS/static/css/main.abd013b4.css",
-    "main.js": "/K3MS/static/js/main.97e3a88b.js",
+    "main.js": "/K3MS/static/js/main.3fa1ac27.js",
     "static/media/navbar-usc-logo.svg": "/K3MS/static/media/navbar-usc-logo.c4cd143e8ac99439ef543602d4a43295.svg",
     "static/media/delete-icon.svg": "/K3MS/static/media/delete-icon.78ec434bdef8fbe7ba9f63d8324279ed.svg",
     "index.html": "/K3MS/index.html",
     "main.abd013b4.css.map": "/K3MS/static/css/main.abd013b4.css.map",
-    "main.97e3a88b.js.map": "/K3MS/static/js/main.97e3a88b.js.map"
+    "main.3fa1ac27.js.map": "/K3MS/static/js/main.3fa1ac27.js.map"
   },
   "entrypoints": [
     "static/css/main.abd013b4.css",
-    "static/js/main.97e3a88b.js"
+    "static/js/main.3fa1ac27.js"
   ]
 }
