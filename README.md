@@ -70,7 +70,7 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
 - Follow the directions in `tests/README.md` to setup the environments.
 - Download the test database from Google Drive (app.db) with necessary users and entries. Also download the example Excel file.
 - Switch the backend mode to use the local database (in backend/.env, delete or comment out DATABASE_URI entry)
-- Start both servers with `./run_app.sh`z
+- Start both servers with `./run_app.sh`
 - Run the tests: 
     ```
     cd tests
