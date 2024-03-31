@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../hooks/useAuthContext';
-import { MANUAL_USER_CREATION_URL, USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL } from '../../config'
+import { MANUAL_USER_CREATION_URL, USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL, CHECK_AUTH_URL } from '../../config'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
+import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 
 import './useradmin.css'
 
 const UserAdmin = () => {
   const navigate = useNavigate()
 
-  const { user } = useAuthContext()
+  const { user, userDispatch } = useAuthContext()
   const { courseAnalyticsDispatch } = useCourseAnalyticsContext()
+  const { teamAssessmentsDispatch } = useTeamAssessmentsContext()
 
   // Create
   const [firstNameCreate, setfirstNameCreate] = useState('')
@@ -98,7 +100,7 @@ const UserAdmin = () => {
       setEmailCreate('')
       setPositionCreate('')
 
-      navigate('/dashboard', { state: { mssg: 'User Creation Process Started - Awaiting their response', status: 'ok' }})
+      navigate('/useradmin', { state: { mssg: 'User Creation Process Started - Awaiting their response', status: 'ok' }})
     }
   }
 
@@ -144,7 +146,7 @@ const UserAdmin = () => {
       // Clear users to choose and data that may contain info from them
       courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
 
-      navigate('/dashboard', { state: { mssg: 'User Created', status: 'ok' }})
+      navigate('/useradmin', { state: { mssg: 'User Created', status: 'ok' }})
     }
   }
 
@@ -177,7 +179,7 @@ const UserAdmin = () => {
         // Clear users to choose and data that may contain info from them
         courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
 
-        navigate('/dashboard', { state: { mssg: 'User Deleted', status: 'ok' }})
+        navigate('/useradmin', { state: { mssg: 'User Deleted', status: 'ok' }})
       }
     }
   }
@@ -213,8 +215,25 @@ const UserAdmin = () => {
 
       // Clear users to choose and data that may contain info from them
       courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
+      teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
 
-      navigate('/dashboard', { state: { mssg: json.mssg, status: 'ok' }})
+      // If the user updates their own account, update the user object
+      if (user.email === emailUpdate) {
+        // Send request to backend to get updated user
+        const check_auth = async () => {
+          const response = await fetch(CHECK_AUTH_URL, {
+            credentials: 'include'
+          })
+
+          if (response.ok) {
+            const json = await response.json()
+            userDispatch({ type: 'LOGIN', payload: json[0] })
+          }
+        }
+        check_auth()
+      }
+
+      navigate('/useradmin', { state: { mssg: json.mssg, status: 'ok' }})
     }
   }
 

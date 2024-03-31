@@ -33,9 +33,7 @@ describe('Test User Administration Functionality', () => {
       .type(Cypress.env('TmpTestProfessorPassword'))
 
     cy.contains('section', 'Create a User - Manual').contains('button', 'Create').click()
-
-    // Check that on dashboard page
-    cy.url().should('include', '/dashboard')
+    cy.contains('User Created')
   })
 
   it('Can Modify a User', () => {
@@ -45,9 +43,7 @@ describe('Test User Administration Functionality', () => {
       .type('SomeNewName')
 
     cy.contains('button', 'Update').click()
-
-    // Check that on dashboard page
-    cy.url().should('include', '/dashboard')
+    cy.contains('User Updated')
   })
 
   it("Can Delete a User", () => {
@@ -55,8 +51,6 @@ describe('Test User Administration Functionality', () => {
       .type(Cypress.env('TmpTestProfessorEmail'))
 
     cy.contains('button', 'Delete').click()
-
-    // Check that on dashboard page
-    cy.url().should('include', '/dashboard')
+    cy.contains('User Deleted')
   })
 })

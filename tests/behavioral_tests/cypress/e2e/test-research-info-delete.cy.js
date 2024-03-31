@@ -1,9 +1,10 @@
-const professsorGrantTitle = 'Research Info Test Grant Professor'
-const professorPubTitle = 'Research Info Test Publication Professor'
-const professorExpenYear = '2005'
-const chairGrantTitle = 'Research Info Test Grant Chair'
-const chairPubTitle = 'Research Info Test Publication Chair'
-const chairExpenYear = '2006'
+const professsorGrantTitle = 'Research Info Delete Test Grant Professor'
+const professsorGrantTitle2 = 'Research Info Delete Test Grant 2'
+const professorPubTitle = 'Research Info Delete Test Publication Professor'
+const professorExpenYear = '1990'
+const chairGrantTitle = 'Research Info Delete Test Grant Chair'
+const chairPubTitle = 'Research Info Delete Test Publication Chair'
+const chairExpenYear = '1991'
 
 describe('Research Info Test: Professor', () => {
   beforeEach(() => {
@@ -27,9 +28,30 @@ describe('Research Info Test: Professor', () => {
       .eq(2).type('2023')      
     cy.contains('section', 'Grant Information').find('button').first().click()
 
-    // Check that redirected to research-info and see grant
+    // add a second grant for later testing
+    cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.contains('section', 'Grant Information').find('input')
+      .eq(0).type(professsorGrantTitle2)
+    cy.contains('section', 'Grant Information').find('input')
+      .eq(1).type('10000')
+    cy.contains('section', 'Grant Information').find('input')
+      .eq(2).type('2023')      
+    cy.contains('section', 'Grant Information').find('button').first().click()
+
+    // Check that redirected to research-info
     cy.url().should('include', '/research-info')
+
+    // Check that grant is there
     cy.contains(professsorGrantTitle)
+
+  })
+  it("Professor Can delete a grant", () => {
+    // Delete the grant
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Grants').click()
+    cy.contains('tr', professsorGrantTitle).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(professsorGrantTitle).should('not.exist')
   })
   it("Professor Can Add a Publication", () => {
     // Visit pub info site
@@ -45,7 +67,17 @@ describe('Research Info Test: Professor', () => {
 
     // Check that redirected to research-info and see pub
     cy.url().should('include', '/research-info')
+
+    // Check that publication is there
     cy.contains(professorPubTitle)
+  })
+  it("Professor Can delete a publication", () => {
+    // Delete the publication
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Publications').click()
+    cy.contains('tr', professorPubTitle).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(professorPubTitle).should('not.exist')
   })
   it("Professor Can Add an Expenditure", () => {
     // Visit expen add form
@@ -67,7 +99,15 @@ describe('Research Info Test: Professor', () => {
     // Check that expenditure is there
     cy.contains(professorExpenYear)
   })
-  it('Professor Can\'t choose other people', () => {
+  it("Professor Can delete an expenditure", () => {
+    // Delete the expenditure
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Expenditures').click()
+    cy.contains('tr', professorExpenYear).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(professorExpenYear).should('not.exist')
+  })
+  it('Professor Can\'t delete data for other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('Choose Person').should('not.exist')
   })
@@ -85,7 +125,7 @@ describe('Research Info Test: Chair', () => {
     cy.contains('button', 'Log in').click()
     cy.url().should('include', '/dashboard') // make sure logged in
   })
-  it("Chair Can Upload a Grant", () => {
+  it("Chair Can Add a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(chairGrantTitle)
@@ -99,7 +139,15 @@ describe('Research Info Test: Chair', () => {
     cy.url().should('include', '/research-info')
     cy.contains(chairGrantTitle)
   })
-  it("Chair Can Upload a Publication", () => {
+  it("Chair Can delete a grant", () => {
+    // Delete the grant
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Grants').click()
+    cy.contains('tr', chairGrantTitle).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(chairGrantTitle).should('not.exist')
+  })
+  it("Chair Can Add a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
     cy.contains('Publication Information')
@@ -114,6 +162,14 @@ describe('Research Info Test: Chair', () => {
     // Check that redirected to research-info and see pub
     cy.url().should('include', '/research-info')
     cy.contains(chairPubTitle)
+  })
+  it("Chair Can delete a publication", () => {
+    // Delete the publication
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Publications').click()
+    cy.contains('tr', chairPubTitle).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(chairPubTitle).should('not.exist')
   })
   it("Chair Can Add an Expenditure", () => {
     // Visit expen add form
@@ -135,20 +191,30 @@ describe('Research Info Test: Chair', () => {
     // Check that expenditure is there
     cy.contains(chairExpenYear)
   })
-  it('Chair can choose other people and sees their info', () => {
+  it("Chair Can delete an expenditure", () => {
+    // Delete the expenditure
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.contains('div', 'Choose Page').contains('Expenditures').click()
+    cy.contains('tr', chairExpenYear).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(chairExpenYear).should('not.exist')
+  })
+  it('Chair can choose other people and see their info', () => {
+    cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(500)
+    cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
+    cy.get('.searchDropdownItem').eq(0).click()
+    // Check grants
+    cy.contains(professsorGrantTitle2)
+  })
+  it('Chair can choose other people and delete their info', () => {
+    // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.wait(100)
     cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
     cy.get('.searchDropdownItem').eq(0).click()
-    // Check grants
-    cy.contains(professsorGrantTitle)
-
-    // Check publications
-    cy.contains('div', 'Choose Page').contains('Publications').click()
-    cy.contains(professorPubTitle)
-
-    // Check expenditures
-    cy.contains('div', 'Choose Page').contains('Expenditures').click()
-    cy.contains(professorExpenYear)
+    cy.contains('tr', professsorGrantTitle2).find('button').click()
+    cy.on('window:confirm', () => { return true; });
+    cy.contains(professsorGrantTitle2).should('not.exist')
   })
 })

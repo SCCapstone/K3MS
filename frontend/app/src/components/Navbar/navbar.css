@@ -34,6 +34,7 @@
     font-weight: bold;
     color: black;
     text-align: center;
+    margin: 10px 0;
   }
 
   li a:hover {
@@ -107,4 +108,14 @@
 .navbarShow:hover {
   background-color: var(--bright-hover);
   cursor: pointer;
+}
+
+#profile_picture {
+  display: block;
+  object-fit: cover;
+  margin: 20px auto 10px auto;
+  border-radius: 50%;
+  width: 50%;
+  aspect-ratio : 1 / 1;
+  border: 1px solid black;
 }

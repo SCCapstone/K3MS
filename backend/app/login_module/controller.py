@@ -24,35 +24,40 @@ login_fields = [
 ]
 
 def login_controller(req):
-    
-    ret = validate_request(req, login_fields)
+    try:
+        ret = validate_request(req, login_fields)
 
-    if isinstance(ret, tuple):
-        return ret
-    
-    json_data = ret
+        if isinstance(ret, tuple):
+            return ret
+        
+        json_data = ret
 
-    # Get fields
-    email = json_data.get(login_fields[0])
-    password = json_data.get(login_fields[1])
+        # Get fields
+        email = json_data.get(login_fields[0])
+        password = json_data.get(login_fields[1])
 
-    # Make sure user exists
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
-    
-    # Make sure password is correct
-    if not check_password_hash(user.password_hash, password):
-        return dict(error='Incorrect password'), HTTPStatus.BAD_REQUEST
-    
-    # Log user in
-    login_user(user) # remember=True to remember user 
+        # Make sure user exists
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+        
+        # Make sure password is correct
+        if not check_password_hash(user.password_hash, password):
+            return dict(error='Incorrect password'), HTTPStatus.BAD_REQUEST
+        
+        # Log user in
+        login_user(user) # remember=True to remember user 
 
-    return [user], HTTPStatus.OK
+        return [user], HTTPStatus.OK
+    except:
+        return dict(error='Error logging in'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def logout_controller():
-    logout_user()
-    return dict(mssg='Logged out'), HTTPStatus.OK
+    try:
+        logout_user()
+        return dict(mssg='Logged out'), HTTPStatus.OK
+    except:
+        return dict(error='Error logging out'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def check_auth_controller():
     return [dict(
@@ -122,28 +127,43 @@ def update_user_controller(req):
         last_name = json_data.get('last_name')
         position = json_data.get('position')
 
+        print(email, position)
+
         # Make sure user exists
         user = User.query.filter_by(email=email).first()
         if not user:
             return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
 
-        # Make sure user is not a chair
-        if user.position == 'chair':
+        # Make sure user is not a chair (unless its the current user itself)
+        if user.position == 'chair' and user.email != current_user.email:
             return dict(error='You do not have authority to update this user'), HTTPStatus.BAD_REQUEST
 
         # if no fields are filled in, return no update
         if not first_name and not last_name and not position:
             return dict(mssg='No update'), HTTPStatus.OK
+        
         # Update User
+        first_name = first_name.strip() if first_name else user.first_name
+        last_name = last_name.strip() if last_name else user.last_name
+        position = position.strip() if position else user.position
 
-        user.first_name = first_name if first_name else user.first_name
-        user.last_name = last_name if last_name else user.last_name
-        user.position = position if position else user.position
+        # Make sure user is not trying to change their own position
+        if user.email == current_user.email and position != current_user.position:
+            return dict(error='You cannot change your own position'), HTTPStatus.BAD_REQUEST
+
+        # Make sure user with same first and last name doesn't already exist
+        user_check = User.query.filter_by(first_name=first_name, last_name=last_name).first()
+        if user_check and user_check.email != user.email:
+            return dict(error='User with same first and last name already exists'), HTTPStatus.BAD_REQUEST
+
+        user.first_name = first_name
+        user.last_name = last_name
+        user.position = position
         db.session.commit()
 
-        return dict(mssg='User Update'), HTTPStatus.OK
+        return dict(mssg='User Updated'), HTTPStatus.OK
 
-    except:
+    except Exception as e:
         return dict(error='Error updating user'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def create_user_controller(req):
@@ -273,7 +293,7 @@ def set_password_controller(req):
         return [user], HTTPStatus.OK
 
     except:
-        return dict(error='Error verifying hash'), HTTPStatus.INTERNAL_SERVER_ERROR
+        return dict(error='Error setting password'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def manual_create_user_controller(req):
     try:
