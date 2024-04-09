@@ -89,6 +89,10 @@
 /* Display One Column On Small Screen Sizes */ 
 @media (max-width: 1300px) {
   .dashboardBody { grid-template-columns: repeat(1, 1fr); }
+  .dashboardPlotCard {
+    grid-column: span 1;
+    width: 90%;
+  }
 }
 
 /* Display Two Columns On Medium to Large Screen Sizes */ 
