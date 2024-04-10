@@ -163,7 +163,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
-        researchInfoDispatch({type: 'SET_EXPEN', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
+        researchInfoDispatch({type: 'SET_EXPENS', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setExpenError(data?.error)
@@ -285,9 +285,9 @@ const ResearchInfo = () => {
             const temp_expens = expens.filter((p) => p.year != e.title)
             if (temp_expens.length === 0){
               setExpenError('No expenditures found for this user.')
-              researchInfoDispatch({type: 'SET_EXPEN', payload: null})
+              researchInfoDispatch({type: 'SET_EXPENS', payload: null})
             } else {
-              researchInfoDispatch({type: 'SET_EXPEN', payload: temp_expens})
+              researchInfoDispatch({type: 'SET_EXPENS', payload: temp_expens})
             }
 
           } else if (chosenPerson && e.email === chosenPerson.email){
@@ -301,7 +301,7 @@ const ResearchInfo = () => {
           }
 
           // Clear expen state in dashboard context
-          dashboardDispatch({type: 'SET_EXPEN', payload: null})
+          dashboardDispatch({type: 'SET_EXPENS', payload: null})
         }
       }
     }

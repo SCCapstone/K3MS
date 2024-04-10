@@ -309,8 +309,8 @@ const AccountSettings = () => {
           setDeleteExpensConfirm('')
 
           // Clear grant data
-          researchInfoDispatch({ type: 'SET_EXPEN', payload: null })
-          dashboardDispatch({ type: 'SET_EXPEN', payload: null })
+          researchInfoDispatch({ type: 'SET_EXPENS', payload: null })
+          dashboardDispatch({ type: 'SET_EXPENS', payload: null })
 
           navigate('/account-settings', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
         }
