@@ -24,6 +24,7 @@ function EvalUpload() {
   const [skippedRowsOverwrite, setSkippedRowsOverwrite] = useState(null)
   const [skippedRowsOther, setSkippedRowsOther] = useState(null)
   const [overwriteError, setOverwriteError] = useState(null)
+  const [overwriteProcessing, setOverwriteProcessing] = useState(false)
 
   // Don't allow non-logged in users or non-chairs to access this page
   useEffect(() => {
@@ -127,6 +128,11 @@ function EvalUpload() {
   }
   const overwriteNone = () => {
     // send request with empty list
+    if (overwriteProcessing) {
+      setOverwriteError('Evaluation Overwrite is currently being processed')
+      return
+    }
+    setOverwriteProcessing(true)
     setSkippedRowsOverwrite(null)
     setError(null)
     setOverwriteError(null)
@@ -141,9 +147,11 @@ function EvalUpload() {
       });
       if (!response.ok) {
         const json = await response.json()
+        setOverwriteProcessing(false)
         setOverwriteError(json?.error)
       }
       else {
+        setOverwriteProcessing(false)
         navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - No Data Overwritten', status: 'ok' }})
       }
     }
@@ -151,6 +159,10 @@ function EvalUpload() {
   }
   const confirmOverwrite = () => {
     // show button to confirm overwrite
+    if (overwriteProcessing) {
+      setOverwriteError('Evaluation Overwrite is currently being processed')
+      return
+    }
     if (skippedRowsOverwrite.filter(row => row.checked).length === 0) {
       setOverwriteError('No rows selected to overwrite')
       return
@@ -158,6 +170,8 @@ function EvalUpload() {
     const response = window.confirm("Are you sure you want to overwrite the selected rows?");
     if (response) {
       // send request with list of rows to overwrite
+      setOverwriteProcessing(true)
+      setOverwriteError(null)
       const sendRequest = async () => {
         const postResponse = await fetch(EVAL_OVERWRITE_URL, {
           method: 'POST',
@@ -169,9 +183,11 @@ function EvalUpload() {
         })
         if (!postResponse.ok) {
           const json = await postResponse.json()
+          setOverwriteProcessing(false)
           setOverwriteError(json?.error)
         }
         else {
+          setOverwriteProcessing(false)
           setSkippedRowsOverwrite(null)
           setOverwriteError(null)
           navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
@@ -241,6 +257,7 @@ function EvalUpload() {
                   </table>
                 </div>
                 { overwriteError && <div className="errorField">{ overwriteError }</div> }
+                { overwriteProcessing && <div>Processing...</div>}
                 <div className='evalupload_skippedRowsButtons'>
                   <button onClick={ overwriteNone }>Ignore All</button>
                   <button onClick={ confirmOverwrite }>Overwrite Selected</button>
