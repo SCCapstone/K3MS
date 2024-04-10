@@ -27,7 +27,7 @@ export const researchInfoReducer = (state, action) => {
         ...state, 
         pubs: state.pubs ? state.pubs.concat(action.payload) : action.payload
       }
-    case 'SET_EXPEN':
+    case 'SET_EXPENS':
         return { 
           ...state, 
           expens: action.payload
