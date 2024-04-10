@@ -4,7 +4,7 @@ import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate, useLocation } from "react-router-dom";
 import './set-password.css';
 
-const Login = () => {
+const SetPassword = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -52,7 +52,6 @@ const Login = () => {
       return
     }
 
-    // Login at LOGIN_URL to get auth cookie from backend
     const response = await fetch(SET_PASSWORD_URL, {
       method: 'POST',
       credentials: 'include',
@@ -110,4 +109,4 @@ const Login = () => {
   );
 }
 
-export default Login;
+export default SetPassword;

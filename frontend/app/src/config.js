@@ -53,6 +53,8 @@ module.exports = global.config = {
     DELETE_ENTRY_URL: BASE_URL + "delete_entry",
 
     SET_PASSWORD_URL: BASE_URL + "set_password",
+    RESET_PASSWORD_EMAIL_URL: BASE_URL + "reset_password_email",
+    RESET_PASSWORD_URL: BASE_URL + "reset_password",
 
     DEC_PLACES: 2
 }
