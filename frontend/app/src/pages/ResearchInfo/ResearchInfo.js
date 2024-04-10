@@ -301,7 +301,7 @@ const ResearchInfo = () => {
           }
 
           // Clear expen state in dashboard context
-          dashboardDispatch({type: 'SET_EXPEN', payload: null})
+          dashboardDispatch({type: 'SET_EXPENS', payload: null})
         }
       }
     }
