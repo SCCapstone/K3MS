@@ -25,11 +25,13 @@ class Config:
     EMAIL = os.getenv("EMAIL")
     EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
     FRONTEND_SET_PASSWORD_URL = os.getenv("FRONTEND_SET_PASSWORD_URL")
+    FRONTEND_RESET_PASSWORD_URL = os.getenv("FRONTEND_RESET_PASSWORD_URL")
 
     assert SESSION_SECRET_KEY is not None, "Please set the SESSION_SECRET_KEY environment variable"
     assert EMAIL is not None, "Please set the EMAIL environment variable"
     assert EMAIL_PASSWORD is not None, "Please set the EMAIL_PASSWORD environment variable"
     assert FRONTEND_SET_PASSWORD_URL is not None, "Please set the FRONTEND_SET_PASSWORD_URL environment variable"
+    assert FRONTEND_RESET_PASSWORD_URL is not None, "Please set the FRONTEND_RESET_PASSWORD_URL environment variable"
 
     # These strings are exactly as they appear in the excel sheet - dont modify them
     QUESTIONS = {

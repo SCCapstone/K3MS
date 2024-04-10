@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { SET_PASSWORD_URL } from '../../config';
+import { RESET_PASSWORD_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate, useLocation } from "react-router-dom";
-import './set-password.css';
+import './reset-password.css';
 
-const SetPassword = () => {
+const ResetPassword = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -31,8 +31,7 @@ const SetPassword = () => {
     }
   })
 
-
-  const setPasswordPost = async (e) => {
+  const resetPasswordPost = async (e) => {
     e.preventDefault()
 
     // Email and hash must be defined
@@ -52,7 +51,7 @@ const SetPassword = () => {
       return
     }
 
-    const response = await fetch(SET_PASSWORD_URL, {
+    const response = await fetch(RESET_PASSWORD_URL, {
       method: 'POST',
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
@@ -77,7 +76,7 @@ const SetPassword = () => {
       setConfirmPassword('')
 
       // Navigate to dashboard
-      navigate('/login', { state: { mssg: 'Password Saved', status: 'ok' }})
+      navigate('/login', { state: { mssg: 'Password Reset', status: 'ok' }})
     }
   };
 
@@ -85,8 +84,8 @@ const SetPassword = () => {
     <>
       <h1 className="setPasswordHeader">USC Dashboard</h1>
       <section className="setPasswordCard">
-        <h1>Set Password for {email}</h1>
-        <form className="setPassword" onSubmit={ setPasswordPost }>
+        <h1>Reset Password for {email}</h1>
+        <form className="setPassword" onSubmit={ resetPasswordPost }>
             <input 
               type="password" 
               onChange={(e) => setPassword(e.target.value)} 
@@ -101,7 +100,7 @@ const SetPassword = () => {
               placeholder="Confirm Password"
               className={ emptyFields.includes('confirmPassword') ? 'errorField' : '' }
             />
-            <button>Set Password</button>
+            <button>Reset Password</button>
             {error && <div className="errorField">{ error }</div>}
         </form>
       </section>
@@ -109,4 +108,4 @@ const SetPassword = () => {
   );
 }
 
-export default SetPassword;
+export default ResetPassword;

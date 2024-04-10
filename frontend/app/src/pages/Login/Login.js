@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LOGIN_URL } from '../../config';
+import { LOGIN_URL, RESET_PASSWORD_EMAIL_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useNavigate } from "react-router-dom";
 import Alert from '../../components/Alert/Alert'
@@ -62,6 +62,32 @@ const Login = () => {
     }
   };
 
+  const resetPassword = async () => {
+    // Prompt backend to send reset password email
+    const response = await fetch(RESET_PASSWORD_EMAIL_URL, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: email
+      })
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      setError(json.error)
+      if (json.empty_fields)
+        setEmptyFields(json.empty_fields)
+    }
+    if (response.ok) {
+      setError(null)
+      setEmptyFields([])
+      setEmail('')
+      setPassword('')
+
+      navigate('/login', { state: { mssg: 'Reset Password Email Sent', status: 'ok' }})
+    }
+  }
+
   return (
     <>
       <Alert />
@@ -86,6 +112,7 @@ const Login = () => {
             <button>Log in</button>
             {error && <div className="errorField">{ error }</div>}
         </form>
+        <p onClick={ resetPassword } >Forget Password?</p>
       </section>
     </>
   );

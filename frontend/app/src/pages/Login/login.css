@@ -16,6 +16,7 @@
   box-shadow: 1px 0px 4px black;
   border-radius: 20px;
   width: 40%;
+  text-align: center;
 }
 
 .loginCard h1 {
@@ -62,6 +63,17 @@
 .loginCard button:hover {
   /* background:linear-gradient(to bottom, #34CACA 5%, #30C9C9 100%); */
   background-color: var(--hover);
+}
+
+.loginCard p {
+  display: inline-block;
+  margin: 10px auto;
+}
+
+.loginCard p:hover {
+  color: var(--hover);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .loginCard .errorField {
