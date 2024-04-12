@@ -361,51 +361,56 @@ const AccountSettings = () => {
                 {deletePictureError && <div className="errorField">{ deletePictureError }</div>}
             </form>
           </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Grants</h1>
+              <form className="updatePassword" onSubmit={ deleteAllGrants  }>
+                  <label><b><u>Type:</u></b> { grantsConfirmationText }</label>
+                  <input 
+                    type="text" 
+                    onChange={(e) => setDeleteGrantsConfirm(e.target.value)} 
+                    value={ deleteGrantsConfirm } 
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Grants</button>
+                  {grantsError && <div className="errorField">{ grantsError }</div>}
+              </form>
+            </section>
+          }
 
-          <section className="updatePasswordCard">
-            <h1>Delete All Grants</h1>
-            <form className="updatePassword" onSubmit={ deleteAllGrants  }>
-                <label><b><u>Type:</u></b> { grantsConfirmationText }</label>
-                <input 
-                  type="text" 
-                  onChange={(e) => setDeleteGrantsConfirm(e.target.value)} 
-                  value={ deleteGrantsConfirm } 
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Grants</button>
-                {grantsError && <div className="errorField">{ grantsError }</div>}
-            </form>
-          </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Publications</h1>
+              <form className="updatePassword" onSubmit={ deleteAllPubs }>
+                  <label><b><u>Type:</u></b> { pubsConfirmationText }</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setDeletePubsConfirm(e.target.value)}
+                    value={ deletePubsConfirm }
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Publications</button>
+                  {pubsError && <div className="errorField">{ pubsError }</div>}
+              </form>
+            </section>
+          }
 
-          <section className="updatePasswordCard">
-            <h1>Delete All Publications</h1>
-            <form className="updatePassword" onSubmit={ deleteAllPubs }>
-                <label><b><u>Type:</u></b> { pubsConfirmationText }</label>
-                <input
-                  type="text"
-                  onChange={(e) => setDeletePubsConfirm(e.target.value)}
-                  value={ deletePubsConfirm }
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Publications</button>
-                {pubsError && <div className="errorField">{ pubsError }</div>}
-            </form>
-          </section>
-
-          <section className="updatePasswordCard">
-            <h1>Delete All Expenditures</h1>
-            <form className="updatePassword" onSubmit={ deleteAllExpens }>
-                <label><b><u>Type:</u></b> { expensConfirmationText }</label>
-                <input
-                  type="text"
-                  onChange={(e) => setDeleteExpensConfirm(e.target.value)}
-                  value={ deleteExpensConfirm }
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Expenditures</button>
-                {expensError && <div className="errorField">{ expensError }</div>}
-            </form>
-          </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Expenditures</h1>
+              <form className="updatePassword" onSubmit={ deleteAllExpens }>
+                  <label><b><u>Type:</u></b> { expensConfirmationText }</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setDeleteExpensConfirm(e.target.value)}
+                    value={ deleteExpensConfirm }
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Expenditures</button>
+                  {expensError && <div className="errorField">{ expensError }</div>}
+              </form>
+            </section>
+          }
 
           { user && user.position == 'chair' &&
             <section className="updatePasswordCard">
