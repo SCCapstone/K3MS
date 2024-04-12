@@ -1,5 +1,6 @@
 .mainLayout {
     margin-left: var(--nav-width);
+    overflow-x: hidden;
 }
 
 .mainLayoutCollapsed {
