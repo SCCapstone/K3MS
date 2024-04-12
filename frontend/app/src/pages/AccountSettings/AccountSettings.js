@@ -161,7 +161,7 @@ const AccountSettings = () => {
     }
 
     const handleDeletePicture = async (e) => {
-      const alertResponse = window.confirm("Are you sure you want to delete all student evaluation data? This cannot be undone.");
+      const alertResponse = window.confirm("Are you sure you want to delete your profile picture?");
       if (!alertResponse) {
         return
       }
