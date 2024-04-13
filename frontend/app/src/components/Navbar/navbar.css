@@ -7,6 +7,11 @@
     margin: 0;
     overflow: auto;
     transition: 0.05s;
+    direction:rtl;
+}
+
+.navbar * {
+    direction: ltr;
 }
 
 .navbar .buttons button {
