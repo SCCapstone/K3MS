@@ -48,10 +48,14 @@
     padding: 8px;
     text-align: center;
 }
-/* 
-.publicationTable {
-  font-size: 0.75em;
-} */
+
+.grantList li{
+  font-weight: bold;
+}
+
+.grantInfo {
+  font-weight: normal;
+}
 
 .dashboardBody button {
   width: 30%;

@@ -355,50 +355,40 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && grants) || (chosenPerson && otherUserGrants) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Amount</th>
-                      <th>Grant Year</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="grantList">
                   { chosenPerson ?
                     otherUserGrants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <p>{ grant.title }
+                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </p>
+                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                        </li>
                       )
                     }) : 
                     grants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <p>{ grant.title }
+                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </p>
+                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                        </li>
                       )
                     })  
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
               }
             </div>

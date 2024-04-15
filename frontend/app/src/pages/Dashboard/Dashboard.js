@@ -102,26 +102,16 @@ const Dashboard = () => {
               {grantsError && <p className='DashboardError'>{grantsError}</p>}
               <div className="dashboardTable">
                 { grants ?
-                  <table className="grantTable">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Grant Year</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <ol className="grantList">
                     { grants.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <p className="grantTitle">{ grant.title }</p>
+                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                        </li>
                       )
                     })}
-                    </tbody>
-                  </table>
+                  </ol>
                   : grantsError ? '' : <p>Loading...</p>
                 }
               </div>
