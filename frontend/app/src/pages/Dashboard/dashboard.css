@@ -57,12 +57,20 @@
   font-weight: normal;
 }
 
+.grantList p{
+  margin: 15px;
+}
+
 .publicationList li{
   font-weight: bold;
 }
 
 .publicationInfo {
   font-weight: normal;
+}
+
+.publicationList p{
+  margin: 15px;
 }
 
 .dashboardBody button {
