@@ -35,6 +35,14 @@
   font-weight: normal;
 }
 
+.publicationList li{
+  font-weight: bold;
+}
+
+.publicationInfo {
+  font-weight: normal;
+}
+
 .options {
   width: 60%;
 }

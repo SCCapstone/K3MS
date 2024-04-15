@@ -402,50 +402,37 @@ const ResearchInfo = () => {
           <div className="researchInfoCardContent">
             <div className="researchInfoTable">
               { (!chosenPerson && pubs) || (chosenPerson && otherUserPubs) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Authors</th>
-                      <th>Publication Year</th>
-                      <th>ISBN</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="publicationList">
                   { chosenPerson ?
                     otherUserPubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <p>{ pub.title }
+                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                              <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </p>
+                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                        </li>
                       )}) :
                     pubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <p>{ pub.title }
+                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                              <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </p>
+                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                        </li>
                       )
                     })
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
               }
             </div>
