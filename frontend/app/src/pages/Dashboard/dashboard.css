@@ -57,6 +57,14 @@
   font-weight: normal;
 }
 
+.publicationList li{
+  font-weight: bold;
+}
+
+.publicationInfo {
+  font-weight: normal;
+}
+
 .dashboardBody button {
   width: 30%;
   height: 50%;

@@ -100,7 +100,6 @@ const Dashboard = () => {
             </div>
             <div className="dashboardCardContent">
               {grantsError && <p className='DashboardError'>{grantsError}</p>}
-              <div className="dashboardTable">
                 { grants ?
                   <ol className="grantList">
                     { grants.map((grant) => {
@@ -115,8 +114,7 @@ const Dashboard = () => {
                   : grantsError ? '' : <p>Loading...</p>
                 }
               </div>
-            </div>
-          </div> : ''
+            </div> : ''
         }
         { user && (user.position === 'chair' || user.position === 'professor') ?
           <div className='dashboardCard'>
@@ -126,35 +124,21 @@ const Dashboard = () => {
             </div>
             <div className="dashboardCardContent">
               {pubsError && <p className='DashboardError'>{pubsError}</p>}
-              <div className="dashboardTable">
                 { pubs ?
-                  <table className="publicationTable">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Authors</th>
-                        <th>Year</th>
-                        <th>ISBN</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <ol className="publicationList">
                     { pubs.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <p>{ pub.title }</p>
+                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                        </li>
                       )
                     })}
-                    </tbody>
-                  </table>
+                  </ol>
                   : pubsError ? '' : <p>Loading...</p>
                 }
               </div>
-            </div>
-          </div> : ''
+            </div>: ''
         }
         { user && (user.position === 'chair' || user.position === 'professor') ?
           <div className='dashboardCard'>
