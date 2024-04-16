@@ -100,33 +100,21 @@ const Dashboard = () => {
             </div>
             <div className="dashboardCardContent">
               {grantsError && <p className='DashboardError'>{grantsError}</p>}
-              <div className="dashboardTable">
                 { grants ?
-                  <table className="grantTable">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Amount</th>
-                        <th>Grant Year</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <ol className="grantList">
                     { grants.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <p className="grantTitle">{ grant.title }</p>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
+                        </li>
                       )
                     })}
-                    </tbody>
-                  </table>
+                  </ol>
                   : grantsError ? '' : <p>Loading...</p>
                 }
               </div>
-            </div>
-          </div> : ''
+            </div> : ''
         }
         { user && (user.position === 'chair' || user.position === 'professor') ?
           <div className='dashboardCard'>
@@ -136,35 +124,22 @@ const Dashboard = () => {
             </div>
             <div className="dashboardCardContent">
               {pubsError && <p className='DashboardError'>{pubsError}</p>}
-              <div className="dashboardTable">
                 { pubs ?
-                  <table className="publicationTable">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Authors</th>
-                        <th>Year</th>
-                        <th>ISBN</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <ol className="publicationList">
                     { pubs.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <p>{ pub.title }</p>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
+                        </li>
                       )
                     })}
-                    </tbody>
-                  </table>
+                  </ol>
                   : pubsError ? '' : <p>Loading...</p>
                 }
               </div>
-            </div>
-          </div> : ''
+            </div>: ''
         }
         { user && (user.position === 'chair' || user.position === 'professor') ?
           <div className='dashboardCard'>
