@@ -7,6 +7,7 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
+import ConfirmAlert from '../../components/ConfirmAlert/ConfirmAlert';
 import './accountsettings.css';
 
 const confirmation_text = "I want to delete all student evaluations in the database"
@@ -53,6 +54,10 @@ const AccountSettings = () => {
     const [pictureProcessing, setPictureProcessing] = useState(false)
 
     const [deletePictureError, setDeletePictureError] = useState(null)
+
+    const [showConfirmAlert, setShowConfirmAlert] = useState(false)
+    const [confirmationText, setConfirmationText] = useState('')
+    const [confirmationFunc, setConfirmationFunc] = useState(() => {})
 
     const updatePassword = async (e) => {
         e.preventDefault()
@@ -160,12 +165,12 @@ const AccountSettings = () => {
       }
     }
 
-    const handleDeletePicture = async (e) => {
-      const alertResponse = window.confirm("Are you sure you want to delete your profile picture?");
-      if (!alertResponse) {
-        return
-      }
-      e.preventDefault()
+    const handleDeletePicture = async () => {
+      // const alertResponse = window.confirm("Are you sure you want to delete your profile picture?");
+      // if (!alertResponse) {
+      //   return
+      // }
+      console.log('deleting')
       const response = await fetch(DELETE_PROFILE_PICTURE_URL, {
         method: 'DELETE',
         credentials: 'include',
@@ -317,8 +322,23 @@ const AccountSettings = () => {
       }
     }
 
+    const handleDeleteSomething = (e, confirmationFunc, confirmationText) => {
+      e.preventDefault()
+      console.log(confirmationFunc)
+      setConfirmationText(confirmationText)
+      setConfirmationFunc(confirmationFunc)
+      setShowConfirmAlert(true)
+    }
+
     return (
         <>
+          { showConfirmAlert && 
+            <ConfirmAlert 
+              mssg={ confirmationText }
+              onConfirm={ confirmationFunc } 
+              onCancel={ () => setShowConfirmAlert(false) }
+            />
+          }
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
 
           <section className="updatePasswordCard">
@@ -356,7 +376,10 @@ const AccountSettings = () => {
 
           <section className="updatePasswordCard">
             <h1>Delete Profile Picture</h1>
-            <form onSubmit={handleDeletePicture} className="evalupload-form">
+            <form 
+              onSubmit={ (e) => handleDeleteSomething(e, handleDeletePicture, "Are you sure you want to delete your profile picture?")  } 
+              className="evalupload-form"
+            >
                 <button type="submit" className="evalupload-form-button">Delete Profile Picture</button>
                 {deletePictureError && <div className="errorField">{ deletePictureError }</div>}
             </form>
