@@ -6,7 +6,7 @@ const chairGrantTitle = 'Research Info Delete Test Grant Chair'
 const chairPubTitle = 'Research Info Delete Test Publication Chair'
 const chairExpenYear = '1991'
 
-describe('Research Info Test: Professor', () => {
+describe('Research Info Delete Test: Professor', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('baseUrl'))
     cy.contains('Log In')
@@ -49,7 +49,7 @@ describe('Research Info Test: Professor', () => {
     // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Grants').click()
-    cy.contains('tr', professsorGrantTitle).find('button').click()
+    cy.contains('li', professsorGrantTitle).find('button').click()
     cy.on('window:confirm', () => { return true; });
     cy.contains(professsorGrantTitle).should('not.exist')
   })
@@ -75,7 +75,7 @@ describe('Research Info Test: Professor', () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Publications').click()
-    cy.contains('tr', professorPubTitle).find('button').click()
+    cy.contains('li', professorPubTitle).find('button').click()
     cy.on('window:confirm', () => { return true; });
     cy.contains(professorPubTitle).should('not.exist')
   })
@@ -113,7 +113,7 @@ describe('Research Info Test: Professor', () => {
   })
 })
 
-describe('Research Info Test: Chair', () => {
+describe('Research Info Delete Test: Chair', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('baseUrl'))
     cy.contains('Log In')
@@ -143,7 +143,7 @@ describe('Research Info Test: Chair', () => {
     // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Grants').click()
-    cy.contains('tr', chairGrantTitle).find('button').click()
+    cy.contains('li', chairGrantTitle).find('button').click()
     cy.on('window:confirm', () => { return true; });
     cy.contains(chairGrantTitle).should('not.exist')
   })
@@ -167,7 +167,7 @@ describe('Research Info Test: Chair', () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Publications').click()
-    cy.contains('tr', chairPubTitle).find('button').click()
+    cy.contains('li', chairPubTitle).find('button').click()
     cy.on('window:confirm', () => { return true; });
     cy.contains(chairPubTitle).should('not.exist')
   })
@@ -213,7 +213,7 @@ describe('Research Info Test: Chair', () => {
     cy.wait(100)
     cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
     cy.get('.searchDropdownItem').eq(0).click()
-    cy.contains('tr', professsorGrantTitle2).find('button').click()
+    cy.contains('li', professsorGrantTitle2).find('button').click()
     cy.on('window:confirm', () => { return true; });
     cy.contains(professsorGrantTitle2).should('not.exist')
   })

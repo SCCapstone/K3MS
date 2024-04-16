@@ -355,50 +355,42 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && grants) || (chosenPerson && otherUserGrants) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Amount</th>
-                      <th>Grant Year</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="grantList">
                   { chosenPerson ?
                     otherUserGrants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>  
+                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>   
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
+                        </li>
                       )
                     }) : 
                     grants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                                  <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
+                        </li>
                       )
                     })  
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
               }
             </div>
@@ -410,52 +402,43 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && pubs) || (chosenPerson && otherUserPubs) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Authors</th>
-                      <th>Publication Year</th>
-                      <th>ISBN</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="publicationList">
                   { chosenPerson ?
                     otherUserPubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
+                              <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
+                        </li>
                       )}) :
                     pubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
+                        </li>
                       )
                     })
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
               }
             </div>
