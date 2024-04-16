@@ -106,7 +106,7 @@ const Dashboard = () => {
                       return (
                         <li key={ grant.title }>
                           <p className="grantTitle">{ grant.title }</p>
-                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
                         </li>
                       )
                     })}
@@ -130,7 +130,8 @@ const Dashboard = () => {
                       return (
                         <li key={ pub.title }>
                           <p>{ pub.title }</p>
-                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
                         </li>
                       )
                     })}

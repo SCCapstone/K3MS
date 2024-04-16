@@ -5,7 +5,7 @@
   color: var(--cardtext);
   box-shadow: 1px 0px 4px black;
   border-radius: 20px;
-  width: 55%;
+  width: 80%;
 }
 
 .researchInfoCard h1 {
@@ -23,6 +23,25 @@
 
 .researchInfoBodyCard .researchInfoCardContent {
   overflow-x: auto;
+}
+
+.researchInfoTable {
+  margin: 20px 0px;
+}
+.researchInfoTable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.researchInfoTable th, .researchInfoTable td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.researchInfoTable th:last-child, .researchInfoTable td:last-child {
+  width: 90px;
+  text-align: center;
 }
 
 .grantList li{
@@ -48,6 +67,11 @@
 
 .publicationInfo {
   font-weight: normal;
+}
+
+.researchInfoItemTitle {
+  display: flex;
+  justify-content: space-between;
 }
 
 .options {

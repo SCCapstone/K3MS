@@ -364,12 +364,13 @@ const ResearchInfo = () => {
                     })?.map((grant) => {
                       return (
                         <li key={ grant.title }>
-                          <p>{ grant.title }
-                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>  
+                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
                                 <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                            </button>
-                          </p>
-                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                            </button>   
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
                         </li>
                       )
                     }) : 
@@ -378,12 +379,13 @@ const ResearchInfo = () => {
                     })?.map((grant) => {
                       return (
                         <li key={ grant.title }>
-                          <p>{ grant.title }
-                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
-                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                            </button>
-                          </p>
-                          <p className="grantInfo">${ grant.amount }; {grant.year}</p>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                                  <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
                         </li>
                       )
                     })  
@@ -400,7 +402,7 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && pubs) || (chosenPerson && otherUserPubs) ?
                 <ol className="publicationList">
                   { chosenPerson ?
@@ -409,12 +411,14 @@ const ResearchInfo = () => {
                     })?.map((pub) => {
                       return (
                         <li key={ pub.title }>
-                          <p>{ pub.title }
-                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
                               <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
                             </button>
-                          </p>
-                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
                         </li>
                       )}) :
                     pubs?.filter((pub) => {
@@ -422,12 +426,14 @@ const ResearchInfo = () => {
                     })?.map((pub) => {
                       return (
                         <li key={ pub.title }>
-                          <p>{ pub.title }
-                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
-                              <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                            </button>
-                          </p>
-                          <p className="publicationInfo">{pub.authors} {pub.isbn ? `; ISBN ${pub.isbn};` : ';'} {pub.publication_year}</p>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
                         </li>
                       )
                     })

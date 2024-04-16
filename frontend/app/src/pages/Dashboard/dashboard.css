@@ -33,11 +33,13 @@
 }
 
 .dashboardCardContent {
-  padding: 50px 50px;
+  padding: 0px 50px;
   font-size: 1.5em;
   /* text-align: center; */
 }
-
+.dashboardTable {
+  margin: 20px 0px;
+}
 .dashboardTable table {
   border-collapse: collapse;
   width: 100%;
