@@ -6,6 +6,7 @@ import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext
 import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useNavigate } from "react-router-dom";
+import ConfirmAlert from '../../components/ConfirmAlert/ConfirmAlert';
 import './evalupload.css';
 
 function EvalUpload() {
@@ -25,6 +26,14 @@ function EvalUpload() {
   const [skippedRowsOther, setSkippedRowsOther] = useState(null)
   const [overwriteError, setOverwriteError] = useState(null)
   const [overwriteProcessing, setOverwriteProcessing] = useState(false)
+
+  // Alert
+  const [confirmationMssg, setConfirmationMssg] = useState('')
+  const [confirmationFunc, setConfirmationFunc] = useState(() => {})
+  const handleDeleteSomething = (confirmationFunc, confirmationMssg) => {
+    setConfirmationMssg(confirmationMssg)
+    setConfirmationFunc(() => confirmationFunc)
+  }
 
   // Don't allow non-logged in users or non-chairs to access this page
   useEffect(() => {
@@ -167,38 +176,41 @@ function EvalUpload() {
       setOverwriteError('No rows selected to overwrite')
       return
     }
-    const response = window.confirm("Are you sure you want to overwrite the selected rows?");
-    if (response) {
-      // send request with list of rows to overwrite
-      setOverwriteProcessing(true)
-      setOverwriteError(null)
-      const sendRequest = async () => {
-        const postResponse = await fetch(EVAL_OVERWRITE_URL, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ rows: skippedRowsOverwrite.filter(row => row.checked) })
-        })
-        if (!postResponse.ok) {
-          const json = await postResponse.json()
-          setOverwriteProcessing(false)
-          setOverwriteError(json?.error)
-        }
-        else {
-          setOverwriteProcessing(false)
-          setSkippedRowsOverwrite(null)
-          setOverwriteError(null)
-          navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
-        }
+    // send request with list of rows to overwrite
+    setOverwriteProcessing(true)
+    setOverwriteError(null)
+    const sendRequest = async () => {
+      const postResponse = await fetch(EVAL_OVERWRITE_URL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ rows: skippedRowsOverwrite.filter(row => row.checked) })
+      })
+      if (!postResponse.ok) {
+        const json = await postResponse.json()
+        setOverwriteProcessing(false)
+        setOverwriteError(json?.error)
       }
-      sendRequest()
+      else {
+        setOverwriteProcessing(false)
+        setSkippedRowsOverwrite(null)
+        setOverwriteError(null)
+        navigate('/student-evals', { state: { mssg: 'Evaluation Uploaded - Data Overwritten', status: 'ok' }})
+      }
     }
+    sendRequest()
   }
 
   return (
     <div>
+      <ConfirmAlert 
+        mssg={ confirmationMssg }
+        setMssg={ setConfirmationMssg }
+        onConfirm={ confirmationFunc } 
+        onCancel={ () => {} }
+      />
       <div className="evalupload-container">
         <h1 className="evaluploadPageHeader">Upload Student Evaluations Form</h1>
         <section className="EvalUpload">
@@ -260,7 +272,9 @@ function EvalUpload() {
                 { overwriteProcessing && <div>Processing...</div>}
                 <div className='evalupload_skippedRowsButtons'>
                   <button onClick={ overwriteNone }>Ignore All</button>
-                  <button onClick={ confirmOverwrite }>Overwrite Selected</button>
+                  <button 
+                    onClick={ () => handleDeleteSomething(confirmOverwrite, "Are you sure you want to overwrite the selected rows?") }
+                  >Overwrite Selected</button>
                 </div>
             </div>
           }

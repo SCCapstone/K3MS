@@ -73,8 +73,10 @@ describe('Research Info Test: Professor', () => {
   })
 })
 
+
 describe('Research Info Test: Chair', () => {
   beforeEach(() => {
+  cy.wait(100)
     cy.visit(Cypress.env('baseUrl'))
     cy.contains('Log In')
     cy.visit(Cypress.env('baseUrl'))

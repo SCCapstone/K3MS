@@ -51,6 +51,7 @@ describe('Test User Administration Functionality', () => {
       .type(Cypress.env('TmpTestProfessorEmail'))
 
     cy.contains('button', 'Delete').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains('User Deleted')
   })
 })

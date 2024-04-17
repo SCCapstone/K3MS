@@ -4,6 +4,7 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import { MANUAL_USER_CREATION_URL, USER_CREATION_URL, USER_UPDATE_URL, USER_DELETION_URL, CHECK_AUTH_URL } from '../../config'
 import { useCourseAnalyticsContext } from '../../hooks/useCourseAnalyticsContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
+import ConfirmAlert from '../../components/ConfirmAlert/ConfirmAlert';
 
 import './useradmin.css'
 
@@ -46,6 +47,14 @@ const UserAdmin = () => {
   const [deleteError, setDeleteError] = useState('')
   const [deleteEmptyFields, setDeleteEmptyFields] = useState([])
 
+  // Alert
+  const [confirmationMssg, setConfirmationMssg] = useState('')
+  const [confirmationFunc, setConfirmationFunc] = useState(() => {})
+  const handleDeleteSomething = (e, confirmationFunc, confirmationMssg) => {
+    e.preventDefault()
+    setConfirmationMssg(confirmationMssg)
+    setConfirmationFunc(() => confirmationFunc)
+  }
   // Don't allow non-logged in users or non-chairs to access this page
   useEffect(() => {
     if (!user) {
@@ -150,37 +159,33 @@ const UserAdmin = () => {
     }
   }
 
-  const deleteUser = async (e) => {
-    e.preventDefault()
+  const deleteUser = async () => {
 
-    const alertResponse = window.confirm("Are you sure you want to delete this user and all associated data?");
-    if (alertResponse) {
-      const response = await fetch(USER_DELETION_URL, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          email: emailDelete
-        })
+    const response = await fetch(USER_DELETION_URL, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: emailDelete
       })
+    })
 
-      const json = await response.json()
-      if (!response.ok) {
-        console.log(json)
-        setDeleteError(json.error)
-        if (json.empty_fields)
-          setDeleteEmptyFields(json.empty_fields)
-      }
-      if (response.ok) {
-        setDeleteError(null)
-        setDeleteEmptyFields([])
-        setEmailDelete('')
-        
-        // Clear users to choose and data that may contain info from them
-        courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
+    const json = await response.json()
+    if (!response.ok) {
+      console.log(json)
+      setDeleteError(json.error)
+      if (json.empty_fields)
+        setDeleteEmptyFields(json.empty_fields)
+    }
+    if (response.ok) {
+      setDeleteError(null)
+      setDeleteEmptyFields([])
+      setEmailDelete('')
+      
+      // Clear users to choose and data that may contain info from them
+      courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
 
-        navigate('/useradmin', { state: { mssg: 'User Deleted', status: 'ok' }})
-      }
+      navigate('/useradmin', { state: { mssg: 'User Deleted', status: 'ok' }})
     }
   }
 
@@ -239,6 +244,12 @@ const UserAdmin = () => {
 
   return (
     <>
+      <ConfirmAlert 
+        mssg={ confirmationMssg }
+        setMssg={ setConfirmationMssg }
+        onConfirm={ confirmationFunc } 
+        onCancel={ () => {} }
+      />
       <h1 className="userCreationPageHeader">User Administration</h1>
       <section className="userCreationCard">
         <h1>Create a User</h1>
@@ -368,7 +379,10 @@ const UserAdmin = () => {
       </section>
       <section className="userCreationCard">
         <h1>Delete a User</h1>
-        <form className="userCreationForm" onSubmit={ (e) => {deleteUser(e)} }>
+        <form 
+          className="userCreationForm" 
+          onSubmit={ (e) => handleDeleteSomething(e, deleteUser, "Are you sure you want to delete this user and all associated data?") }
+        >
             <input 
               type="email" 
               onChange={(e) => setEmailDelete(e.target.value)} 
