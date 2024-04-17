@@ -6,6 +6,7 @@
   justify-content: start;
   align-items: center;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 .spashPageHeader {
@@ -105,8 +106,7 @@
 }
 
 .splashPageFeatureScreenshot {
-  width: auto;
-  max-height: 30vh;
+  width: 100%;
   border: 2px solid black;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   object-fit: cover;
