@@ -121,34 +121,46 @@
   margin-bottom: 20px;
 }
 
-.splashPageAbout {
-  margin: 50px 0;
-  text-align: center;
-  margin-top: 20px;
+.splashPageSection {
+  margin: 25px 0;
   width: 90%;
 }
-.splashPageAbout h1 {
+
+.splashPageSection h1 {
   text-align: center;
   color: black;
   font-size: 2.5em;
 }
 
-.splashPageTeam::before {
+.splashPageSection::before {
   content: '';
   display: block;
   width: 100%;
   height: 2px;
   background-color: black;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
-.splashPageTeam {
-  width: 90%;
-  margin: 50px 0;
-}
-.splashPageTeam h1 {
+
+.splashPageAbout {
   text-align: center;
-  color: black;
-  font-size: 2.5em;
+}
+
+.splashPageDemo {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.splashPageDemo iframe {
+  display: block;
+  width: 80%;
+  height: 60vh;
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.splashPageTeam {
 }
 .splashPageTeamMembers {
   display: flex;
@@ -183,6 +195,7 @@
   fill: currentColor;
 }
 
+.splashPageTeamMember a { text-decoration: none; color:var(--cardtext); }
 .splashPageTeamMember a:visited { text-decoration: none; color:var(--cardtext); }
 .splashPageTeamMember a:focus { text-decoration: none; color:var(--cardtext)}
 .splashPageTeamMember a:hover { text-decoration: none; color:var(--bright-hover); }

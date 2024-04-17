@@ -71,11 +71,20 @@ const SplashPage = () => {
           </p>
         </div>
       </div>
-      <div className="splashPageAbout">
+      <div className="splashPageSection splashPageAbout">
         <h1>About</h1>
         <p>USC Faculty Dashboard is a web application designed to help faculty members manage their academic responsibilities. The dashboard provides a variety of tools to help faculty members manage their courses, research, and team assessments. The dashboard also provides a variety of visualizations to help faculty members understand their data better.</p>
       </div>
-      <div className="splashPageTeam">
+      <div className="splashPageSection splashPageDemo">
+        <h1>Demo</h1>
+        <iframe width="420" height="315"
+          src="https://www.youtube.com/embed/tgbNymZ7vqY">
+        </iframe>
+        <h2>
+          See demo to experience the USC Faculty Dashboard in action!
+        </h2>
+      </div>
+      <div className="splashPageSection splashPageTeam">
         <h1>Meet the Developers</h1>
         <div className="splashPageTeamMembers">
           <div className="splashPageTeamMember">

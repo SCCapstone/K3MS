@@ -91,6 +91,7 @@ const Login = () => {
   return (
     <>
       <Alert />
+      <button className="returnToSplashPage" onClick={() => navigate('/')}>Splash Page</button>
       <h1 className="loginPageHeader">USC Dashboard</h1>
       <section className="loginCard">
         <h1>Log In</h1>
