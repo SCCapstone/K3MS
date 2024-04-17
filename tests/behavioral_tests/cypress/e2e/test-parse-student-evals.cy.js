@@ -136,6 +136,7 @@ describe('Parse Student Evaluations Test', () => {
 
         // Submit
         cy.contains('Overwrite Selected').click()
+        cy.contains('div', 'Confirm').find('button').eq(0).click()
 
         // Check redirected to student evals page
         cy.url().should('include', '/student-evals')
