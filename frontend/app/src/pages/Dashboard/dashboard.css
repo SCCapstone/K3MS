@@ -33,11 +33,13 @@
 }
 
 .dashboardCardContent {
-  padding: 50px 50px;
+  padding: 0px 50px;
   font-size: 1.5em;
   /* text-align: center; */
 }
-
+.dashboardTable {
+  margin: 20px 0px;
+}
 .dashboardTable table {
   border-collapse: collapse;
   width: 100%;
@@ -48,10 +50,30 @@
     padding: 8px;
     text-align: center;
 }
-/* 
-.publicationTable {
-  font-size: 0.75em;
-} */
+
+.grantList li{
+  font-weight: bold;
+}
+
+.grantInfo {
+  font-weight: normal;
+}
+
+.grantList p{
+  margin: 15px;
+}
+
+.publicationList li{
+  font-weight: bold;
+}
+
+.publicationInfo {
+  font-weight: normal;
+}
+
+.publicationList p{
+  margin: 15px;
+}
 
 .dashboardBody button {
   width: 30%;
@@ -89,6 +111,10 @@
 /* Display One Column On Small Screen Sizes */ 
 @media (max-width: 1300px) {
   .dashboardBody { grid-template-columns: repeat(1, 1fr); }
+  .dashboardPlotCard {
+    grid-column: span 1;
+    width: 90%;
+  }
 }
 
 /* Display Two Columns On Medium to Large Screen Sizes */ 

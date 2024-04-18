@@ -8,6 +8,7 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import SearchDropdown from '../../components/SearchDropdown/SearchDropdown';
 import './research_info.css'
 import deleteIcon from '../../assets/delete-icon.svg'
+import ConfirmAlert from '../../components/ConfirmAlert/ConfirmAlert';
 
 const ResearchInfo = () => {
   const navigate = useNavigate()
@@ -33,6 +34,10 @@ const ResearchInfo = () => {
   const usersDropdownRef = useRef(null)
 
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Alert
+  const [confirmationMssg, setConfirmationMssg] = useState('')
+  const [confirmationFunc, setConfirmationFunc] = useState(() => {})
 
   const fetchOtherUserInfo = async (url, setFunc, setErrorFunc, email, sortFunc) => {
     const response = await fetch(`${url}/${email}`, {
@@ -163,7 +168,7 @@ const ResearchInfo = () => {
 
       const data = await response.json()
       if (response.ok) {
-        researchInfoDispatch({type: 'SET_EXPEN', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
+        researchInfoDispatch({type: 'SET_EXPENS', payload: data.sort((a,b) => parseInt(b.year) - parseInt(a.year))})
       }
       else if (response.status === 404) {
         setExpenError(data?.error)
@@ -197,118 +202,123 @@ const ResearchInfo = () => {
     fetchOtherUserInfo(EXPEN_URL, setOtherUserExpen, setExpenError, chosenPersonTmp.email, (a,b) => parseInt(b.year) - parseInt(a.year))
   }
 
-
+  const deleteEntry = (e) => {
+    setConfirmationMssg("Are you sure you want to delete this entry's data? This cannot be undone.")
+    setConfirmationFunc(() => () => deleteEntryConfirmed(e))
+  }
   // Delete Functionality:
-  const deleteEntry = async (e) => {
+  const deleteEntryConfirmed = async (e) => {
     // e passes in the object which includes grant_title which is used to delete that specific grant
-    const alertResponse = window.confirm("Are you sure you want to delete this entry's data? This cannot be undone.");
-    if (alertResponse) {
+    const type = e.type
 
-      const type = e.type
-
-      const response = await fetch(DELETE_ENTRY_URL, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          email: e.email,
-          type: e.type,
-          title: e.title,
-          year: e.year,
-        })
+    const response = await fetch(DELETE_ENTRY_URL, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: e.email,
+        type: e.type,
+        title: e.title,
+        year: e.year,
       })
-      const json = await response.json()
-      if (!response.ok) {
-        if (type === 'grant'){
-          setGrantsError(json.error)
-        } else if (type === 'pub'){
-          setPubsError(json.error)
-        } else if (type === 'expen'){
-          setExpenError(json.error)
-        }
-        console.log(json.error)
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      if (type === 'grant'){
+        setGrantsError(json.error)
+      } else if (type === 'pub'){
+        setPubsError(json.error)
+      } else if (type === 'expen'){
+        setExpenError(json.error)
       }
-      if (response.ok) {
-        if (type === 'grant') {
-          // Update grants state to remove the grant that was deleted
-          setGrantsError(null)
-          if (e.email === user.email){
-            const temp_grants = grants.filter((g) => g.title != e.title)
-            if (temp_grants.length === 0){
-              setPubsError('No grants found for this user.')
-              researchInfoDispatch({type: 'SET_GRANTS', payload: null})
-            } else {
-              researchInfoDispatch({type: 'SET_GRANTS', payload: temp_grants})
-            }
-          } else if (chosenPerson && e.email === chosenPerson.email){
-            const temp_grants = otherUserGrants.filter((g) => g.title != e.title)
-            if (temp_grants.length === 0){
-              setGrantsError('No grants found for this user.')
-              setOtherUserGrants(null)
-            } else {
-              setOtherUserGrants(temp_grants)
-            }
+      console.log(json.error)
+    }
+    if (response.ok) {
+      if (type === 'grant') {
+        // Update grants state to remove the grant that was deleted
+        setGrantsError(null)
+        if (e.email === user.email){
+          const temp_grants = grants.filter((g) => g.title != e.title)
+          if (temp_grants.length === 0){
+            setPubsError('No grants found for this user.')
+            researchInfoDispatch({type: 'SET_GRANTS', payload: null})
+          } else {
+            researchInfoDispatch({type: 'SET_GRANTS', payload: temp_grants})
           }
-
-          // Clear grants state in dashboard context
-          dashboardDispatch({type: 'SET_GRANTS', payload: null})
-
-        } else if (type === 'pub') {
-          // Update pubs state to remove the publication that was deleted
-          setPubsError(null)
-          if (e.email === user.email){
-            const temp_pubs = pubs.filter((p) => p.title != p.title)
-            if (temp_pubs.length === 0){
-              setPubsError('No publications found for this user.')
-              researchInfoDispatch({type: 'SET_PUBS', payload: null})
-            } else {
-              researchInfoDispatch({type: 'SET_PUBS', payload: temp_pubs})
-            }
-
-          } else if (chosenPerson && e.email === chosenPerson.email){
-            const temp_pubs = otherUserPubs.filter((p) => p.title != e.title)
-            if (temp_pubs.length === 0){
-              setPubsError('No publications found for this user.')
-              setOtherUserPubs(null)
-            } else {
-              setOtherUserPubs(temp_pubs)
-            }
+        } else if (chosenPerson && e.email === chosenPerson.email){
+          const temp_grants = otherUserGrants.filter((g) => g.title != e.title)
+          if (temp_grants.length === 0){
+            setGrantsError('No grants found for this user.')
+            setOtherUserGrants(null)
+          } else {
+            setOtherUserGrants(temp_grants)
           }
-
-          // Clear pubs state in dashboard context
-          dashboardDispatch({type: 'SET_PUBS', payload: null})
-
-        } else if (type === 'expen') {
-          // Update expen state to remove the expenditure that was deleted
-          setExpenError(null)
-          if (e.email === user.email){
-            const temp_expens = expens.filter((p) => p.year != e.title)
-            if (temp_expens.length === 0){
-              setExpenError('No expenditures found for this user.')
-              researchInfoDispatch({type: 'SET_EXPEN', payload: null})
-            } else {
-              researchInfoDispatch({type: 'SET_EXPEN', payload: temp_expens})
-            }
-
-          } else if (chosenPerson && e.email === chosenPerson.email){
-            const temp_expens = otherUserExpen.filter((p) => p.year != e.title)
-            if (temp_expens.length === 0){
-              setExpenError('No expenditures found for this user.')
-              setOtherUserExpen(null)
-            } else {
-              setOtherUserExpen(temp_expens)
-            }
-          }
-
-          // Clear expen state in dashboard context
-          dashboardDispatch({type: 'SET_EXPEN', payload: null})
         }
+
+        // Clear grants state in dashboard context
+        dashboardDispatch({type: 'SET_GRANTS', payload: null})
+
+      } else if (type === 'pub') {
+        // Update pubs state to remove the publication that was deleted
+        setPubsError(null)
+        if (e.email === user.email){
+          const temp_pubs = pubs.filter((p) => p.title != p.title)
+          if (temp_pubs.length === 0){
+            setPubsError('No publications found for this user.')
+            researchInfoDispatch({type: 'SET_PUBS', payload: null})
+          } else {
+            researchInfoDispatch({type: 'SET_PUBS', payload: temp_pubs})
+          }
+
+        } else if (chosenPerson && e.email === chosenPerson.email){
+          const temp_pubs = otherUserPubs.filter((p) => p.title != e.title)
+          if (temp_pubs.length === 0){
+            setPubsError('No publications found for this user.')
+            setOtherUserPubs(null)
+          } else {
+            setOtherUserPubs(temp_pubs)
+          }
+        }
+
+        // Clear pubs state in dashboard context
+        dashboardDispatch({type: 'SET_PUBS', payload: null})
+
+      } else if (type === 'expen') {
+        // Update expen state to remove the expenditure that was deleted
+        setExpenError(null)
+        if (e.email === user.email){
+          const temp_expens = expens.filter((p) => p.year != e.title)
+          if (temp_expens.length === 0){
+            setExpenError('No expenditures found for this user.')
+            researchInfoDispatch({type: 'SET_EXPENS', payload: null})
+          } else {
+            researchInfoDispatch({type: 'SET_EXPENS', payload: temp_expens})
+          }
+
+        } else if (chosenPerson && e.email === chosenPerson.email){
+          const temp_expens = otherUserExpen.filter((p) => p.year != e.title)
+          if (temp_expens.length === 0){
+            setExpenError('No expenditures found for this user.')
+            setOtherUserExpen(null)
+          } else {
+            setOtherUserExpen(temp_expens)
+          }
+        }
+
+        // Clear expen state in dashboard context
+        dashboardDispatch({type: 'SET_EXPENS', payload: null})
       }
     }
   }
 
   return (
     <div className="researchInfo">
+      <ConfirmAlert 
+        mssg={ confirmationMssg }
+        setMssg={ setConfirmationMssg }
+        onConfirm={ confirmationFunc } 
+        onCancel={ () => {} }
+      />
       <h1 className='pageHeader'>Research Info</h1>
       <div className='researchInfoCard options'>
         <div className='researchInfobuttons'>
@@ -355,50 +365,42 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Grants</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && grants) || (chosenPerson && otherUserGrants) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Amount</th>
-                      <th>Grant Year</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="grantList">
                   { chosenPerson ?
                     otherUserGrants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>  
+                            <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: chosenPerson.email, year: grant.year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>   
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
+                        </li>
                       )
                     }) : 
                     grants?.filter((grant) => {
                       return grant.title.toLowerCase().includes(searchQuery.toLowerCase()) || grant.year.includes(searchQuery)
                     })?.map((grant) => {
                       return (
-                        <tr key={ grant.title }>
-                          <td>{ grant.title }</td>
-                          <td>{ grant.amount }</td>
-                          <td>{ grant.year }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ grant.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ grant.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'grant', title: grant.title, email: user.email, year: grant.year})}>
+                                  <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="grantInfo">${ grant.amount }; <i>{grant.year}</i></p>
+                        </li>
                       )
                     })  
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (grantsError ? <p>{grantsError}</p> : <p>Loading...</p>)
               }
             </div>
@@ -410,52 +412,43 @@ const ResearchInfo = () => {
         <div className="researchInfoCard researchInfoBodyCard">
           <h1>Publications</h1>
           <div className="researchInfoCardContent">
-            <div className="researchInfoTable">
+            <div className="researchInfoList">
               { (!chosenPerson && pubs) || (chosenPerson && otherUserPubs) ?
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Authors</th>
-                      <th>Publication Year</th>
-                      <th>ISBN</th>
-                      <th>Delete?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <ol className="publicationList">
                   { chosenPerson ?
                     otherUserPubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                            <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: chosenPerson.email, year: pub.publication_year})}>
+                              <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                            </button>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
+                        </li>
                       )}) :
                     pubs?.filter((pub) => {
                       return pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || pub.publication_year.includes(searchQuery)
                     })?.map((pub) => {
                       return (
-                        <tr key={ pub.title }>
-                          <td>{ pub.title }</td>
-                          <td>{ pub.authors }</td>
-                          <td>{ pub.publication_year }</td>
-                          <td>{ pub.isbn }</td>
-                          <td><button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
-                            <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
-                          </button></td>
-                        </tr>
+                        <li key={ pub.title }>
+                          <div className='researchInfoItemTitle'>
+                            <p>{ pub.title }</p>
+                              <button className="delete" onClick={() => deleteEntry({type: 'pub', title: pub.title, email: user.email, year: pub.publication_year})}>
+                                <img className="deleteIcon" src={ deleteIcon} alt="Delete Icon"></img>
+                              </button>
+                          </div>
+                          <p className="publicationInfo">{pub.authors}; <i>{pub.publication_year}</i></p>
+                          <p className="publicationInfo">{pub.isbn ? `ISBN: ${pub.isbn}` : ''}</p>
+                        </li>
                       )
                     })
                   }
-                  </tbody>
-                </table>
+                </ol>
                 : (pubsError ? <p>{pubsError}</p> : <p>Loading...</p>)
               }
             </div>

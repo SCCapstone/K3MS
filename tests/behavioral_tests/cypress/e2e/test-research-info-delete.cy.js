@@ -6,7 +6,7 @@ const chairGrantTitle = 'Research Info Delete Test Grant Chair'
 const chairPubTitle = 'Research Info Delete Test Publication Chair'
 const chairExpenYear = '1991'
 
-describe('Research Info Test: Professor', () => {
+describe('Research Info Delete Test: Professor', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('baseUrl'))
     cy.contains('Log In')
@@ -49,8 +49,8 @@ describe('Research Info Test: Professor', () => {
     // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Grants').click()
-    cy.contains('tr', professsorGrantTitle).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('li', professsorGrantTitle).find('button').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(professsorGrantTitle).should('not.exist')
   })
   it("Professor Can Add a Publication", () => {
@@ -75,8 +75,8 @@ describe('Research Info Test: Professor', () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Publications').click()
-    cy.contains('tr', professorPubTitle).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('li', professorPubTitle).find('button').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(professorPubTitle).should('not.exist')
   })
   it("Professor Can Add an Expenditure", () => {
@@ -104,7 +104,7 @@ describe('Research Info Test: Professor', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Expenditures').click()
     cy.contains('tr', professorExpenYear).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(professorExpenYear).should('not.exist')
   })
   it('Professor Can\'t delete data for other people', () => {
@@ -113,7 +113,7 @@ describe('Research Info Test: Professor', () => {
   })
 })
 
-describe('Research Info Test: Chair', () => {
+describe('Research Info Delete Test: Chair', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('baseUrl'))
     cy.contains('Log In')
@@ -143,8 +143,8 @@ describe('Research Info Test: Chair', () => {
     // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Grants').click()
-    cy.contains('tr', chairGrantTitle).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('li', chairGrantTitle).find('button').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(chairGrantTitle).should('not.exist')
   })
   it("Chair Can Add a Publication", () => {
@@ -167,8 +167,8 @@ describe('Research Info Test: Chair', () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Publications').click()
-    cy.contains('tr', chairPubTitle).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('li', chairPubTitle).find('button').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(chairPubTitle).should('not.exist')
   })
   it("Chair Can Add an Expenditure", () => {
@@ -196,7 +196,7 @@ describe('Research Info Test: Chair', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Expenditures').click()
     cy.contains('tr', chairExpenYear).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(chairExpenYear).should('not.exist')
   })
   it('Chair can choose other people and see their info', () => {
@@ -213,8 +213,8 @@ describe('Research Info Test: Chair', () => {
     cy.wait(100)
     cy.contains('Choose Person').get('input').eq(0).type(Cypress.env('nonChairUserName'))
     cy.get('.searchDropdownItem').eq(0).click()
-    cy.contains('tr', professsorGrantTitle2).find('button').click()
-    cy.on('window:confirm', () => { return true; });
+    cy.contains('li', professsorGrantTitle2).find('button').click()
+    cy.contains('div', 'Confirm').find('button').eq(0).click()
     cy.contains(professsorGrantTitle2).should('not.exist')
   })
 })

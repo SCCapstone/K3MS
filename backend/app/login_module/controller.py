@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from app.models import User, UserTmp, Grants, Publications, Expenditures, Evaluations, EvaluationDetails
+from app.models import User, UserTmp, Grants, Publications, Expenditures, Evaluations, EvaluationDetails, ResetPasswordTmp
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.extensions import db
 from flask_login import login_user, logout_user, current_user
@@ -22,6 +22,8 @@ login_fields = [
     'email',
     'password'
 ]
+
+reset_password_email_fields = ['email']
 
 def login_controller(req):
     try:
@@ -221,7 +223,7 @@ def create_user_controller(req):
             msg = EmailMessage()
             msg.set_content((
                 f"Hello {first_name} {last_name},\n\n"
-                f"Please click the link below to set your password.\n\n"
+                f"Please click the link below to set your password for USC Dashboard.\n\n"
                 f"{current_app.config['FRONTEND_SET_PASSWORD_URL']}?email={email}&hash={link_hash}\n\n"
             ))
             msg['Subject'] = 'USC Dashboard Account Created - Set Password'
@@ -357,6 +359,105 @@ def manual_create_user_controller(req):
     except Exception as e:
         print(e)
         return dict(error='Error creating user'), HTTPStatus.INTERNAL_SERVER_ERROR
+    
+def reset_password_email_controller(req):
+    try:
+        # Validate request
+        ret = validate_request(req, reset_password_email_fields)
+        if isinstance(ret, tuple):
+            return ret
+        json_data = ret
+
+        # Get fields
+        email = json_data.get(reset_password_email_fields[0])
+
+        # Make sure user exists
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+        
+        # Create new reset password tmp
+        link_hash = generate_password_hash(email, method='scrypt')
+        new_reset_password_tmp = ResetPasswordTmp(
+            email=email,
+            link_hash=link_hash
+        )
+
+        # Delete tmp user if it already exists
+        ResetPasswordTmp.query.filter_by(email=email).delete()
+        
+        # Send email to user to reset password
+        try:
+            msg = EmailMessage()
+            msg.set_content((
+                f"Hello {user.first_name} {user.last_name},\n\n"
+                f"Please click the link below to reset your password for USC Dashboard.\n\n"
+                f"{current_app.config['FRONTEND_RESET_PASSWORD_URL']}?email={email}&hash={link_hash}\n\n"
+            ))
+            msg['Subject'] = 'USC Dashboard Password Reset'
+            msg['From'] = current_app.config['EMAIL']
+            msg['To'] = email
+            s = smtplib.SMTP('smtp-mail.outlook.com', 587)
+            s.starttls()
+            s.login(current_app.config['EMAIL'], current_app.config['EMAIL_PASSWORD'])
+            s.send_message(msg)
+            s.quit()
+        except Exception as e:
+            print(e)
+            return dict(error='Error sending email'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+        # Add tmp row to database
+        db.session.add(new_reset_password_tmp)
+        db.session.commit()
+
+        return [new_reset_password_tmp], HTTPStatus.CREATED
+
+    except:
+        return dict(error='Error sending reset password email'), HTTPStatus.INTERNAL_SERVER_ERROR
+
+def reset_password_controller(req):
+    try:
+        # Validate request
+        ret = validate_request(req, ['email', 'password', 'hash'])
+        if isinstance(ret, tuple):
+            return ret
+        json_data = ret
+
+        # Get fields
+        email = json_data.get('email')
+        password = json_data.get('password')
+        hash = json_data.get('hash')
+
+        # check that user with email exists
+        if not User.query.filter_by(email=email).first():
+            return dict(error='User does not exist'), HTTPStatus.BAD_REQUEST
+
+        # Make sure user is in the password tmp table
+        user = ResetPasswordTmp.query.filter_by(email=email).first()
+        if not user:
+            return dict(error='Reset password process not started or already completed for this user'), HTTPStatus.BAD_REQUEST
+        if not user.link_hash == hash:
+            return dict(error='Invalid hash'), HTTPStatus.BAD_REQUEST
+
+        # Check password
+        if (bad_password := is_bad_password(password)):
+            return bad_password, HTTPStatus.BAD_REQUEST
+        
+        # Reset user's password
+        new_user = User.query.filter_by(email=email).first()
+        new_user.password_hash = generate_password_hash(password, method='scrypt')
+
+        # Delete tmp user
+        db.session.delete(user)
+
+        # Add user to database
+        db.session.add(new_user)
+        db.session.commit()
+
+        return [user], HTTPStatus.OK
+
+    except:
+        return dict(error='Error resetting password'), HTTPStatus.INTERNAL_SERVER_ERROR
 
 def validate_request(req, fields):
     # Make sure request is JSON

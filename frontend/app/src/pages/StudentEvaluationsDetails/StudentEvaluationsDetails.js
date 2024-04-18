@@ -217,7 +217,8 @@ const StudentEvaluationsDetails = () => {
                   <tbody>
                     {selectedCourse.details.map((detail, j) => (
                       <tr key={j}>
-                        <td className="evalQuestion">{detail.question_id}. {detail.question}</td>
+                        {/* question 7 ascii code to character */}
+                        <td className="evalQuestion">{detail.question_id}. {j !== 6 ? detail.question : detail.question.replace('&#39;', "'")}</td>
                         <td>{detail.mean}</td>
                         <td>{detail.std}</td>
                         <td>{detail.median}</td>

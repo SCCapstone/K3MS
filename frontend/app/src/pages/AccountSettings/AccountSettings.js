@@ -7,6 +7,7 @@ import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useTeamAssessmentsContext } from '../../hooks/useTeamAssessmentsContext';
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
 import { useNavigate } from "react-router-dom";
+import ConfirmAlert from '../../components/ConfirmAlert/ConfirmAlert';
 import './accountsettings.css';
 
 const confirmation_text = "I want to delete all student evaluations in the database"
@@ -53,6 +54,9 @@ const AccountSettings = () => {
     const [pictureProcessing, setPictureProcessing] = useState(false)
 
     const [deletePictureError, setDeletePictureError] = useState(null)
+
+    const [confirmationMssg, setConfirmationMssg] = useState('')
+    const [confirmationFunc, setConfirmationFunc] = useState(() => {})
 
     const updatePassword = async (e) => {
         e.preventDefault()
@@ -160,12 +164,7 @@ const AccountSettings = () => {
       }
     }
 
-    const handleDeletePicture = async (e) => {
-      const alertResponse = window.confirm("Are you sure you want to delete all student evaluation data? This cannot be undone.");
-      if (!alertResponse) {
-        return
-      }
-      e.preventDefault()
+    const handleDeletePicture = async () => {
       const response = await fetch(DELETE_PROFILE_PICTURE_URL, {
         method: 'DELETE',
         credentials: 'include',
@@ -182,143 +181,139 @@ const AccountSettings = () => {
       }
     }
 
-    const deleteAllEvals = async (e) => {
-      e.preventDefault()
+    const deleteAllEvals = async () => {
       if (deleteEvalsConfirm !== confirmation_text) {
         setEvalsError("Confirmation Text Does Not Match")
         return
       }
-      const alertResponse = window.confirm("Are you sure you want to delete all student evaluation data? This cannot be undone.");
-      if (alertResponse) {
-        const response = await fetch(DELETE_EVALS_URL, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            confirmText: deleteEvalsConfirm
-          })
+      const response = await fetch(DELETE_EVALS_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          confirmText: deleteEvalsConfirm
         })
-        const json = await response.json()
-        if (!response.ok) {
-          setEvalsError(json.error)
-        }
-        if (response.ok) {
-          setEvalsError(null)
-          setDeleteEvalsConfirm('')
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        setEvalsError(json.error)
+      }
+      if (response.ok) {
+        setEvalsError(null)
+        setDeleteEvalsConfirm('')
 
-          // Clear evaluation data
-          studentEvalsDispatch({ type: 'CLEAR_DATA' })
-          courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
-          dashboardDispatch({ type: 'CLEAR_DATA' })
-          teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
+        // Clear evaluation data
+        studentEvalsDispatch({ type: 'CLEAR_DATA' })
+        courseAnalyticsDispatch({ type: 'CLEAR_DATA' })
+        dashboardDispatch({ type: 'CLEAR_DATA' })
+        teamAssessmentsDispatch({ type: 'CLEAR_DATA' })
 
-          navigate('/account-settings', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
-        }
+        navigate('/account-settings', { state: { mssg: 'All Evaluations Deleted', status: 'ok' }})
       }
     }
 
 
-    const deleteAllGrants = async (e) => {
-      e.preventDefault()
+    const deleteAllGrants = async () => {
       if (deleteGrantsConfirm !== grantsConfirmationText) {
         setGrantsError("Confirmation Text Does Not Match")
         return
       }
-      const alertResponse = window.confirm("Are you sure you want to delete all grant data? This cannot be undone.");
-      if (alertResponse) {
-        const response = await fetch(DELETE_ALL_GRANTS_URL, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            confirmText: deleteGrantsConfirm
-          })
+      const response = await fetch(DELETE_ALL_GRANTS_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          confirmText: deleteGrantsConfirm
         })
-        const json = await response.json()
-        if (!response.ok) {
-          setGrantsError(json.error)
-        }
-        if (response.ok) {
-          setGrantsError(null)
-          setDeleteGrantsConfirm('')
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        setGrantsError(json.error)
+      }
+      if (response.ok) {
+        setGrantsError(null)
+        setDeleteGrantsConfirm('')
 
-          // Clear grant data
-          researchInfoDispatch({ type: 'SET_GRANTS', payload: null })
-          dashboardDispatch({ type: 'SET_GRANTS', payload: null })
+        // Clear grant data
+        researchInfoDispatch({ type: 'SET_GRANTS', payload: null })
+        dashboardDispatch({ type: 'SET_GRANTS', payload: null })
 
-          navigate('/account-settings', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
-        }
+        navigate('/account-settings', { state: { mssg: 'All Grants Deleted', status: 'ok' }})
       }
     }
 
-    const deleteAllPubs = async (e) => {
-      e.preventDefault()
+    const deleteAllPubs = async () => {
       if (deletePubsConfirm !== pubsConfirmationText) {
         setPubsError("Confirmation Text Does Not Match")
         return
       }
-      const alertResponse = window.confirm("Are you sure you want to delete all publication data? This cannot be undone.");
-      if (alertResponse) {
-        const response = await fetch(DELETE_ALL_PUBS_URL, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            confirmText: deletePubsConfirm
-          })
+      const response = await fetch(DELETE_ALL_PUBS_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          confirmText: deletePubsConfirm
         })
-        const json = await response.json()
-        if (!response.ok) {
-          setPubsError(json.error)
-        }
-        if (response.ok) {
-          setPubsError(null)
-          setDeletePubsConfirm('')
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        setPubsError(json.error)
+      }
+      if (response.ok) {
+        setPubsError(null)
+        setDeletePubsConfirm('')
 
-          // Clear grant data
-          researchInfoDispatch({ type: 'SET_PUBS', payload: null })
-          dashboardDispatch({ type: 'SET_PUBS', payload: null })
+        // Clear grant data
+        researchInfoDispatch({ type: 'SET_PUBS', payload: null })
+        dashboardDispatch({ type: 'SET_PUBS', payload: null })
 
-          navigate('/account-settings', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
-        }
+        navigate('/account-settings', { state: { mssg: 'All Publications Deleted', status: 'ok' }})
       }
     }
 
-    const deleteAllExpens = async (e) => {
-      e.preventDefault()
+    const deleteAllExpens = async () => {
       if (deleteExpensConfirm !== expensConfirmationText) {
         setExpensError("Confirmation Text Does Not Match")
         return
       }
-      const alertResponse = window.confirm("Are you sure you want to delete all expenditure data? This cannot be undone.");
-      if (alertResponse) {
-        const response = await fetch(DELETE_ALL_EXPENS_URL, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            confirmText: deleteExpensConfirm
-          })
+      const response = await fetch(DELETE_ALL_EXPENS_URL, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          confirmText: deleteExpensConfirm
         })
-        const json = await response.json()
-        if (!response.ok) {
-          setExpensError(json.error)
-        }
-        if (response.ok) {
-          setExpensError(null)
-          setDeleteExpensConfirm('')
-
-          // Clear grant data
-          researchInfoDispatch({ type: 'SET_EXPEN', payload: null })
-          dashboardDispatch({ type: 'SET_EXPEN', payload: null })
-
-          navigate('/account-settings', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
-        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        setExpensError(json.error)
       }
+      if (response.ok) {
+        setExpensError(null)
+        setDeleteExpensConfirm('')
+
+        // Clear grant data
+        researchInfoDispatch({ type: 'SET_EXPENS', payload: null })
+        dashboardDispatch({ type: 'SET_EXPENS', payload: null })
+
+        navigate('/account-settings', { state: { mssg: 'All Expenditures Deleted', status: 'ok' }})
+      }
+    }
+
+    const handleDeleteSomething = (e, confirmationFunc, confirmationMssg) => {
+      e.preventDefault()
+      setConfirmationMssg(confirmationMssg)
+      setConfirmationFunc(() => confirmationFunc)
     }
 
     return (
         <>
+          <ConfirmAlert 
+            mssg={ confirmationMssg }
+            setMssg={ setConfirmationMssg }
+            onConfirm={ confirmationFunc } 
+            onCancel={ () => {} }
+          />
           <h1 className="accountSettingsPageHeader">Account Settings</h1>
 
           <section className="updatePasswordCard">
@@ -356,61 +351,81 @@ const AccountSettings = () => {
 
           <section className="updatePasswordCard">
             <h1>Delete Profile Picture</h1>
-            <form onSubmit={handleDeletePicture} className="evalupload-form">
+            <form 
+              onSubmit={ (e) => handleDeleteSomething(e, handleDeletePicture, "Are you sure you want to delete your profile picture?")  } 
+              className="evalupload-form"
+            >
                 <button type="submit" className="evalupload-form-button">Delete Profile Picture</button>
                 {deletePictureError && <div className="errorField">{ deletePictureError }</div>}
             </form>
           </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Grants</h1>
+              <form 
+                className="updatePassword" 
+                onSubmit={ (e) => handleDeleteSomething(e, deleteAllGrants, "Are you sure you want to delete all grant data? This cannot be undone.") }
+              >
+                  <label><b><u>Type:</u></b> { grantsConfirmationText }</label>
+                  <input 
+                    type="text" 
+                    onChange={(e) => setDeleteGrantsConfirm(e.target.value)} 
+                    value={ deleteGrantsConfirm } 
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Grants</button>
+                  {grantsError && <div className="errorField">{ grantsError }</div>}
+              </form>
+            </section>
+          }
 
-          <section className="updatePasswordCard">
-            <h1>Delete All Grants</h1>
-            <form className="updatePassword" onSubmit={ deleteAllGrants  }>
-                <label><b><u>Type:</u></b> { grantsConfirmationText }</label>
-                <input 
-                  type="text" 
-                  onChange={(e) => setDeleteGrantsConfirm(e.target.value)} 
-                  value={ deleteGrantsConfirm } 
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Grants</button>
-                {grantsError && <div className="errorField">{ grantsError }</div>}
-            </form>
-          </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Publications</h1>
+              <form 
+                className="updatePassword" 
+                onSubmit={ (e) => handleDeleteSomething(e, deleteAllPubs, "Are you sure you want to delete all publication data? This cannot be undone.") }
+              >
+                  <label><b><u>Type:</u></b> { pubsConfirmationText }</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setDeletePubsConfirm(e.target.value)}
+                    value={ deletePubsConfirm }
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Publications</button>
+                  {pubsError && <div className="errorField">{ pubsError }</div>}
+              </form>
+            </section>
+          }
 
-          <section className="updatePasswordCard">
-            <h1>Delete All Publications</h1>
-            <form className="updatePassword" onSubmit={ deleteAllPubs }>
-                <label><b><u>Type:</u></b> { pubsConfirmationText }</label>
-                <input
-                  type="text"
-                  onChange={(e) => setDeletePubsConfirm(e.target.value)}
-                  value={ deletePubsConfirm }
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Publications</button>
-                {pubsError && <div className="errorField">{ pubsError }</div>}
-            </form>
-          </section>
-
-          <section className="updatePasswordCard">
-            <h1>Delete All Expenditures</h1>
-            <form className="updatePassword" onSubmit={ deleteAllExpens }>
-                <label><b><u>Type:</u></b> { expensConfirmationText }</label>
-                <input
-                  type="text"
-                  onChange={(e) => setDeleteExpensConfirm(e.target.value)}
-                  value={ deleteExpensConfirm }
-                  placeholder="Type confirmation text"
-                />
-                <button>Delete All My Expenditures</button>
-                {expensError && <div className="errorField">{ expensError }</div>}
-            </form>
-          </section>
+          { user && (user.position === 'chair' || user.position === 'professor') &&
+            <section className="updatePasswordCard">
+              <h1>Delete All Expenditures</h1>
+              <form 
+                className="updatePassword" 
+                onSubmit={ (e) => handleDeleteSomething(e, deleteAllExpens, "Are you sure you want to delete all expenditure data? This cannot be undone.") }
+              >
+                  <label><b><u>Type:</u></b> { expensConfirmationText }</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setDeleteExpensConfirm(e.target.value)}
+                    value={ deleteExpensConfirm }
+                    placeholder="Type confirmation text"
+                  />
+                  <button>Delete All My Expenditures</button>
+                  {expensError && <div className="errorField">{ expensError }</div>}
+              </form>
+            </section>
+          }
 
           { user && user.position == 'chair' &&
             <section className="updatePasswordCard">
               <h1>Delete Evaluations</h1>
-              <form className="updatePassword" onSubmit={ deleteAllEvals }>
+              <form 
+                className="updatePassword" 
+                onSubmit={ (e) => handleDeleteSomething(e, deleteAllEvals, "Are you sure you want to delete all student evaluation data? This cannot be undone.") }
+              >
                   <label><b><u>Type:</u></b> { confirmation_text }</label>
                   <input 
                     type="text" 

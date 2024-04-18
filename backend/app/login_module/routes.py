@@ -9,7 +9,9 @@ from app.login_module.controller import (
     update_user_controller,
     create_user_controller,
     set_password_controller,
-    manual_create_user_controller
+    manual_create_user_controller,
+    reset_password_email_controller,
+    reset_password_controller
 )
 
 @blueprint.route('/signup', methods=['POST'])
@@ -49,3 +51,11 @@ def check_auth():
 @blueprint.route('/set_password', methods=['POST'])
 def set_password():
     return set_password_controller(request)
+
+@blueprint.route('/reset_password_email', methods=['POST'])
+def reset_password_email():
+    return reset_password_email_controller(request)
+
+@blueprint.route('/reset_password', methods=['POST'])
+def reset_password():
+    return reset_password_controller(request)

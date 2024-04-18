@@ -12,6 +12,9 @@ import EvalUpload from './pages/EvalUpload/EvalUpload';
 import AccountSettings from './pages/AccountSettings/AccountSettings';
 import UserAdmin from './pages/UserAdmin/UserAdmin';
 import SetPassword from './pages/SetPassword/SetPassword';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
+import SplashPage from './pages/SplashPage/SplashPage';
+import { useEffect } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import './pages/main_pages.css'
@@ -21,13 +24,7 @@ function App() {
 
   const { user, checkedStorage } = useAuthContext()
 
-  const defaultPage = (
-    user ? 
-    <MainLayout>
-      <Dashboard />
-    </MainLayout>
-    : <Login />
-  )
+  const defaultPage = <SplashPage />
 
   const getMainLayoutPage = (page) => {
     return (
@@ -44,6 +41,7 @@ function App() {
         <Route path="/" element={ defaultPage } />
         <Route path="/login" element={ <Login /> } />
         <Route path="/set_password" element={ <SetPassword /> } />
+        <Route path="/reset_password" element={ <ResetPassword /> } />
         <Route path="/dashboard" element={ getMainLayoutPage(<Dashboard />) } />
         <Route path="/student-evals" element={ getMainLayoutPage(<StudentEvaluations />) } />
         <Route path="/student-evals-details" element={ getMainLayoutPage(<StudentEvaluationsDetails />) } />

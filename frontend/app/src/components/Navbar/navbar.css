@@ -7,6 +7,11 @@
     margin: 0;
     overflow: auto;
     transition: 0.05s;
+    direction:rtl;
+}
+
+.navbar * {
+    direction: ltr;
 }
 
 .navbar .buttons button {
@@ -118,4 +123,6 @@
   width: 50%;
   aspect-ratio : 1 / 1;
   border: 1px solid black;
+  overflow: hidden;
+  text-align: center;
 }

@@ -27,6 +27,8 @@ def pub_upload_controller(req):
 
         if publication_year.isnumeric() == False:
             return dict(error='Publication Year must be an integer'), HTTPStatus.BAD_REQUEST
+        if int(publication_year) < 1800:
+            return dict(error='Year must be greater than 1800'), HTTPStatus.BAD_REQUEST
 
         # Make Sure Publication With Title Doesn't Already Exist For The Current Sser
         publication = Publications.query.filter_by(email=current_user.email, title=title).first()

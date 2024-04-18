@@ -11,12 +11,13 @@
 .researchInfoCard h1 {
   color: black;
   text-align: left;
-  padding: 10px 40px;
+  padding: 0px 40px;
+  margin-bottom: 0px;
   font-size: 2em;
 }
 
 .researchInfoCardContent {
-  padding: 20px 50px;
+  padding: 0px 50px;
   font-size: 1.5em;
 }
 
@@ -24,15 +25,53 @@
   overflow-x: auto;
 }
 
+.researchInfoTable {
+  margin: 20px 0px;
+}
 .researchInfoTable table {
   border-collapse: collapse;
   width: 100%;
 }
 
 .researchInfoTable th, .researchInfoTable td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.researchInfoTable th:last-child, .researchInfoTable td:last-child {
+  width: 90px;
+  text-align: center;
+}
+
+.grantList li{
+  font-weight: bold;
+  margin: 0px;
+}
+
+.grantList p{
+  margin: 15px;
+}
+
+.grantInfo {
+  font-weight: normal;
+}
+
+.publicationList li{
+  font-weight: bold;
+}
+
+.publicationList p{
+  margin: 15px;
+}
+
+.publicationInfo {
+  font-weight: normal;
+}
+
+.researchInfoItemTitle {
+  display: flex;
+  justify-content: space-between;
 }
 
 .options {
@@ -121,19 +160,16 @@
     padding: 8px 6px;
   }
 }
-.researchInfoTable th:last-child, .researchInfoTable td:last-child {
-  width: 90px;
-  text-align: center;
-}
 
 /* Add css options for button with className="delete" */
 .delete {
   background-color: var(--cardbg);
   border: none;
   cursor: pointer;
+  margin-left: 20px;
 }
 
 .deleteIcon {
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 25px;
 }
