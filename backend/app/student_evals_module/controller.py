@@ -92,7 +92,6 @@ def overwrite_evals_rows_controller(request):
 
         # Get the rows from the temporary database
         for row in rows:
-            print(row)
             eval = EvaluationsTmp.query.filter_by(
                 email=row['email'],
                 year=row['year'],
@@ -108,7 +107,6 @@ def overwrite_evals_rows_controller(request):
                 course=row['course'],
                 section=row['section']
             ).all()
-            print(eval, eval_details)
 
             # Entries were found in tmp tables, update the main tables
             if eval and eval_details:
