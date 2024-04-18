@@ -21,12 +21,6 @@ const Login = () => {
     }
   },[user]);
 
-  useEffect(() => {
-    if (!navigator.cookieEnabled) {
-      setError('Cookies are disabled. Please enable cookies to use this application.')
-    }
-  })
-
   const login = async (e) => {
     e.preventDefault()
 
