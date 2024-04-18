@@ -158,6 +158,13 @@
   text-align: center;
 }
 
+.splashPageAbout p {
+  text-align: justify;
+  font-size: 1.5em;
+  width: 75%;
+  margin: 0 auto;
+}
+
 .splashPageDemo {
   display: flex;
   align-items: center;
@@ -189,6 +196,7 @@
   font-size: 1.25em;
   align-items: center;
   gap: 10px;
+  text-align: right;
 }
 .splashPageTeam h2 {
   margin: 0;
@@ -200,7 +208,7 @@
 .splashPageTeamMember div {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: right;
 }
 .splashPageIcon {
   height: 58px;

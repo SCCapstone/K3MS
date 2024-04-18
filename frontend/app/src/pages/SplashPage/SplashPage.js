@@ -73,7 +73,9 @@ const SplashPage = () => {
       </div>
       <div className="splashPageSection splashPageAbout">
         <h1>About</h1>
-        <p>USC Faculty Dashboard is a web application designed to help faculty members manage their academic responsibilities. The dashboard provides a variety of tools to help faculty members manage their courses, research, and team assessments. The dashboard also provides a variety of visualizations to help faculty members understand their data better.</p>
+        <p>
+          USC Faculty Dashboard is a web application designed to revolutionize how department heads and professors monitor and make decisions, providing a centralized hub for efficient data storage and analysis. Currently, there's a gap in web applications tailored for department heads to concisely manage the performance of their department, which our platform aims to fill. We offer easy access to student evaluation and research information, empowering department heads to evaluate the performance of their department members and seamlessly track their research grants, publications, and expenditures. Professors and instructors gain personalized performance analysis tools, with full access to their own data as well as curated access to peer data to assess their relative performance.
+        </p>
       </div>
       <div className="splashPageSection splashPageDemo">
         <h1>Demo</h1>
@@ -141,7 +143,7 @@ const SplashPage = () => {
           <div className="splashPageTeamMember">
             <div>
               <h2>Kevin Protzman</h2>
-              <p>Kwprotz@gmail.com</p>
+              <p>kwprotz@gmail.com</p>
             </div>
             <a className="splashPageTeamMemberLinkedIn" href="https://www.linkedin.com/in/kevin-protzman-661709217/" target="_blank">
               <LinkedInIcon />
