@@ -128,10 +128,10 @@ const SplashPage = () => {
               <h2>Mitchel Jonker</h2>
               <p>mjonker@email.sc.edu</p>
             </div>
-            <a className="splashPageTeamMemberLinkedIn" href="" target="_blank">
+            <a className="splashPageTeamMemberLinkedIn" href="https://www.linkedin.com/in/jonker-mitchell/" target="_blank">
               <LinkedInIcon />
             </a>
-            <a className="splashPageTeamMemberGithub" href="" target="_blank">
+            <a className="splashPageTeamMemberGithub" href="https://github.com/mcjonker" target="_blank">
               <GithubIcon />
             </a>
           </div>
@@ -143,10 +143,10 @@ const SplashPage = () => {
               <h2>Kevin Protzman</h2>
               <p>Kwprotz@gmail.com</p>
             </div>
-            <a className="splashPageTeamMemberLinkedIn" href="" target="_blank">
+            <a className="splashPageTeamMemberLinkedIn" href="https://www.linkedin.com/in/kevin-protzman-661709217/" target="_blank">
               <LinkedInIcon />
             </a>
-            <a className="splashPageTeamMemberGithub" href="" target="_blank">
+            <a className="splashPageTeamMemberGithub" href="https://github.com/k-protz" target="_blank">
               <GithubIcon />
             </a>
           </div>

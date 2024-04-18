@@ -1,3 +1,16 @@
+.splash:before {
+  content: ' ';
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.04;
+  background-image: url('../../assets/splashPageScreenshots/PalmLeaves_Black_Transparent_RGB.png');
+  z-index: -1;
+}
+
 .splash {
   width: 100%;
   height: 100%;
@@ -128,7 +141,7 @@
 
 .splashPageSection h1 {
   text-align: center;
-  color: black;
+  color: var(--cardtext);
   font-size: 2.5em;
 }
 
@@ -160,7 +173,8 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.splashPageTeam {
+.splashPageTeam h1 {
+  color: black;
 }
 .splashPageTeamMembers {
   display: flex;
