@@ -154,6 +154,17 @@ const SplashPage = () => {
           </div>
         </div>
       </div>
+      <div className="footer">
+        <p>Copyright &copy; 2024 K3MS Inc.</p>
+        <div className="splashPageSourceCode">
+          <p>
+            Source Code
+          </p>
+          <a href="https://github.com/SCCapstone/K3MS" target="_blank">
+            <GithubIcon />
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

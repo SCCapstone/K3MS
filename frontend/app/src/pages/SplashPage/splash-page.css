@@ -211,14 +211,47 @@
   align-items: right;
 }
 .splashPageIcon {
-  height: 58px;
+  height: 48px;
   width: 48px;
   margin: 3px 4px;
   fill: currentColor;
 }
 
-.splashPageTeamMember a { text-decoration: none; color:var(--cardtext); }
-.splashPageTeamMember a:visited { text-decoration: none; color:var(--cardtext); }
-.splashPageTeamMember a:focus { text-decoration: none; color:var(--cardtext)}
-.splashPageTeamMember a:hover { text-decoration: none; color:var(--bright-hover); }
-.splashPageTeamMember a:active { text-decoration: none; color:var(--bright-hover) }
+.splash a { text-decoration: none; color:var(--cardtext); }
+.splash a:visited { text-decoration: none; color:var(--cardtext); }
+.splash a:focus { text-decoration: none; color:var(--cardtext)}
+.splash a:hover { text-decoration: none; color:var(--bright-hover); }
+.splash a:active { text-decoration: none; color:var(--bright-hover) }
+
+.footer {
+  background-color: var(--cardtext);
+  width: 100%;
+  margin-top: 100px;
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.footer .splashPageIcon {
+  height: 32px;
+  width: 32px;
+  margin: 3px 4px;
+  fill: currentColor;
+}
+.footer p {
+  margin: 0;
+  padding-left: 20px;
+}
+.footer .splashPageSourceCode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 20px;
+}
+.footer a { text-decoration: none; color:white; }
+.footer a:visited { text-decoration: none; color:white; }
+.footer a:focus { text-decoration: none; color:white; }
+.footer a:hover { text-decoration: none; color:var(--cardbghover); }
+.footer a:active { text-decoration: none; color:var(--cardbghover) }
