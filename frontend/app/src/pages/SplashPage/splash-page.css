@@ -1,0 +1,257 @@
+.splash:before {
+  content: ' ';
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.04;
+  background-image: url('../../assets/splashPageScreenshots/PalmLeaves_Black_Transparent_RGB.png');
+  z-index: -1;
+}
+
+.splash {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+.spashPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 10vh;
+  padding: 10px 20px;
+}
+.spashPageLogo {
+  width: 20%;
+}
+.splashPageLoginButton {
+  align-self: start;
+  background-color: var(--cardtext);
+  border: none;
+  cursor: pointer;
+  color: white;
+  padding: 8px 18px;
+  font-size: 20px;
+  font-weight: 900;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 6px;
+  margin: 10px 20px;
+}
+.splashPageLoginButton:hover {
+  background-color: var(--bright-hover);
+
+}
+
+.splashPageFirstSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+
+.splashPageFirstSection div {
+  padding: 20px;
+}
+
+.splashPageFirstSectionHeader {
+  text-align: left;
+  flex: 1;
+}
+
+.splashPageFirstSectionHeader h1 {
+  color: var(--cardtext);
+  font-size: 5em;
+  font-weight: bold;
+}
+.splashPageFirstSectionHeader h2 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.spashPageFirstSectionImage {
+  flex: 1.5;
+}
+.dashboardScreenshot {
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 100%;
+}
+
+.splashPageSignup h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: white;
+  background-color: var(--cardtext);
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid black;
+  border-radius: 10px;
+  margin: 60px;
+}
+
+.splashPageFeatures {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.splashPageFeature {
+  text-align: center;
+  padding: 20px;
+}
+
+.splashPageFeature h2 {
+  font-size: 2em;
+  font-weight: bold;
+  color: var(--cardtext);
+}
+
+.splashPageFeatureScreenshot {
+  width: 100%;
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+
+.splashPageAbout::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  margin-bottom: 20px;
+}
+
+.splashPageSection {
+  margin: 25px 0;
+  width: 90%;
+}
+
+.splashPageSection h1 {
+  text-align: center;
+  color: var(--cardtext);
+  font-size: 2.5em;
+}
+
+.splashPageSection::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  margin-bottom: 25px;
+}
+
+.splashPageAbout {
+  text-align: center;
+}
+
+.splashPageAbout p {
+  text-align: justify;
+  font-size: 1.5em;
+  width: 75%;
+  margin: 0 auto;
+}
+
+.splashPageDemo {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.splashPageDemo iframe {
+  display: block;
+  width: 80%;
+  height: 60vh;
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.splashPageTeam h1 {
+  color: black;
+}
+.splashPageTeamMembers {
+  display: flex;
+  justify-content: center;
+  align-items: space-between;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 80px;
+}
+.splashPageTeamMember {
+  display: flex;
+  font-size: 1.25em;
+  align-items: center;
+  gap: 10px;
+  text-align: right;
+}
+.splashPageTeam h2 {
+  margin: 0;
+  color: var(--cardtext);
+}
+.splashPageTeam p {
+  margin: 0;
+}
+.splashPageTeamMember div {
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+}
+.splashPageIcon {
+  height: 48px;
+  width: 48px;
+  margin: 3px 4px;
+  fill: currentColor;
+}
+
+.splash a { text-decoration: none; color:var(--cardtext); }
+.splash a:visited { text-decoration: none; color:var(--cardtext); }
+.splash a:focus { text-decoration: none; color:var(--cardtext)}
+.splash a:hover { text-decoration: none; color:var(--bright-hover); }
+.splash a:active { text-decoration: none; color:var(--bright-hover) }
+
+.footer {
+  background-color: var(--cardtext);
+  width: 100%;
+  margin-top: 100px;
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.footer .splashPageIcon {
+  height: 32px;
+  width: 32px;
+  margin: 3px 4px;
+  fill: currentColor;
+}
+.footer p {
+  margin: 0;
+  padding-left: 20px;
+}
+.footer .splashPageSourceCode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 20px;
+}
+.footer a { text-decoration: none; color:white; }
+.footer a:visited { text-decoration: none; color:white; }
+.footer a:focus { text-decoration: none; color:white; }
+.footer a:hover { text-decoration: none; color:var(--cardbghover); }
+.footer a:active { text-decoration: none; color:var(--cardbghover) }

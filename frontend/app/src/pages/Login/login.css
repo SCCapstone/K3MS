@@ -70,6 +70,26 @@
   margin: 10px auto;
 }
 
+.returnToSplashPage::before {
+  content: '\2039';
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+.returnToSplashPage {
+  background-color: var(--cardtext);
+  border: none;
+  display: block;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 8px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 5%;
+  margin: 10px 10px;
+}
+
 .loginCard p:hover {
   color: var(--hover);
   cursor: pointer;

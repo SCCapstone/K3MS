@@ -13,6 +13,8 @@ import AccountSettings from './pages/AccountSettings/AccountSettings';
 import UserAdmin from './pages/UserAdmin/UserAdmin';
 import SetPassword from './pages/SetPassword/SetPassword';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
+import SplashPage from './pages/SplashPage/SplashPage';
+import { useEffect } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import './pages/main_pages.css'
@@ -22,13 +24,7 @@ function App() {
 
   const { user, checkedStorage } = useAuthContext()
 
-  const defaultPage = (
-    user ? 
-    <MainLayout>
-      <Dashboard />
-    </MainLayout>
-    : <Login />
-  )
+  const defaultPage = <SplashPage />
 
   const getMainLayoutPage = (page) => {
     return (
