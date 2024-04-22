@@ -8,9 +8,7 @@ const chairExpenYear = '1991'
 
 describe('Research Info Delete Test: Professor', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('nonChairUserEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -115,9 +113,7 @@ describe('Research Info Delete Test: Professor', () => {
 
 describe('Research Info Delete Test: Chair', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()

@@ -1,9 +1,6 @@
 describe('Test Course Analytics Page', () => {
   it("Data is Correct for Different Times", () => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -30,10 +27,7 @@ describe('Test Course Analytics Page', () => {
     cy.get('.analyticsTable').find('td').eq(2).contains(Cypress.env('expectedCourseMeanOneYear'))
   })
   it("Chair can see data for other users", () => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -52,10 +46,7 @@ describe('Test Course Analytics Page', () => {
     cy.get('.analyticsTable').find('th').eq(3).contains(Cypress.env('nonChairUserName'))
   })
   it("Non-chair cannot see data for other users", () => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('nonChairUserEmail'))
     cy.contains('section', 'Log In').find('input').last()

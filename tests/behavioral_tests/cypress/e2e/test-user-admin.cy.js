@@ -1,9 +1,6 @@
 describe('Test User Administration Functionality', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env('baseUrl'))
-    cy.contains('Log In')
-
-    cy.visit(Cypress.env('baseUrl'))
+    cy.visit(Cypress.env('loginUrl'))
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
