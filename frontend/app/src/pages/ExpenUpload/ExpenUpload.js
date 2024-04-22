@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { EXPEN_UPLOAD_URL, EXPEN_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
 import Alert from '../../components/Alert/Alert'
 import './expenupload.css';
@@ -11,7 +12,7 @@ const ExpenUpload = () => {
 
   const { user, userDispatch } = useAuthContext()
   const { expens, researchInfoDispatch } = useResearchInfoContext()
-
+  const { dashboardDispatch } = useDashboardContext()
 
   useEffect(() => {
     if (!user) {
@@ -76,6 +77,9 @@ const ExpenUpload = () => {
         // Update expens
         researchInfoDispatch({ type: 'UPDATE_EXPENS', payload: json })
       }
+
+      // Update dashboard
+      dashboardDispatch({ type: 'SET_EXPENS', payload: null })
 
       // Navigate to expens page
       navigate('/research-info?page=expenditures', { state: { mssg: 'Expenditure Added', status: 'ok' }})

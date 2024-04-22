@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PUB_UPLOAD_URL, PUBS_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
 import './pubupload.css';
 
@@ -10,6 +11,7 @@ function PubUpload() {
 
   const { user, userDispatch } = useAuthContext()
   const { pubs, researchInfoDispatch } = useResearchInfoContext()
+  const { dashboardDispatch } = useDashboardContext()
 
   useEffect(() => {
     if (!user) {
@@ -75,6 +77,9 @@ function PubUpload() {
         // Update pubs
         researchInfoDispatch({ type: 'UPDATE_PUBS', payload: json })
       }
+      // Update dashboard
+      dashboardDispatch({ type: 'SET_PUBS', payload: null })
+
       // Navigate To Publications Page
       navigate('/research-info?page=publications', { state: { mssg: 'Publication Added Successfully', status: 'ok' }})
     }

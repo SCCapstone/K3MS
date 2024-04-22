@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GRANT_UPLOAD_URL, GRANTS_URL } from '../../config';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useResearchInfoContext } from '../../hooks/useResearchInfoContext';
+import { useDashboardContext } from '../../hooks/useDashboardContext';
 import { useNavigate } from "react-router-dom";
 import Alert from '../../components/Alert/Alert'
 import './grantupload.css';
@@ -11,6 +12,7 @@ const GrantUpload = () => {
 
   const { user, userDispatch } = useAuthContext()
   const { grants, researchInfoDispatch } = useResearchInfoContext()
+  const { dashboardDispatch } = useDashboardContext()
 
 
   useEffect(() => {
@@ -75,6 +77,8 @@ const GrantUpload = () => {
         // Update grants
         researchInfoDispatch({ type: 'UPDATE_GRANTS', payload: json })
       }
+      // Update dashboard
+      dashboardDispatch({ type: 'SET_GRANTS', payload: null })
 
       // Navigate to grants page
       navigate('/research-info?page=grants', { state: { mssg: 'Grant Added', status: 'ok' }})
