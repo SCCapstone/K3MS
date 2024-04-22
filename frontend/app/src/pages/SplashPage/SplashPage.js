@@ -127,7 +127,7 @@ const SplashPage = () => {
           </div>
           <div className="splashPageTeamMember">
             <div>
-              <h2>Mitchel Jonker</h2>
+              <h2>Mitchell Jonker</h2>
               <p>mjonker@email.sc.edu</p>
             </div>
             <a className="splashPageTeamMemberLinkedIn" href="https://www.linkedin.com/in/jonker-mitchell/" target="_blank">

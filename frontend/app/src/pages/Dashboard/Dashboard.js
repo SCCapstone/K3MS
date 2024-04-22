@@ -142,7 +142,7 @@ const Dashboard = () => {
             </div>: ''
         }
         { user && (user.position === 'chair' || user.position === 'professor') ?
-          <div className='dashboardCard'>
+          <div className='dashboardCard dashboardExpenCard'>
             <div className='dashboardCardHeader'>
               <h1>Expenditures</h1>
               <button onClick={ (e) => navigate('/research-info?page=expenditures') }>See All</button>
