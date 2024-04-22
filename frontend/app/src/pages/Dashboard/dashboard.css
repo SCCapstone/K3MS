@@ -107,7 +107,9 @@
 .dashboardPlot {
   border: black solid thin;
 }
-
+.dashboardExpenCard {
+  overflow-x: auto;
+}
 /* Display One Column On Small Screen Sizes */ 
 @media (max-width: 1300px) {
   .dashboardBody { grid-template-columns: repeat(1, 1fr); }
