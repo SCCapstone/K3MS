@@ -17,6 +17,7 @@ describe('Parse Student Evaluations Test', () => {
     it('Test Can\'t Submit form without file', () => {
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
+        cy.wait(100)
         cy.contains('Upload Student Evaluations Form')
 
         // Submit
@@ -30,6 +31,7 @@ describe('Parse Student Evaluations Test', () => {
     it('Test Can\'t Submit form with incorrect file format', () => {
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
+        cy.wait(100)
         cy.contains('Upload Student Evaluations Form')
 
         const filename = Cypress.env('studentEvalSampleFN')
@@ -47,12 +49,14 @@ describe('Parse Student Evaluations Test', () => {
     it('Test Successful Upload of Evaluation', () => {
         // Check that there arent any courses there now
         cy.contains('Students Evals').click()
+        cy.wait(100)
         Cypress.env('coursesInStudentEvalSampleForTestUser').forEach((course) => {
             cy.contains(course).should('not.exist');
         })
 
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
+        cy.wait(100)
         cy.contains('Upload Student Evaluations Form')
 
         // Upload file
@@ -74,6 +78,7 @@ describe('Parse Student Evaluations Test', () => {
     it('Test Don\'t Overwrite Evaluation', () => {
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
+        cy.wait(100)
         cy.contains('Upload Student Evaluations Form')
 
         // Upload file
@@ -109,6 +114,7 @@ describe('Parse Student Evaluations Test', () => {
     it('Test Overwrite Evaluation', () => {
         // Test that on evaluation upload page
         cy.visit(Cypress.env('baseUrl') + '/evalupload')
+        cy.wait(100)
         cy.contains('Upload Student Evaluations Form')
 
         // Upload file
