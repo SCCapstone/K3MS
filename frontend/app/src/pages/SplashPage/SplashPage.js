@@ -79,8 +79,8 @@ const SplashPage = () => {
       </div>
       <div className="splashPageSection splashPageDemo">
         <h1>Demo</h1>
-        <iframe width="420" height="315"
-          src="https://www.youtube.com/embed/tgbNymZ7vqY">
+        <iframe
+          src="https://www.youtube.com/embed/JF7RciIm4Fc">
         </iframe>
         <h2>
           See demo to experience the USC Faculty Dashboard in action!
