@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/K3MS/static/css/main.ca53ab3d.css",
-    "main.js": "/K3MS/static/js/main.137ead3e.js",
+    "main.css": "/K3MS/static/css/main.5692e97e.css",
+    "main.js": "/K3MS/static/js/main.8659d7be.js",
     "static/media/dashboard.png": "/K3MS/static/media/dashboard.b4ab7e2ab7dbe8cd8276.png",
     "static/media/PalmLeaves_Black_Transparent_RGB.png": "/K3MS/static/media/PalmLeaves_Black_Transparent_RGB.9294befec7ceed2964c5.png",
     "static/media/teamAssessments.png": "/K3MS/static/media/teamAssessments.3340818dce4a499df36c.png",
@@ -10,11 +10,11 @@
     "static/media/navbar-usc-logo.svg": "/K3MS/static/media/navbar-usc-logo.c4cd143e8ac99439ef543602d4a43295.svg",
     "static/media/delete-icon.svg": "/K3MS/static/media/delete-icon.78ec434bdef8fbe7ba9f63d8324279ed.svg",
     "index.html": "/K3MS/index.html",
-    "main.ca53ab3d.css.map": "/K3MS/static/css/main.ca53ab3d.css.map",
-    "main.137ead3e.js.map": "/K3MS/static/js/main.137ead3e.js.map"
+    "main.5692e97e.css.map": "/K3MS/static/css/main.5692e97e.css.map",
+    "main.8659d7be.js.map": "/K3MS/static/js/main.8659d7be.js.map"
   },
   "entrypoints": [
-    "static/css/main.ca53ab3d.css",
-    "static/js/main.137ead3e.js"
+    "static/css/main.5692e97e.css",
+    "static/js/main.8659d7be.js"
   ]
 }
