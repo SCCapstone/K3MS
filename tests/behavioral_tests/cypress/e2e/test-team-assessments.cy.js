@@ -7,6 +7,7 @@ describe('Test Team Assessments Page - Professor', () => {
 
         // Log In as PROFESSOR
         cy.visit(Cypress.env('baseUrl') + '/login')
+        cy.wait(100)
         cy.contains('section', 'Log In').find('input').first()
         .type(Cypress.env('nonChairUserEmail'))
         cy.contains('section', 'Log In').find('input').last()
@@ -26,6 +27,7 @@ describe('Test Team Assessments Page - Chair', () => {
     beforeEach(() => {
         // Log In as CHAIR
         cy.visit(Cypress.env('baseUrl') + '/login')
+        cy.wait(100)
         cy.contains('section', 'Log In').find('input').first()
         .type(Cypress.env('testEmail'))
         cy.contains('section', 'Log In').find('input').last()

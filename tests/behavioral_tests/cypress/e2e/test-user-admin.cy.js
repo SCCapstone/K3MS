@@ -1,6 +1,7 @@
 describe('Test User Administration Functionality', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -12,6 +13,7 @@ describe('Test User Administration Functionality', () => {
     // Test that on grant upload page
     cy.wait(500)
     cy.visit(Cypress.env('baseUrl') + '/useradmin')
+    cy.wait(100)
     cy.contains('User Administration')
   })
 

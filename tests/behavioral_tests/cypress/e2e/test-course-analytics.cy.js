@@ -1,6 +1,7 @@
 describe('Test Course Analytics Page', () => {
   it("Data is Correct for Different Times", () => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -28,6 +29,7 @@ describe('Test Course Analytics Page', () => {
   })
   it("Chair can see data for other users", () => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -47,6 +49,7 @@ describe('Test Course Analytics Page', () => {
   })
   it("Non-chair cannot see data for other users", () => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('nonChairUserEmail'))
     cy.contains('section', 'Log In').find('input').last()

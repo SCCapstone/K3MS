@@ -8,6 +8,7 @@ const chairExpenYear = '2006'
 describe('Research Info Test: Professor', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('nonChairUserEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -17,6 +18,7 @@ describe('Research Info Test: Professor', () => {
   })
   it("Professor Can Add a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(professsorGrantTitle)
     cy.contains('section', 'Grant Information').find('input')
@@ -32,6 +34,7 @@ describe('Research Info Test: Professor', () => {
   it("Professor Can Add a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
+    cy.wait(100)
     cy.contains('Publication Information')
     cy.contains('section', 'Publication Information').find('input')
       .eq(0).type(professorPubTitle)
@@ -48,6 +51,7 @@ describe('Research Info Test: Professor', () => {
   it("Professor Can Add an Expenditure", () => {
     // Visit expen add form
     cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.wait(100)
     cy.contains('Expenditure Information')
     cy.contains('section', 'Expenditure Information').find('input')
       .eq(0).type(professorExpenYear)
@@ -67,6 +71,7 @@ describe('Research Info Test: Professor', () => {
   })
   it('Professor Can\'t choose other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('Choose Person').should('not.exist')
   })
 })
@@ -76,6 +81,7 @@ describe('Research Info Test: Chair', () => {
   beforeEach(() => {
   cy.wait(100)
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -85,6 +91,7 @@ describe('Research Info Test: Chair', () => {
   })
   it("Chair Can Upload a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(chairGrantTitle)
     cy.contains('section', 'Grant Information').find('input')
@@ -100,6 +107,7 @@ describe('Research Info Test: Chair', () => {
   it("Chair Can Upload a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
+    cy.wait(100)
     cy.contains('Publication Information')
     cy.contains('section', 'Publication Information').find('input')
       .eq(0).type(chairPubTitle)
@@ -116,6 +124,7 @@ describe('Research Info Test: Chair', () => {
   it("Chair Can Add an Expenditure", () => {
     // Visit expen add form
     cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.wait(100)
     cy.contains('Expenditure Information')
     cy.contains('section', 'Expenditure Information').find('input')
       .eq(0).type(chairExpenYear)

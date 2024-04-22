@@ -2,6 +2,7 @@ describe('Add Publication Test Spec', () => {
     // login before each
     beforeEach(() => {
       cy.visit(Cypress.env('loginUrl'))
+      cy.wait(100)
       cy.contains('section', 'Log In').find('input').first()
         .type(Cypress.env('testEmail'))
       cy.contains('section', 'Log In').find('input').last()
@@ -16,12 +17,14 @@ describe('Add Publication Test Spec', () => {
       // Test that on publication upload page
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
+      cy.wait(100)
       cy.contains('Publication Information')
     })
     it("Can't Add Pub Details without a title", () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
+      cy.wait(100)
       cy.contains('Publication Information')
       cy.wait(100)
       cy.contains('section', 'Publication Information').find('input')
@@ -40,6 +43,7 @@ describe('Add Publication Test Spec', () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
+      cy.wait(100)
       cy.contains('Publication Information')
       cy.wait(100)
       cy.contains('section', 'Publication Information').find('input')
@@ -58,6 +62,7 @@ describe('Add Publication Test Spec', () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
+      cy.wait(100)
       cy.contains('Publication Information')
       cy.wait(100)
       cy.contains('section', 'Publication Information').find('input')
@@ -74,6 +79,7 @@ describe('Add Publication Test Spec', () => {
       // Visit pub info site
       cy.wait(100)
       cy.visit(Cypress.env('baseUrl') + '/pubupload')
+      cy.wait(100)
       cy.contains('Publication Information')
       cy.wait(100)
       cy.contains('section', 'Publication Information').find('input')

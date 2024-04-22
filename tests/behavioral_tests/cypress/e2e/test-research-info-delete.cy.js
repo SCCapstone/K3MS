@@ -9,6 +9,7 @@ const chairExpenYear = '1991'
 describe('Research Info Delete Test: Professor', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('nonChairUserEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -18,6 +19,7 @@ describe('Research Info Delete Test: Professor', () => {
   })
   it("Professor Can Add a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(professsorGrantTitle)
     cy.contains('section', 'Grant Information').find('input')
@@ -28,6 +30,7 @@ describe('Research Info Delete Test: Professor', () => {
 
     // add a second grant for later testing
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(professsorGrantTitle2)
     cy.contains('section', 'Grant Information').find('input')
@@ -46,6 +49,7 @@ describe('Research Info Delete Test: Professor', () => {
   it("Professor Can delete a grant", () => {
     // Delete the grant
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('div', 'Choose Page').contains('Grants').click()
     cy.contains('li', professsorGrantTitle).find('button').click()
     cy.contains('div', 'Confirm').find('button').eq(0).click()
@@ -54,6 +58,7 @@ describe('Research Info Delete Test: Professor', () => {
   it("Professor Can Add a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
+    cy.wait(100)
     cy.contains('Publication Information')
     cy.contains('section', 'Publication Information').find('input')
       .eq(0).type(professorPubTitle)
@@ -72,6 +77,7 @@ describe('Research Info Delete Test: Professor', () => {
   it("Professor Can delete a publication", () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('div', 'Choose Page').contains('Publications').click()
     cy.contains('li', professorPubTitle).find('button').click()
     cy.contains('div', 'Confirm').find('button').eq(0).click()
@@ -80,6 +86,7 @@ describe('Research Info Delete Test: Professor', () => {
   it("Professor Can Add an Expenditure", () => {
     // Visit expen add form
     cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.wait(100)
     cy.contains('Expenditure Information')
     cy.contains('section', 'Expenditure Information').find('input')
       .eq(0).type(professorExpenYear)
@@ -100,6 +107,7 @@ describe('Research Info Delete Test: Professor', () => {
   it("Professor Can delete an expenditure", () => {
     // Delete the expenditure
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('div', 'Choose Page').contains('Expenditures').click()
     cy.contains('tr', professorExpenYear).find('button').click()
     cy.contains('div', 'Confirm').find('button').eq(0).click()
@@ -107,6 +115,7 @@ describe('Research Info Delete Test: Professor', () => {
   })
   it('Professor Can\'t delete data for other people', () => {
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('Choose Person').should('not.exist')
   })
 })
@@ -114,6 +123,7 @@ describe('Research Info Delete Test: Professor', () => {
 describe('Research Info Delete Test: Chair', () => {
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -123,6 +133,7 @@ describe('Research Info Delete Test: Chair', () => {
   })
   it("Chair Can Add a Grant", () => {
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('section', 'Grant Information').find('input')
       .eq(0).type(chairGrantTitle)
     cy.contains('section', 'Grant Information').find('input')
@@ -137,6 +148,7 @@ describe('Research Info Delete Test: Chair', () => {
   })
   it("Chair Can delete a grant", () => {
     // Delete the grant
+    cy.wait(100)
     cy.visit(Cypress.env('baseUrl') + '/research-info')
     cy.contains('div', 'Choose Page').contains('Grants').click()
     cy.contains('li', chairGrantTitle).find('button').click()
@@ -146,6 +158,7 @@ describe('Research Info Delete Test: Chair', () => {
   it("Chair Can Add a Publication", () => {
     // Visit pub info site
     cy.visit(Cypress.env('baseUrl') + '/pubupload')
+    cy.wait(100)
     cy.contains('Publication Information')
     cy.contains('section', 'Publication Information').find('input')
       .eq(0).type(chairPubTitle)
@@ -162,6 +175,7 @@ describe('Research Info Delete Test: Chair', () => {
   it("Chair Can delete a publication", () => {
     // Delete the publication
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('div', 'Choose Page').contains('Publications').click()
     cy.contains('li', chairPubTitle).find('button').click()
     cy.contains('div', 'Confirm').find('button').eq(0).click()
@@ -170,6 +184,7 @@ describe('Research Info Delete Test: Chair', () => {
   it("Chair Can Add an Expenditure", () => {
     // Visit expen add form
     cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.wait(100)
     cy.contains('Expenditure Information')
     cy.contains('section', 'Expenditure Information').find('input')
       .eq(0).type(chairExpenYear)
@@ -190,6 +205,7 @@ describe('Research Info Delete Test: Chair', () => {
   it("Chair Can delete an expenditure", () => {
     // Delete the expenditure
     cy.visit(Cypress.env('baseUrl') + '/research-info')
+    cy.wait(100)
     cy.contains('div', 'Choose Page').contains('Expenditures').click()
     cy.contains('tr', chairExpenYear).find('button').click()
     cy.contains('div', 'Confirm').find('button').eq(0).click()

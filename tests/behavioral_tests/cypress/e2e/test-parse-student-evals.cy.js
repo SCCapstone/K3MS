@@ -5,6 +5,7 @@ describe('Parse Student Evaluations Test', () => {
     beforeEach(() => {
         // Log In
         cy.visit(Cypress.env('baseUrl') + '/login')
+        cy.wait(100)
         cy.contains('section', 'Log In').find('input').first()
         .type(Cypress.env('testEmail'))
         cy.contains('section', 'Log In').find('input').last()

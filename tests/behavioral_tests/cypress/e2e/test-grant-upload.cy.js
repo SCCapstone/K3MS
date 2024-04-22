@@ -2,6 +2,7 @@ describe('Grant Upload Test Spec', () => {
   // login before each
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -13,6 +14,7 @@ describe('Grant Upload Test Spec', () => {
     // Test that on grant upload page
     cy.wait(100)
     cy.visit(Cypress.env('baseUrl') + '/grantupload')
+    cy.wait(100)
     cy.contains('Add Grant Form')
   })
   it('Can Access Grant Upload Page', () => {

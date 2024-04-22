@@ -2,6 +2,7 @@ describe('Add Expenditure Test Spec', () => {
   // login before each
   beforeEach(() => {
     cy.visit(Cypress.env('loginUrl'))
+    cy.wait(100)
     cy.contains('section', 'Log In').find('input').first()
       .type(Cypress.env('testEmail'))
     cy.contains('section', 'Log In').find('input').last()
@@ -13,6 +14,7 @@ describe('Add Expenditure Test Spec', () => {
     // Test that on expen upload page
     cy.wait(100)
     cy.visit(Cypress.env('baseUrl') + '/expenupload')
+    cy.wait(100)
     cy.contains('Add Expenditure Form')
   })
   it('Can Access Add Expenditure Page', () => {
