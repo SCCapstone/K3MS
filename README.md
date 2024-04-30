@@ -1,3 +1,6 @@
+Deployed App: https://sccapstone.github.io/K3MS/
+
+
 # App Overview
 
 Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our project.
