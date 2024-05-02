@@ -18,7 +18,10 @@ Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our 
     - run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential ` to install mysqldb package
     - run `sudo apt-get install -y pkg-config ` to install pkg-config package
 - if on Mac
-    - install through homebrew: `brew install mysql`
+    - Install through homebrew: `brew install mysql`
+    - Add binaries to path:
+        - `echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.bash_profile`
+        - `export PKG_CONFIG_PATH="$(brew --prefix)/opt/mysql-client/lib/pkgconfig"`
 
 ## Setup
 - Create the file `backend/.env` and add the following:
