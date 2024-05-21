@@ -1,7 +1,8 @@
 Deployed App: https://sccapstone.github.io/K3MS/
 
-
 # App Overview
+
+[View Our Demo](https://youtu.be/JF7RciIm4Fc?si=UJyiRLfK3ZX2Fm0l)
 
 Our [Wiki](https://github.com/SCCapstone/K3MS/wiki) provides an overview of our project.
 - [Description](https://github.com/SCCapstone/K3MS/wiki/Project-Description)
